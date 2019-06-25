@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.otec.foodsafety.mapper.delivery.SupplyObjectMapper">
+
+    <sql id="Example_Where_Clause">
+        <where>
+            <if test="@org.apache.ibatis.util.Ognl@isNotEmpty( organizingInstitutionBarCode )">
+                AND ORGANIZING_INSTITUTION_BAR_CODE = #{organizingInstitutionBarCode}
+            </if>
+            <if test="@org.apache.ibatis.util.Ognl@isNotEmpty( extendSql )">
+                ${extendSql}
+            </if>
+        </where>
+    </sql>
+
+</mapper>

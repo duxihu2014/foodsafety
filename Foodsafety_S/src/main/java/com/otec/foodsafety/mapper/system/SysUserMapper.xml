@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.otec.foodsafety.mapper.system.SysUserMapper">
+
+	<sql id="Example_Where_Clause">
+		<where>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( notUserId )">
+				AND USER_ID != #{notUserId}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( userId )">
+				AND user_id = #{userId}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( userName )">
+				AND user_name = #{userName}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( userNameLike )">
+				AND user_name like '%${userNameLike}%'
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( userOrder )">
+				AND user_order = #{userOrder}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( userType )">
+				AND user_type = #{userType}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( userStatus )">
+				AND user_status = #{userStatus}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( userPwd )">
+				AND user_pwd = #{userPwd}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( createTimeStart )">
+				AND  <![CDATA[create_time >= to_DATE(#{createTimeStart},'yyyy-MM-dd HH24:MI:SS')    ]]>
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( createTimeEnd )">
+				AND  <![CDATA[create_time <= to_DATE(#{createTimeEnd}||'23:59:59' ,'yyyy-MM-dd HH24:MI:SS')   ]]>
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( updateTimeStart )">
+				AND  <![CDATA[update_time >= to_DATE(#{updateTimeStart},'yyyy-MM-dd HH24:MI:SS')    ]]>
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( updateTimeEnd )">
+				AND  <![CDATA[update_time <= to_DATE(#{updateTimeEnd},'yyyy-MM-dd HH24:MI:SS')    ]]>
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( realName )">
+				AND real_name like '%${realName}%'
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( extendSql )">
+				${extendSql}
+			</if>
+		</where>
+	</sql>
+
+	<sql id="Query_Where_Clause">
+		<where>
+			USER_ID NOT IN (SELECT USER_ID FROM T_PERSONNEL_THREE)
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( notUserId )">
+				AND USER_ID != #{notUserId}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( userId )">
+				AND user_id = #{userId}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( userName )">
+				AND user_name = #{userName}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( userNameLike )">
+				AND user_name like '%${userNameLike}%'
+			</if>
+ 			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( userType )">
+				AND user_type = #{userType}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( userStatus )">
+				AND user_status = #{userStatus}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( enterpriseId )">
+				and enterpriseId= #{enterpriseId}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( areaId )">
+				and  areaId  = #{areaId}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( institutionId )">
+				and institutionId= #{institutionId}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( extendSql )">
+				${extendSql}
+			</if>
+		</where>
+	</sql>
+
+	<select id="findUsersByRoleId" resultMap="result_ResultMap_SysUser">
+		select DISTINCT A.* from T_S_USER A, T_S_ROLE_USER B ,T_S_ROLE C WHERE
+		A.USER_ID = B.USER_ID AND B.ROLE_ID = C.ROLE_ID
+		AND A.USER_STATUS=1 AND C.ROLE_STATUS=1 AND C.ROLE_ID =#{roleId}
+	</select>
+
+	<update id="batchChangeStatus" flushCache="true" parameterType="map" >
+		UPDATE   T_S_USER set user_status=#{status,jdbcType=VARCHAR}
+		where USER_ID in
+		<foreach collection="ids" item="item" open="(" separator="," close=")">
+			#{item}
+		</foreach>
+	</update>
+	<select id="getUserPageCount" resultType="int" parameterType="map" >
+		SELECT
+			count( * )
+		FROM
+			(
+		SELECT
+			t2.ROLE_ID AS roleId,
+			t3.INSTITUTION_ID AS institutionId,
+			IFNULL(t3.AREA_id,t4.AREA_ID)  as areaId,
+			t4.ENTERPRISE_ID as enterpriseId,
+			t1.*,
+			t5.ENTERPRISE_NAME   as enterpriseName,
+			t6.INSTITUTION_NAME as institutionName
+		FROM
+			T_S_USER t1
+			LEFT JOIN T_S_ROLE_USER t2 ON t1.USER_ID = t2.USER_ID
+			LEFT JOIN T_S_USER_INSTITUTION t3 ON t3.USER_ID = t1.USER_ID
+			LEFT JOIN T_S_USER_ENTERPRISE t4 ON t4.USER_ID = t1.USER_ID
+			LEFT JOIN T_ENTERPRISE_BASE t5 on t4.ENTERPRISE_ID=t5.ENTERPRISE_ID
+			LEFT JOIN T_S_INSTITUTION t6 on t3.INSTITUTION_ID=t6.INSTITUTION_ID
+			) AS t
+		<include refid="Query_Where_Clause" />
+	</select>
+	<select id="getUserPage" resultMap="result_ResultMap_SysUser" parameterType="map">
+		SELECT
+			*
+		FROM
+			(
+		SELECT
+			t2.ROLE_ID AS roleId,
+			t3.INSTITUTION_ID AS institutionId,
+			IFNULL(t3.AREA_id,t4.AREA_ID)  as areaId,
+			t4.ENTERPRISE_ID as enterpriseId,
+			t1.*,
+			t5.ENTERPRISE_NAME   as enterpriseName,
+		    t6.INSTITUTION_NAME as institutionName
+		FROM
+			T_S_USER t1
+			LEFT JOIN T_S_ROLE_USER t2 ON t1.USER_ID = t2.USER_ID
+			LEFT JOIN T_S_USER_INSTITUTION t3 ON t3.USER_ID = t1.USER_ID
+		    LEFT JOIN T_S_USER_ENTERPRISE t4 ON t4.USER_ID = t1.USER_ID
+			LEFT JOIN T_ENTERPRISE_BASE t5 on t4.ENTERPRISE_ID=t5.ENTERPRISE_ID
+		    LEFT JOIN T_S_INSTITUTION t6 on t3.INSTITUTION_ID=t6.INSTITUTION_ID
+			) AS t
+		<include refid="Query_Where_Clause" />
+			ORDER BY CREATE_TIME
+	</select>
+	<select id="findByUserId" resultMap="result_ResultMap_SysUser" parameterType="map">
+		SELECT
+			*
+		FROM
+			(
+		SELECT
+			t2.ROLE_ID AS roleId,
+			t3.INSTITUTION_ID AS institutionId,
+            IFNULL(t3.AREA_id,t4.AREA_ID)  as areaId,
+			t4.ENTERPRISE_ID as enterpriseId,
+			t1.*
+		FROM
+			T_S_USER t1
+			LEFT JOIN T_S_ROLE_USER t2 ON t1.USER_ID = t2.USER_ID
+			LEFT JOIN T_S_USER_INSTITUTION t3 ON t3.USER_ID = t1.USER_ID
+			LEFT JOIN T_S_USER_ENTERPRISE t4 ON t4.USER_ID = t1.USER_ID
+			) t WHERE t.USER_ID=#{userId}
+	</select>
+
+</mapper>

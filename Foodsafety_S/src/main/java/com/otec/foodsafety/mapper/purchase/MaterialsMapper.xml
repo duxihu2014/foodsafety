@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.otec.foodsafety.mapper.purchase.MaterialsMapper">
+
+	<sql id="Example_Where_Clause">
+		<where>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( materialId )">
+				AND MATERIAL_ID = #{materialId}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( materialCategory )">
+				AND MATERIAL_CATEGORY = #{materialCategory}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( materialName )">
+				AND MATERIAL_NAME LIKE '%${materialName}%'
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( barcodeCoding )">
+				AND BARCODE_CODING =#{barcodeCoding}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( materialStatus )">
+				AND MATERIAL_STATUS = #{materialStatus}
+			</if>
+
+		</where>
+	</sql>
+
+	<update id="batchChangeStatus" flushCache="true"
+		parameterType="map">
+		update T_MATERIALS set MATERIAL_STATUS=#{status,jdbcType=VARCHAR}
+		where MATERIAL_ID in
+		<foreach collection="ids" item="item" open="(" separator=","
+			close=")">
+			#{item}
+		</foreach>
+	</update>
+
+    <resultMap type="com.otec.foodsafety.entity.purchase.Materials" id="BaseResultMap">
+		<result property="materialId" column="MATERIAL_ID"></result>
+		<result property="materialName" column="MATERIAL_NAME"></result>
+		<result property="materialCategory" column="MATERIAL_CATEGORY"></result>
+		<result property="barcodeCoding" column="BARCODE_CODING"></result>
+		<result property="specification" column="SPECIFICATION"></result>
+		<result property="unit" column="UNIT"></result>
+		<result property="shelfLife" column="SHELF_LIFE"></result>
+		<result property="originPlace" column="ORIGIN_PLACE"></result>
+		<result property="brand" column="BRAND"></result>
+		<result property="supplierId" column="SUPPLIER_ID"></result>
+		<result property="productionCertificateNo" column="PRODUCTION_CERTIFICATE_NO"></result>
+		<result property="productionCertificateValid" column="PRODUCTION_CERTIFICATE_VALID"></result>
+		<result property="productionCertificatePhoto" column="PRODUCTION_CERTIFICATE_PHOTO"></result>
+		<result property="materialStatus" column="MATERIAL_STATUS"></result>
+		<result property="productionName" column="PRODUCTION_NAME"></result>
+		<result property="supplierName" column="SUPPLIER_NAME"></result>
+		<result property="enterpiseName" column="ENTERPRISE_NAME"></result>
+		<result property="businessLicenceNo"  column="BUSINESS_LICENCE_NO"></result>
+	</resultMap>
+
+	<select id="findMaterialsByCondition"
+		resultMap="BaseResultMap" parameterType="java.util.HashMap">
+		select * from V_MATERIALS
+		<include refid="Example_Where_Clause" />
+	</select>	
+
+	<sql id="Query_Where_Clause">
+		<where>
+			t2.SUPPLIER_STATUS=1 and t4.ENTERPRISE_STATUS=3
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( materialName )">
+				and t1.MATERIAL_NAME  LIKE  '%${materialName}%'
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( barcodeCoding )">
+				and t1.BARCODE_CODING  =#{barcodeCoding}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( enterpriseId )">
+				and t4.ENTERPRISE_ID= #{enterpriseId}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( areaId )">
+ 				and t4.AREA_ID  = #{areaId}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( gridId )">
+				AND t5.GRID_ID = #{gridId}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( materialCategory )">
+				AND t1.MATERIAL_CATEGORY = #{materialCategory}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( materialStatus )">
+				AND t1.MATERIAL_STATUS = #{materialStatus}
+			</if>
+
+		</where>
+	</sql>
+	<select id="getPageCount" resultType="int" parameterType="map" >
+		SELECT count( * ) FROM T_MATERIALS  t1 LEFT JOIN T_SUPPLIER_SERVICE t2  on t1.SUPPLIER_ID=t2.SUPPLIER_ID
+		LEFT JOIN  T_SUPPLIER_SERVICE_ENTERPRISE t3 ON  t2.SUPPLIER_ID=t3.SUPPLIER_ID
+		LEFT JOIN T_ENTERPRISE_BASE  t4 ON t3.ENTERPRISE_ID=t4.ENTERPRISE_ID
+		left join T_ENTERPRISE_SUPERVISION t5 on t4.ENTERPRISE_ID=t5.ENTERPRISE_ID
+		<include refid="Query_Where_Clause"/>
+	</select>
+
+	<select id="getPage" resultMap="BaseResultMap" parameterType="map">
+		SELECT t1.*,t2.SUPPLIER_NAME ,t4.ENTERPRISE_NAME
+		FROM T_MATERIALS  t1 LEFT JOIN T_SUPPLIER_SERVICE t2  on t1.SUPPLIER_ID=t2.SUPPLIER_ID
+		LEFT JOIN  T_SUPPLIER_SERVICE_ENTERPRISE t3 ON  t2.SUPPLIER_ID=t3.SUPPLIER_ID
+		LEFT JOIN T_ENTERPRISE_BASE  t4 ON t3.ENTERPRISE_ID=t4.ENTERPRISE_ID
+		left join T_ENTERPRISE_SUPERVISION t5 on t4.ENTERPRISE_ID=t5.ENTERPRISE_ID
+ 		<include refid="Query_Where_Clause" />
+	</select>
+
+	<select id="findMaterialsById"  parameterType="long" resultMap="BaseResultMap">
+     SELECT t1.*,t2.SUPPLIER_NAME ,t2.BUSINESS_LICENCE_NO,t4.ENTERPRISE_NAME
+		FROM T_MATERIALS  t1 LEFT JOIN T_SUPPLIER_SERVICE t2  on t1.SUPPLIER_ID=t2.SUPPLIER_ID
+		LEFT JOIN  T_SUPPLIER_SERVICE_ENTERPRISE t3 ON  t2.SUPPLIER_ID=t3.SUPPLIER_ID
+		LEFT JOIN T_ENTERPRISE_BASE  t4 ON t3.ENTERPRISE_ID=t4.ENTERPRISE_ID
+		where  t2.SUPPLIER_STATUS=1   and t1.MATERIAL_ID=#{materialId}
+	</select>
+
+</mapper>

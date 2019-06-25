@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.otec.foodsafety.mapper.system.SysUserInstitutionMapper" >
+  <sql id="Example_Where_Clause">
+    <where>
+      <if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( userInstitutionId )">
+        AND USER_INSTITUTION_ID = #{userInstitutionId}
+      </if>
+      <if test="@org.apache.ibatis.util.Ognl@isNotEmpty( institutionId )">
+        AND INSTITUTION_ID = #{institutionId}
+      </if>
+      <if test="@org.apache.ibatis.util.Ognl@isNotEmpty( userId )">
+        AND USER_ID = #{userId}
+      </if>
+      <if test="@org.apache.ibatis.util.Ognl@isNotEmpty( areaId )">
+        AND AREA_ID = #{areaId}
+      </if>
+    </where>
+  </sql>
+  <delete id="deleteByCondition"  parameterType="java.util.Map" >
+    delete from  T_S_USER_INSTITUTION
+    <include refid="Example_Where_Clause" />
+  </delete>
+</mapper>

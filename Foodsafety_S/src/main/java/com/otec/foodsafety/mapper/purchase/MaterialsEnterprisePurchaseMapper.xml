@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.otec.foodsafety.mapper.purchase.MaterialsEnterprisePurchaseMapper">
+
+	<sql id="Example_Where_Clause">
+		<where>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( purchaseId )">
+				AND PURCHASE_ID = #{purchaseId}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( enterpriseId )">
+				AND ENTERPRISE_ID = #{enterpriseId}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( supplierId )">
+				AND SUPPLIER_ID = #{supplierId}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( supplierName )">
+				AND SUPPLIER_NAME = #{supplierName}
+			</if>
+			<if
+				test="@org.apache.ibatis.util.Ognl@isNotEmpty( businessLicenceNoSupplier )">
+				AND BUSINESS_LICENCE_NO_SUPPLIER =
+				#{businessLicenceNoSupplier}
+			</if>
+
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( materialId )">
+				AND MATERIAL_ID = #{materialId}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( materialName )">
+				AND MATERIAL_NAME = #{materialName}
+			</if>
+			<if
+				test="@org.apache.ibatis.util.Ognl@isNotEmpty( materialNameLike )">
+				AND MATERIAL_NAME like '%${materialNameLike}%'
+			</if>
+			<if
+				test="@org.apache.ibatis.util.Ognl@isNotEmpty( materialCategory )">
+				AND MATERIAL_CATEGORY = #{materialCategory}
+			</if>
+			<if
+				test="@org.apache.ibatis.util.Ognl@isNotEmpty( barcodeCoding )">
+				AND BARCODE_CODING = #{barcodeCoding}
+			</if>
+			<if
+				test="@org.apache.ibatis.util.Ognl@isNotEmpty( barcodeCodingLike )">
+				AND BARCODE_CODING like '%${barcodeCodingLike}%'
+			</if>
+			<if
+				test="@org.apache.ibatis.util.Ognl@isNotEmpty( specification )">
+				AND SPECIFICATION = #{specification}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( unit )">
+				AND UNIT = #{unit}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( shelfLife )">
+				AND SHELF_LIFE = #{shelfLife}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( originPlace )">
+				AND ORIGIN_PLACE = #{originPlace}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( brand )">
+				AND BRAND = #{brand}
+			</if>
+			<if
+				test="@org.apache.ibatis.util.Ognl@isNotEmpty( productionName )">
+				AND PRODUCTION_NAME = #{productionName}
+			</if>
+			<if
+				test="@org.apache.ibatis.util.Ognl@isNotEmpty( productionCertificateNo )">
+				AND PRODUCTION_CERTIFICATE_NO = #{productionCertificateNo}
+			</if>
+			<if
+				test="@org.apache.ibatis.util.Ognl@isNotEmpty( productionDate )">
+				AND PRODUCTION_DATE = #{productionDate}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( purchaseDate )">
+				AND PURCHASE_DATE = #{purchaseDate}
+			</if>
+			<if
+				test="@org.apache.ibatis.util.Ognl@isNotEmpty( purchaseQuantity )">
+				AND PURCHASE_QUANTITY = #{purchaseQuantity}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( extendSql )">
+				${extendSql}
+			</if>
+		
+		</where>
+	</sql>
+	<resultMap id="Extend_ResultMap"
+		type="com.otec.foodsafety.entity.purchase.MaterialsEnterprisePurchase"
+		extends="result_ResultMap_MaterialsEnterprisePurchase">
+		<result property="inspectionReportId"
+			column="INSPECTION_REPORT_ID" />
+		<result property="inspectionReportPhoto"
+			column="INSPECTION_REPORT_PHOTO" />
+		<result property="validDate" column="VALID_DATE" />
+	</resultMap>
+
+	<select id="countMaterialsEnterprisePurchaseByCondition"
+		resultType="java.lang.Integer" parameterType="java.util.HashMap">
+		select count(1) from (
+		<include refid="findMaterialsEnterprisePurchaseSql"></include>
+		) T
+	</select>
+
+	<select id="findMaterialsEnterprisePurchaseByCondition"
+		resultMap="Extend_ResultMap" parameterType="java.util.HashMap">
+		<include refid="findMaterialsEnterprisePurchaseSql" />
+	</select>
+
+	<select id="getMaterialsEnterprisePurchaseById"
+		resultType="com.otec.foodsafety.entity.purchase.MaterialsEnterprisePurchase"
+		parameterType="java.util.HashMap">
+		<include refid="findMaterialsEnterprisePurchaseSql" />
+	</select>
+
+	<sql id="findMaterialsEnterprisePurchaseSql">
+		SELECT V.* FROM V_MATERIALS_ENTERPRISE_PURCHASE V
+		LEFT JOIN
+		T_ENTERPRISE_SUPERVISION ES ON V.ENTERPRISE_ID=ES.ENTERPRISE_ID
+		LEFT
+		JOIN T_RESPONSIBILITY_GRID RG ON RG.GRID_ID=ES.GRID_ID
+		<include refid="Extends_Where_Clause"></include>
+	</sql>
+	<sql id="Extends_Where_Clause">
+		<where>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( purchaseId )">
+				AND V.PURCHASE_ID = #{purchaseId}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( enterpriseId )">
+				AND V.ENTERPRISE_ID = #{enterpriseId}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( supplierId )">
+				AND V.SUPPLIER_ID = #{supplierId}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( supplierName )">
+				AND V.SUPPLIER_NAME = #{supplierName}
+			</if>
+			<if
+				test="@org.apache.ibatis.util.Ognl@isNotEmpty( businessLicenceNoSupplier )">
+				AND V.BUSINESS_LICENCE_NO_SUPPLIER =
+				#{businessLicenceNoSupplier}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( materialId )">
+				AND V.MATERIAL_ID = #{materialId}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( materialName )">
+				AND V.MATERIAL_NAME = #{materialName}
+			</if>
+			<if
+				test="@org.apache.ibatis.util.Ognl@isNotEmpty( materialNameLike )">
+				AND V.MATERIAL_NAME like '%${materialNameLike}%'
+			</if>
+			<if
+				test="@org.apache.ibatis.util.Ognl@isNotEmpty( materialCategory )">
+				AND V.MATERIAL_CATEGORY = #{materialCategory}
+			</if>
+			<if
+				test="@org.apache.ibatis.util.Ognl@isNotEmpty( barcodeCoding )">
+				AND V.BARCODE_CODING = #{barcodeCoding}
+			</if>
+			<if
+				test="@org.apache.ibatis.util.Ognl@isNotEmpty( barcodeCodingLike )">
+				AND V.BARCODE_CODING like '%${barcodeCodingLike}%'
+			</if>	
+			<if
+				test="@org.apache.ibatis.util.Ognl@isNotEmpty( productionName )">
+				AND V.PRODUCTION_NAME = #{productionName}
+			</if>			
+			<if
+				test="@org.apache.ibatis.util.Ognl@isNotEmpty( productionDate )">
+				AND V.PRODUCTION_DATE = #{productionDate}
+			</if>	
+
+			<if
+				test="@org.apache.ibatis.util.Ognl@isNotEmpty( purchaseDateStart )">
+				AND  <![CDATA[V.PURCHASE_DATE >= DATE_FORMAT(#{purchaseDateStart},'%Y-%m-%d')    ]]>
+			</if>
+			<if
+				test="@org.apache.ibatis.util.Ognl@isNotEmpty( purchaseDateEnd )">
+				AND  <![CDATA[V.PURCHASE_DATE <= DATE_FORMAT(#{purchaseDateEnd} ,'%Y-%m-%d')    ]]>
+			</if>			
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( extendSql )">
+				${extendSql}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( purchaseDate )">
+				and V.PURCHASE_DATE = #{purchaseDate}
+			</if>
+			<!-- extend where -->
+			<if
+				test="@org.apache.ibatis.util.Ognl@isNotEmpty( inspectionReportId )">
+				AND V.INSPECTION_REPORT_ID = #{inspectionReportId}
+			</if>
+			<if
+				test="@org.apache.ibatis.util.Ognl@isNotEmpty( inspectionReportPhoto )">
+				AND V.INSPECTION_REPORT_PHOTO = #{inspectionReportPhoto}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( validDate )">
+				AND V.VALID_DATE = #{validDate}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( areaIds )">
+				AND RG.AREA_ID in (${areaIds})
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( gridIds )">
+				AND RG.GRID_ID = #{gridIds}
+			</if>
+		</where>
+	</sql>
+
+
+	<!--获取每种原料的最新进度记录-->
+	<select id="getMaterialNewRecordPage" resultMap="result_ResultMap_MaterialsEnterprisePurchase" parameterType="map">
+		select t1.PURCHASE_ID,t1.PURCHASE_DATE,t2.MATERIAL_NAME,t3.SUPPLIER_NAME,t2.PRODUCTION_NAME
+		from T_MATERIALS_ENTERPRISE_PURCHASE t1 left JOIN T_MATERIALS t2 on t1.MATERIAL_ID=t2.MATERIAL_ID
+		LEFT JOIN T_SUPPLIER_SERVICE t3 on t3.SUPPLIER_ID=t1.SUPPLIER_ID
+		where  t3.SUPPLIER_STATUS=1 and t2.MATERIAL_STATUS=1 and
+		t1.PURCHASE_ID in (SELECT MAX(PURCHASE_ID) FROM T_MATERIALS_ENTERPRISE_PURCHASE  GROUP BY MATERIAL_ID )
+		<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( enterpriseId )">
+			and t1.ENTERPRISE_ID=#{enterpriseId}
+		</if>
+		<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( materialName )">
+			and t2.MATERIAL_NAME LIKE '%${materialName}%'
+		</if>
+		<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( purchaseDate )">
+			and t1.PURCHASE_DATE = #{purchaseDate}
+		</if>
+		ORDER BY t1.PURCHASE_ID
+	</select>
+
+	<select id="getMaterialNewRecordCount" resultType="int" parameterType="map" >
+		select count( * )  from T_MATERIALS_ENTERPRISE_PURCHASE t1 left JOIN T_MATERIALS t2 on t1.MATERIAL_ID=t2.MATERIAL_ID
+		LEFT JOIN T_SUPPLIER_SERVICE t3 on t3.SUPPLIER_ID=t1.SUPPLIER_ID
+		where  t3.SUPPLIER_STATUS=1 and t2.MATERIAL_STATUS=1 and
+		t1.PURCHASE_ID in (SELECT MAX(PURCHASE_ID) FROM T_MATERIALS_ENTERPRISE_PURCHASE  GROUP BY MATERIAL_ID )
+		<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( enterpriseId )">
+			and t1.ENTERPRISE_ID=#{enterpriseId}
+		</if>
+		<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( materialName )">
+			and t2.MATERIAL_NAME LIKE '%${materialName}%'
+		</if>
+		<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( purchaseDate )">
+			and t1.PURCHASE_DATE = #{purchaseDate}
+		</if>
+		ORDER BY t1.PURCHASE_ID
+	</select>
+
+</mapper>

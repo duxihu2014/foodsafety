@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.otec.foodsafety.mapper.safety.OnsiteVerificationResultItemMapper">
+
+	<sql id="Example_Where_Clause" >
+		<where>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( itemId )">
+				  AND ITEM_ID = #{itemId}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( resultId )">
+				  AND RESULT_ID = #{resultId}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( inspectionItem )">
+				  AND INSPECTION_ITEM = #{inspectionItem}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( inspectionContent )">
+				  AND INSPECTION_CONTENT = #{inspectionContent}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( resultsQualified )">
+				  AND RESULTS_QUALIFIED = #{resultsQualified}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( resultsUnqualified )">
+				  AND RESULTS_UNQUALIFIED = #{resultsUnqualified}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( revisitId )">
+				  AND REVISIT_ID = #{revisitId}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( revisitTime )">
+				  AND REVISIT_TIME = #{revisitTime}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( isRectified )">
+				  AND IS_RECTIFIED = #{isRectified}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( photoResult )">
+				  AND PHOTO_RESULT = #{photoResult}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( phoneRectified )">
+				  AND PHONE_RECTIFIED = #{phoneRectified}
+			</if>
+		</where>
+	</sql>
+
+	<sql id="Inspection_Select_Result">
+       SELECT t1.*,t2.RESOURCE_ID,t3.RESOURCE_ID as RECTIFIED_RESOURCE_ID 
+       from T_ONSITE_VERIFICATION_RESULT_ITEM t1
+		LEFT JOIN T_ONSITE_VERIFICATION_PHOTO t2 on t1.PHOTO_RESULT=t2.PHOTO_ID
+		LEFT JOIN T_ONSITE_VERIFICATION_PHOTO t3 on t1.PHONE_RECTIFIED=t3.PHOTO_ID
+    </sql>
+
+	<resultMap id="result_getResultItem" type="map" extends="result_ResultMap_OnsiteVerificationResultItem">
+		<result property="resourceId" column="RESOURCE_ID"></result>
+		<result property="rectifiedResourceId" column="RECTIFIED_RESOURCE_ID"></result>
+	</resultMap>
+
+	<select id="getResultItem" parameterType="map" resultMap="result_getResultItem">
+		<include refid="Inspection_Select_Result" />
+		<include refid="getResultItem_Where_Clause" />
+	</select>
+	
+	 <sql id="getResultItem_Where_Clause">
+        <where>
+            <if test="@org.apache.ibatis.util.Ognl@isNotEmpty( resultId )">
+                and t1.RESULT_ID = #{resultId}
+            </if>
+            <if test="@org.apache.ibatis.util.Ognl@isNotEmpty( extendSql )">
+                ${extendSql}
+            </if>
+        </where>
+    </sql>
+</mapper>

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.otec.foodsafety.mapper.sensor.SensorMonitorMapper">
+
+	<sql id="Example_Where_Clause" >
+		<where>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( id )">
+				  AND ID = #{id}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( sensorNo )">
+				  AND SENSOR_NO = #{sensorNo}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( humidity )">
+				  AND HUMIDITY = #{humidity}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( dampness )">
+				  AND DAMPNESS = #{dampness}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( createTime )">
+				  AND CREATE_TIME = #{createTime}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( msg )">
+				  AND MSG = #{msg}
+			</if>
+		</where>
+	</sql>
+
+	<resultMap id="extend_ResultMap"
+			   type="com.otec.foodsafety.entity.sensor.SensorMonitor" extends="result_ResultMap_SensorMonitor">
+		<result property="mini" column="MINI" />
+		<result property="sensorName" column="SENSOR_NAME"/>
+	</resultMap>
+
+	<select id="getReport" parameterType="java.util.Map"
+			resultMap="result_ResultMap_SensorMonitor">
+		SELECT SMR.ID, SMR.SENSOR_NO, SMR.HUMIDITY, SMR.DAMPNESS, SMR.CREATE_TIME, DATE_FORMAT(SMR.CREATE_TIME, '%H:%i') MINI  FROM
+		<if  test="@org.apache.ibatis.util.Ognl@isEmpty( isHistory )">
+			T_SENSOR_MONITOR
+		</if>
+		<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( isHistory )">
+			T_SENSOR_MONITOR_LIST
+		</if>
+		 SMR,(
+		SELECT MAX(SI.WD_ALARM_SEC)AS WD_ALARM_SEC,DATE_FORMAT(SI.CREATE_TIME,'%Y-%m-%d %H:%i') AS TT   FROM
+		<if  test="@org.apache.ibatis.util.Ognl@isEmpty( isHistory )">
+		T_SENSOR_MONITOR
+		</if>
+		<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( isHistory )">
+			T_SENSOR_MONITOR_LIST
+		</if>
+		 SI
+
+		WHERE SI.SENSOR_NO=#{sensorNo}
+		<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( date )">
+			AND SI.CREATE_TIME BETWEEN DATE_FORMAT(#{date}, '%Y-%m-%d 00:00:00')  AND DATE_FORMAT(#{date}, '%Y-%m-%d 23:59:59')
+		</if>
+		<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( startTime )">
+			AND SI.CREATE_TIME BETWEEN  DATE_ADD(#{startTime},INTERVAL -1 MINUTE)  AND  DATE_ADD(#{endTime},INTERVAL 1 MINUTE)
+		</if>
+		GROUP BY DATE_FORMAT(SI.CREATE_TIME,'%Y-%m-%d %H:%i')) TMP
+		WHERE SMR.WD_ALARM_SEC=TMP.WD_ALARM_SEC
+		AND  DATE_FORMAT(SMR.CREATE_TIME,'%Y-%m-%d %H:%i')=TMP.TT
+		AND SMR.CREATE_TIME BETWEEN DATE_ADD(#{startTime},INTERVAL -1 MINUTE) AND DATE_ADD(#{endTime},INTERVAL 1 MINUTE)
+		and SMR.SENSOR_NO = #{sensorNo}
+	</select>
+
+	<select id="getCurrentMonitor" parameterType="java.util.Map"
+			resultMap="result_ResultMap_SensorMonitor">
+		select * from T_SENSOR_MONITOR where sensor_no = #{sensorNo} order by create_time desc limit 1
+	</select>
+
+	<!--根据企业id获取配送类型传感器数据-->
+	<select id="getSupplySensorMonitor" parameterType="java.util.Map" resultMap="extend_ResultMap">
+		SELECT
+			t4.*,
+			t5.SENSOR_NAME SENSOR_NAME
+		FROM
+			(
+		SELECT
+			t2.*
+		FROM
+			(
+		SELECT
+			SENSOR_NO,
+			max( CREATE_TIME ) AS CREATE_TIME
+		FROM
+			T_SENSOR_MONITOR t3
+		WHERE
+			t3.SENSOR_NO IN ( SELECT SENSOR_NO FROM T_SENSOR_INFO WHERE USES_TYPE = 2 AND enterprise_id = #{enterpriseId} )
+		GROUP BY
+			SENSOR_NO
+			) t1
+			LEFT JOIN ( SELECT * FROM T_SENSOR_MONITOR ) t2 ON t1.SENSOR_NO = t2.SENSOR_NO
+			AND t1.CREATE_TIME = t2.CREATE_TIME
+			) t4
+			LEFT JOIN T_SENSOR_INFO t5 ON t4.SENSOR_NO = t5.SENSOR_NO
+	</select>
+</mapper>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.otec.foodsafety.mapper.credit.CreditRecordMapper">
+
+    <sql id="Example_Where_Clause">
+        <where>
+            <if test="@org.apache.ibatis.util.Ognl@isNotEmpty( enterpriseId )">
+                and ENTERPRISE_ID = #{enterpriseId}
+            </if>
+            <if test="@org.apache.ibatis.util.Ognl@isNotEmpty( cycleDate )">
+                and #{cycleDate} between CYCLE_START and CYCLE_FINISH
+            </if>
+            <if test="@org.apache.ibatis.util.Ognl@isNotEmpty( extendSql )">
+                ${extendSql}
+            </if>
+        </where>
+    </sql>
+
+    <select id="getCreditRecordCurrentYear" parameterType="long" resultMap="result_ResultMap_CreditRecord">
+        select * from T_CREDIT_RECORD
+        <where>
+            curdate() between CYCLE_START and CYCLE_FINISH
+            <if test="@org.apache.ibatis.util.Ognl@isNotEmpty( enterpriseId )">
+              and ENTERPRISE_ID = #{enterpriseId}
+            </if>
+        </where>
+    </select>
+
+    <insert id="initCreditRecordCurrentYear" parameterType="com.otec.foodsafety.entity.credit.CreditRecord" keyProperty="recordId" useGeneratedKeys="true">
+        <!--<selectKey resultType="java.lang.Long" keyProperty="recordId">
+            SELECT LAST_INSERT_ID()
+        </selectKey>-->
+        insert into T_CREDIT_RECORD(ENTERPRISE_ID, CYCLE_SCORE, CYCLE_START, CYCLE_FINISH)
+        values(#{enterpriseId}, 0, concat(YEAR(now()),'-01-01'), concat(YEAR(now()),'-12-31'))
+    </insert>
+
+    <update id="updateCreditRecordCurrentYear" parameterType="com.otec.foodsafety.entity.credit.CreditRecord">
+      update T_CREDIT_RECORD set CYCLE_SCORE = CYCLE_SCORE + #{cycleScore} where RECORD_ID=#{recordId}
+    </update>
+
+
+
+    <select id="getCycleScoreRankingPage" parameterType="map"  resultMap="result_ResultMap_CreditRecord">
+        select t1.*, t2.ENTERPRISE_NAME enterpriseName  from T_CREDIT_RECORD t1 LEFT JOIN  T_ENTERPRISE_BASE t2 ON  t1.ENTERPRISE_ID=t2.ENTERPRISE_ID
+        <where>
+            curdate() between CYCLE_START and CYCLE_FINISH
+            <if test="@org.apache.ibatis.util.Ognl@isNotEmpty( areaId )">
+                and t2.AREA_ID = #{areaId}
+            </if>
+        </where>
+        ORDER  BY CYCLE_SCORE DESC
+    </select>
+
+</mapper>

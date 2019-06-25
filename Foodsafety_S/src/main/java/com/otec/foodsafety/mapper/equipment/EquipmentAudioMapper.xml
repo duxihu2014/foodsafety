@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.otec.foodsafety.mapper.equipment.EquipmentAudioMapper">
+
+	<sql id="Example_Where_Clause">
+		<where>
+			<if	test="@org.apache.ibatis.util.Ognl@isNotEmpty( equipmentAudioId )">
+				AND EQUIPMENT_AUDIO_ID = #{equipmentAudioId}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( equipmentId )">
+				AND EQUIPMENT_ID = #{equipmentId}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( audioId )">
+				AND AUDIO_ID = #{audioId}
+			</if>
+			<if
+				test="@org.apache.ibatis.util.Ognl@isNotEmpty( audioIdinClause )">
+				AND AUDIO_ID in (${audioIdinClause})
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( status )">
+				AND STATUS = #{status}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( extendSql )">
+				AND ${extendSql}
+			</if>
+		</where>
+	</sql>
+	<resultMap id="Camera_ResultMap"
+		type="com.otec.foodsafety.entity.equipment.EquipmentAudioExt"
+		extends="result_ResultMap_EquipmentAudio">
+	    <result property="equipmentNo" column="EQUIPMENT_NO" />
+	    <result property="equipmentName" column="EQUIPMENT_NAME" />
+	    <result property="equipmentDescribe" column="EQUIPMENT_DESCRIBE" />
+		<result property="equipmentType" column="EQUIPMENT_TYPE" />
+		<result property="namagerUrl" column="NAMAGER_URL" />		
+		<result property="equipmentStatus" column="EQUIPMENT_STATUS" />
+		<result property="enterpriseId" column="ENTERPRISE_ID" />
+		<result property="enterpriseGroupId" column="ENTERPRISE_GROUP_ID" />		
+	</resultMap>
+	<select id="countBindCameraByCondition"
+		resultType="java.lang.Integer" parameterType="java.util.HashMap">
+		select count(1) from (
+		<include refid="findBindCameraSql"></include>
+		) T
+	</select>
+
+	<select id="findBindCameraByCondition"
+		resultMap="Camera_ResultMap" parameterType="java.util.HashMap">
+		<include refid="findBindCameraSql" />
+	</select>
+
+	<sql id="findBindCameraSql">			
+		SELECT t1.*,t2.EQUIPMENT_NAME,t2.EQUIPMENT_NO,t2.EQUIPMENT_DESCRIBE,t2.EQUIPMENT_STATUS,t2.EQUIPMENT_TYPE,t2.NAMAGER_URL,t2.ENTERPRISE_ID,t2.ENTERPRISE_GROUP_ID
+		FROM T_EQUIPMENT_AUDIO t1,T_EQUIPMENT t2
+		WHERE t1.EQUIPMENT_ID =t2.EQUIPMENT_ID 		
+		 <if test="@org.apache.ibatis.util.Ognl@isNotEmpty( audioId )">
+				AND t1.AUDIO_ID = #{audioId}
+		 </if>		 
+		 <if test="@org.apache.ibatis.util.Ognl@isNotEmpty( status )">
+				AND t1.STATUS = #{status} 
+		 </if>	
+		 <if test="@org.apache.ibatis.util.Ognl@isNotEmpty( enterpriseId )">
+				AND t2.ENTERPRISE_ID = #{enterpriseId}
+		 </if>	
+	</sql>
+	<resultMap id="Audio_ResultMap"
+			type="com.otec.foodsafety.entity.equipment.EquipmentAudioExt"
+		extends="result_ResultMap_EquipmentAudio">	    
+		<result property="audioNo" column="AUDIO_NO" />
+		<result property="audioName" column="AUDIO_NAME" />
+		<result property="audioDescribe" column="AUDIO_DESCRIBE" />
+		<result property="namagerUrl" column="NAMAGER_URL" />
+		<result property="equipmentStatus" column="EQUIPMENT_STATUS" />
+		<result property="specialStatus" column="SPECIAL_STATUS" />
+		<result property="enterpriseId" column="ENTERPRISE_ID"/>
+	</resultMap>	
+	<select id="countBindAudioByCondition"
+		resultType="java.lang.Integer" parameterType="java.util.HashMap">
+		select count(1) from (
+		<include refid="findBindAudioSql"></include>
+		) T
+	</select>
+
+	<select id="findBindAudioByCondition"
+		resultMap="Audio_ResultMap" parameterType="java.util.HashMap">
+		<include refid="findBindAudioSql" />
+	</select>
+
+	<sql id="findBindAudioSql">
+		SELECT t1.*,t2.AUDIO_NO,t2.AUDIO_NAME,t2.AUDIO_DESCRIBE,t2.EQUIPMENT_STATUS,t2.NAMAGER_URL,t2.SPECIAL_STATUS ,t2.ENTERPRISE_ID
+		FROM T_EQUIPMENT_AUDIO t1,T_AUDIO t2
+		WHERE t1.AUDIO_ID =t2.AUDIO_ID 
+		<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( equipmentId )">
+				AND t1.EQUIPMENT_ID = #{equipmentId}
+		 </if>		
+		 <if test="@org.apache.ibatis.util.Ognl@isNotEmpty( status )">
+				AND t1.STATUS = #{status} 
+		 </if>	
+		 <if test="@org.apache.ibatis.util.Ognl@isNotEmpty( enterpriseId )">
+				AND t2.ENTERPRISE_ID = #{enterpriseId}
+		 </if>	
+	</sql>
+</mapper>

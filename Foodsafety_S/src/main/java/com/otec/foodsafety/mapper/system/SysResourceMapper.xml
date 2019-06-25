@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.otec.foodsafety.mapper.system.SysResourceMapper">
+    <sql id="Example_Where_Clause">
+    <where>
+        <if test="@org.apache.ibatis.util.Ognl@isNotEmpty( resourceId )">
+            AND RESOURCE_ID = #{resourceId}
+        </if>
+        <if test="@org.apache.ibatis.util.Ognl@isNotEmpty( resourceName )">
+            AND RESOURCE_NAME = #{resourceName}
+        </if>
+        <if test="@org.apache.ibatis.util.Ognl@isNotEmpty( resourcePath )">
+            AND RESOURCE_PATH = #{resourcePath}
+        </if>
+         <if test="@org.apache.ibatis.util.Ognl@isNotEmpty( extendSql )">
+            ${extendSql}
+        </if>
+    </where>
+    </sql>
+    <resultMap  id="resouceResultMap" type="com.otec.foodsafety.entity.system.SysResource" >
+        <result  property="resourceId"  column="RESOURCE_ID"  />
+        <result  property="resourceName"  column="RESOURCE_NAME"  />
+        <result  property="resourceExtension"  column="RESOURCE_EXTENSION"  />
+        <result  property="resourceDesc"  column="RESOURCE_DESC"  />
+        <result  property="resourceType"  column="RESOURCE_TYPE"  />
+        <result  property="resourcePath"  column="RESOURCE_PATH"  />
+        <result  property="resourceContent"  column="RESOURCE_CONTENT"  />
+        <result  property="resourceLength"  column="RESOURCE_LENGTH"  />
+        <result  property="resourceStorage"  column="RESOURCE_STORAGE"  />
+        <result  property="resourceMd5"  column="RESOURCE_MD5"  />
+        <result  property="resourceStatus"  column="RESOURCE_STATUS"  />
+    </resultMap>
+
+
+    <select id="getResourceByMd5" resultMap="resouceResultMap" parameterType="com.otec.foodsafety.entity.system.SysResource">
+        select  *  from T_S_RESOURCE t
+        where  1 = 1
+        <if test="@org.apache.ibatis.util.Ognl@isNotEmpty(resourceType)">
+            and t.RESOURCE_TYPE = #{resourceType}
+        </if>
+        <if test="@org.apache.ibatis.util.Ognl@isNotEmpty(resourceMd5)">
+            and t.RESOURCE_MD5 = #{resourceMd5}
+        </if>
+    </select>
+
+    <select id="getPage" resultMap="resouceResultMap" parameterType="com.otec.foodsafety.entity.system.SysResource">
+        select  *  from T_S_RESOURCE t
+        where  1 = 1
+        <if test="@org.apache.ibatis.util.Ognl@isNotEmpty(resourceType)">
+            and t.RESOURCE_TYPE = #{resourceType}
+        </if>
+        <if test="@org.apache.ibatis.util.Ognl@isNotEmpty(resourceName)">
+            and t.RESOURCE_NAME like CONCAT('%',#{resourceName},'%')
+        </if>
+        <if test="@org.apache.ibatis.util.Ognl@isNotEmpty(resourceMd5)">
+            and t.RESOURCE_MD5 = #{resourceMd5}
+        </if>
+        <!-- and not EXISTS ( select b.RESOURCE_ID from T_CONTENT_REF_TYPE b WHERE t.RESOURCE_ID = b.RESOURCE_ID  ) -->
+        order by t.RESOURCE_ID desc
+    </select>
+
+    <select id="getPageCount" resultType="int" parameterType="com.otec.foodsafety.entity.system.SysResource">
+        select count(1) from T_S_RESOURCE t
+        where   1 = 1
+        <if test="@org.apache.ibatis.util.Ognl@isNotEmpty(resourceType)">
+            and t.RESOURCE_TYPE = #{resourceType}
+        </if>
+        <if test="@org.apache.ibatis.util.Ognl@isNotEmpty(resourceName)">
+            and t.RESOURCE_NAME like CONCAT('%',#{resourceName},'%')
+        </if>
+        <if test="@org.apache.ibatis.util.Ognl@isNotEmpty(resourceMd5)">
+            and t.RESOURCE_MD5 = #{resourceMd5}
+        </if>
+        <!-- and not EXISTS ( select b.RESOURCE_ID from T_CONTENT_REF_TYPE b WHERE t.RESOURCE_ID = b.RESOURCE_ID  ) -->
+    </select>
+
+</mapper>

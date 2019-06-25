@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.otec.foodsafety.mapper.enterprise.EnterpriseEquipmentMapper">
+
+	<sql id="Example_Where_Clause" >
+		<where>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( equipmentId )">
+				  AND EQUIPMENT_ID = #{equipmentId}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( equipmentName )">
+				  AND EQUIPMENT_NAME = #{equipmentName}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( equipmentNameLike )">
+				  AND EQUIPMENT_NAME like '%${equipmentNameLike}%'
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( equipmentType )">
+				  AND EQUIPMENT_TYPE = #{equipmentType}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( enterpriseId )">
+				  AND ENTERPRISE_ID = #{enterpriseId}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( specificationModel )">
+				  AND SPECIFICATION_MODEL = #{specificationModel}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( precisionGrade )">
+				  AND PRECISION_GRADE = #{precisionGrade}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( quantity )">
+				  AND QUANTITY = #{quantity}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( perfectState )">
+				  AND PERFECT_STATE = #{perfectState}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( verificationPeriod )">
+				  AND VERIFICATION_PERIOD = #{verificationPeriod}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( usePlace )">
+				  AND USE_PLACE = #{usePlace}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( manufacturer )">
+				  AND MANUFACTURER = #{manufacturer}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( country )">
+				  AND COUNTRY = #{country}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( manufactureDate )">
+				  AND MANUFACTURE_DATE = #{manufactureDate}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( purchaseDate )">
+				  AND PURCHASE_DATE = #{purchaseDate}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( equipmentStatus )">
+				  AND EQUIPMENT_STATUS = #{equipmentStatus}
+			</if>
+		</where>
+	</sql>
+	
+	<resultMap id="Extend_ResultMap"
+		type="com.otec.foodsafety.entity.enterprise.EnterpriseEquipmentExt"
+		extends="result_ResultMap_EnterpriseEquipment">
+		<result property="changeId" column="CHANGE_ID" />
+		<result property="verifyStatus" column="VERIFY_STATUS" />
+		<result property="changeType" column="CHANGE_TYPE" />
+		<result property="changeReason" column="CHANGE_REASON" />
+		
+	</resultMap>
+
+	<select id="countEnterpriseEquipmentByCondition"
+		resultType="java.lang.Integer" parameterType="java.util.HashMap">
+		select count(1) from (
+		<include refid="findEnterpriseEquipmentSql"></include>
+		) T
+	</select>
+
+	<select id="findEnterpriseEquipmentByCondition"
+		resultMap="Extend_ResultMap" parameterType="java.util.HashMap">
+		<include refid="findEnterpriseEquipmentSql" />
+	</select>
+
+	<sql id="findEnterpriseEquipmentSql">
+		SELECT * FROM V_ENTERPRISE_EQUIPMENT 
+		<include refid="Example_Where_Clause"></include>
+	</sql>
+</mapper>

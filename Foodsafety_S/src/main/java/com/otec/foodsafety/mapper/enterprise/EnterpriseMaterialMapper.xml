@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper
+	namespace="com.otec.foodsafety.mapper.enterprise.EnterpriseMaterialMapper">
+
+	<sql id="Example_Where_Clause">
+		<where>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( materialId )">
+				AND MATERIAL_ID = #{materialId}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( materialName )">
+				AND MATERIAL_NAME = #{materialName}
+			</if>
+			<if
+				test="@org.apache.ibatis.util.Ognl@isNotEmpty( materialNameLike )">
+				AND MATERIAL_NAME like '%${materialNameLike}%'
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( materialType )">
+				AND MATERIAL_TYPE = #{materialType}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( enterpriseId )">
+				AND ENTERPRISE_ID = #{enterpriseId}
+			</if>
+			<if
+				test="@org.apache.ibatis.util.Ognl@isNotEmpty( specificationModel )">
+				AND SPECIFICATION_MODEL = #{specificationModel}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( annualDemand )">
+				AND ANNUAL_DEMAND = #{annualDemand}
+			</if>
+			<if
+				test="@org.apache.ibatis.util.Ognl@isNotEmpty( productStandard )">
+				AND PRODUCT_STANDARD = #{productStandard}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( manufacturer )">
+				AND MANUFACTURER = #{manufacturer}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( country )">
+				AND COUNTRY = #{country}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( licenseNo )">
+				AND LICENSE_NO = #{licenseNo}
+			</if>
+			<if
+				test="@org.apache.ibatis.util.Ognl@isNotEmpty( materialStatus )">
+				AND MATERIAL_STATUS = #{materialStatus}
+			</if>
+		</where>
+	</sql>
+
+	<resultMap id="Extend_ResultMap"
+		type="com.otec.foodsafety.entity.enterprise.EnterpriseMaterialExt"
+		extends="result_ResultMap_EnterpriseMaterial">
+		<result property="changeId" column="CHANGE_ID" />
+		<result property="verifyStatus" column="VERIFY_STATUS" />
+		<result property="changeType" column="CHANGE_TYPE" />
+		<result property="changeReason" column="CHANGE_REASON" />
+
+	</resultMap>
+
+	<select id="countEnterpriseMaterialByCondition"
+		resultType="java.lang.Integer" parameterType="java.util.HashMap">
+		select count(1) from (
+		<include refid="findEnterpriseMaterialSql"></include>
+		) T
+	</select>
+
+	<select id="findEnterpriseMaterialByCondition"
+		resultMap="Extend_ResultMap" parameterType="java.util.HashMap">
+		<include refid="findEnterpriseMaterialSql" />
+	</select>
+
+	<sql id="findEnterpriseMaterialSql">
+		SELECT * FROM V_ENTERPRISE_MATERIAL
+		<include refid="Example_Where_Clause"></include>
+	</sql>
+</mapper>

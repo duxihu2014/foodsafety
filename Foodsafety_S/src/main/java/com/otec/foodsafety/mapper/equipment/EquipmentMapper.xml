@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.otec.foodsafety.mapper.equipment.EquipmentMapper">
+
+	<sql id="Example_Where_Clause" >
+		<where>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( equipmentId )">
+				  AND EQUIPMENT_ID = #{equipmentId}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( equipmentNo )">
+				  AND EQUIPMENT_NO = #{equipmentNo}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( equipmentNoLike )">
+				  AND EQUIPMENT_NO LIKE '%${equipmentNoLike}%'
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( equipmentName )">
+				  AND EQUIPMENT_NAME = #{equipmentName}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( equipmentNameLike )">
+				AND EQUIPMENT_NAME LIKE '%${equipmentNameLike}%'
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( equipmentDescribe )">
+				  AND EQUIPMENT_DESCRIBE = #{equipmentDescribe}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( equipmentType )">
+				  AND EQUIPMENT_TYPE = #{equipmentType}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( videoUrlHigh )">
+				  AND VIDEO_URL_HIGH = #{videoUrlHigh}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( videoUrlCentre )">
+				  AND VIDEO_URL_CENTRE = #{videoUrlCentre}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( videoUrlLow )">
+				  AND VIDEO_URL_LOW = #{videoUrlLow}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( cloudControlUrl )">
+				  AND CLOUD_CONTROL_URL = #{cloudControlUrl}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( videotapeUrl )">
+				  AND VIDEOTAPE_URL = #{videotapeUrl}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( controltId )">
+				  AND CONTROLT_ID = #{controltId}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( namagerUrl )">
+				  AND NAMAGER_URL = #{namagerUrl}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( equModelId )">
+				  AND EQU_MODEL_ID = #{equModelId}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( status )">
+				  AND STATUS = #{status}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( installTime )">
+				  AND INSTALL_TIME = #{installTime}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( createTime )">
+				  AND CREATE_TIME = #{createTime}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( createOpId )">
+				  AND CREATE_OP_ID = #{createOpId}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( modifyTime )">
+				  AND MODIFY_TIME = #{modifyTime}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( modifyOpId )">
+				  AND MODIFY_OP_ID = #{modifyOpId}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( cameraType )">
+				  AND CAMERA_TYPE = #{cameraType}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( equipmentStatus )">
+				  AND EQUIPMENT_STATUS = #{equipmentStatus}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( imgUrl )">
+				  AND IMG_URL = #{imgUrl}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( specialStatus )">
+				  AND SPECIAL_STATUS = #{specialStatus}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( lon )">
+				  AND LON = #{lon}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( lat )">
+				  AND LAT = #{lat}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( areaCode2 )">
+				  AND AREA_CODE2 = #{areaCode2}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( areaCode1 )">
+				  AND AREA_CODE1 = #{areaCode1}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( areaCode3 )">
+				  AND AREA_CODE3 = #{areaCode3}
+			</if>
+            <if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( enterpriseGroupId )">
+                AND ENTERPRISE_GROUP_ID = #{enterpriseGroupId}
+            </if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( enterpriseId )">
+				AND t3.ENTERPRISE_ID = #{enterpriseId}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( areaId )">
+				AND t3.AREA_ID = #{areaId}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( gridId )">
+				AND t4.GRID_ID = #{gridId}
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( extendSql )">
+				${extendSql}
+			</if>
+		</where>
+	</sql>
+
+	<select id="countNOBindCameraByCondition"
+		resultType="java.lang.Integer" parameterType="java.util.HashMap">
+		select count(1) from (
+		<include refid="findNoBindCameraSql"></include>
+		) T
+	</select>
+
+	<select id="findNOBindCameraByCondition"
+		resultMap="result_ResultMap_Equipment" parameterType="java.util.HashMap">
+		<include refid="findNoBindCameraSql" />
+	</select>
+
+	<sql id="findNoBindCameraSql">
+		select * from T_EQUIPMENT  t1
+		where t1.EQUIPMENT_ID not in (select EQUIPMENT_ID from T_EQUIPMENT_AUDIO where STATUS =1)	
+		 <if test="@org.apache.ibatis.util.Ognl@isNotEmpty( status )">
+				AND t1.STATUS = #{status} 
+		 </if>	
+		 <if test="@org.apache.ibatis.util.Ognl@isNotEmpty( enterpriseId )">
+				AND t1.ENTERPRISE_ID = #{enterpriseId}
+		 </if>	
+		 <if test="@org.apache.ibatis.util.Ognl@isNotEmpty( equipmentNoLike )">
+				AND t1.EQUIPMENT_NO like '%${equipmentNoLike}%'
+		 </if>			 
+	</sql>
+
+	<select id="getGroupTree" parameterType="java.util.Map"
+			resultType="java.util.Map">
+		SELECT T.ENTERPRISE_ID pid, T.ENTERPRISE_NAME pname, T2.ENTERPRISE_GROUP_ID id, T2.ENTERPRISE_GROUP_NAME name FROM T_ENTERPRISE_BASE T
+		LEFT JOIN T_ENTERPRISE_GROUP T2 ON T.ENTERPRISE_ID = T2.ENTERPRISE_ID
+		where 1 = 1
+		<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( compId )">
+			and T.ENTERPRISE_ID = #{compId}
+		</if>
+	</select>
+
+	<resultMap id="extend_ResultMap"
+			   type="com.otec.foodsafety.entity.equipment.Equipment" extends="result_ResultMap_Equipment">
+		<result property="enterpriseName" column="ENTERPRISE_NAME" />
+		<result property="enterpriseGroupName" column="ENTERPRISE_GROUP_NAME" />
+		<result property="contacts" column="CONTACTS" />
+		<result property="contactNumber" column="CONTACT_NUMBER" />
+		<result property="audioId" column="AUDIO_ID" />
+		<result property="audioName" column="AUDIO_NAME" />
+		<result property="equModel" column="EQU_MODEL" />
+
+	</resultMap>
+
+	<select id="countEquipmentByCondition" parameterType="java.util.Map"
+			resultType="int">
+		select count(1) from (
+		<include refid="findEquipmentSql"></include>
+		) a
+	</select>
+
+	<select id="findEquipmentByCondition" parameterType="java.util.Map"
+			resultMap="extend_ResultMap">
+		<include refid="findEquipmentSql"></include>
+		ORDER BY CREATE_TIME
+	</select>
+
+	<!-- 查询设备信息 -->
+	<sql id="findEquipmentSql">
+		SELECT V_EQUIPMENT.* FROM V_EQUIPMENT
+		left join T_ENTERPRISE_BASE t3
+		on V_EQUIPMENT.ENTERPRISE_ID=t3.ENTERPRISE_ID
+		left join T_ENTERPRISE_SUPERVISION t4
+		on V_EQUIPMENT.ENTERPRISE_ID=t4.ENTERPRISE_ID
+		<include refid="Example_Where_Clause"/>
+	</sql>
+</mapper>

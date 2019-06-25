@@ -1,0 +1,60 @@
+.fieldset{
+  margin-bottom: 10px;
+  padding: 0;
+  border: 1px solid #e2e2e2;
+  min-height: 80px;
+}
+
+.legend{
+  margin-left: 20px;
+  padding: 0 10px;
+  font-weight: 300;
+  color: #bbbbbb;
+  font-size: 15px;
+}
+
+.field-box{
+  padding: 5px 0 0 20px;
+}
+
+
+.filter-item{
+  margin-left:15px;
+}
+
+
+.head-box{
+  position: relative;
+  height: 35px;
+  border-top: 1px solid #dfe6ec;
+  border-left: 1px solid #dfe6ec;
+  border-right: 1px solid #dfe6ec;
+  font-size: 14px;
+  color: #1f2d3d;
+}
+
+
+.item-box{
+  position: absolute;
+  right: 15px;
+}
+
+.head-item{
+  line-height: 25px;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.menu-icon{
+  display: inline-block;
+  font-size: 20px;
+  margin: 0 5px 0 0;
+  color: #324157;
+}
+.vam{
+  vertical-align: middle;
+}
+.mg-r-15{
+  margin-right: 15px;
+}
+
