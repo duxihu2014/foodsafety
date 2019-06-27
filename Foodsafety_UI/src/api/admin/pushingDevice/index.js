@@ -15,6 +15,7 @@ export function page(query) {
 /**
  * 通过地区ID获取该设备类型的数据
  * **/
+
 export function getEquipmentModel(id) {
   return fetch({
     url: '/api/admin/equipmentModel/' + id,
