@@ -1,30 +1,5 @@
 package com.otec.foodsafety.web.equipment;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.shiro.SecurityUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.cykj.grcloud.entity.page.GridDataModel;
 import com.cykj.grcloud.entity.page.PageObject;
 import com.otec.foodsafety.entity.equipment.EquipmentModel;
@@ -37,6 +12,11 @@ import com.otec.foodsafety.service.equipment.VenderService;
 import com.otec.foodsafety.util.vo.ComboData;
 import com.otec.foodsafety.util.vo.FrontUser;
 import com.otec.foodsafety.web.VueBaseController;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.*;
 
 /**
  * 设备型号controller
@@ -75,12 +55,11 @@ public class AdminEquModelController extends
 	@ResponseBody
 	public GridDataModel list(@RequestParam Map<String, String> params ) {
 		// 查询列表数据
-		
+
 		PageObject po = getPageObject(params);
 		po.getCondition().putAll(params);
 		GridDataModel model = equipmentModelService.getGridDataModelByCondition(po);
 		return model;
-
 	}
 	
 	@RequestMapping(value = "/getVenderMap", method = RequestMethod.GET)
@@ -97,7 +76,8 @@ public class AdminEquModelController extends
 		verderDict.put("厂商", lst);
 		return verderDict;
 	}
-	
+
+	//禁用
 	@RequestMapping(value = "all/{ids}", method = RequestMethod.DELETE)
 	public ObjectRestResponse<EquipmentModel> removeByIds(@PathVariable String ids) {
 		try {
@@ -137,7 +117,7 @@ public class AdminEquModelController extends
 	}
 	
 	
-	
+	//恢复接口
 	@RequestMapping(value = "revocer/{ids}", method = RequestMethod.PUT)
 	@ResponseBody
 	public ObjectRestResponse<EquipmentModel> recover(@PathVariable String  ids) {
