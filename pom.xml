@@ -62,7 +62,6 @@
             <url>http://192.168.1.151:8282/repository/</url>
         </repository>
         -->
-
         <repository>
             <id>maven-ali</id>
             <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
