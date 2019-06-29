@@ -22,7 +22,6 @@ public class EquipmentPushflowInfo implements Serializable{
 	private String name;
 
 
-
 	private Integer status;
 
 

@@ -12,8 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 推流设备信息
@@ -104,16 +103,47 @@ public class AdminEquPushFlowInfoController extends
 		}
 	}
 
+
+	@RequestMapping(value = "/{id}", method = RequestMethod.PUT)
+	@ResponseBody
+	public ObjectRestResponse<EquipmentPushflowInfo> update(@RequestBody EquipmentPushflowInfo equipmentPushflowInfo) {
+		String token = request.getHeader("access-token");
+		FrontUser userInfo = authService.getUserInfo(token);
+		equipmentPushflowInfo.setOperator(userInfo.getUserName());
+		EquipmentPushflowInfo myEquipmentPushflowInfo = equipmentPushflowInfoService.findById(equipmentPushflowInfo.getId());
+		equipmentPushflowInfo.setCreateTime(myEquipmentPushflowInfo.getCreateTime());
+		equipmentPushflowInfoService.updateById(preHandler(equipmentPushflowInfo));
+		return new ObjectRestResponse<EquipmentPushflowInfo>().rel(true);
+	}
+
 	//新增
 	@RequestMapping(value = "", method = RequestMethod.POST)
 	@ResponseBody
 	public ObjectRestResponse<EquipmentPushflowInfo> add(@RequestBody EquipmentPushflowInfo equipmentPushflowInfo) {
 		String token=request.getHeader("access-token");
-		FrontUser userInfo = authService.getUserInfo(token);	
-		//equipmentPushflowInfo.setCreateOpId(Long.valueOf(userInfo.userId.toString()));
+		FrontUser userInfo = authService.getUserInfo(token);
+		equipmentPushflowInfo.setOperator(userInfo.getUserName());
 		equipmentPushflowInfo.setCreateTime(new Date());
 		equipmentPushflowInfoService.persist(equipmentPushflowInfo);
 		return new ObjectRestResponse<EquipmentPushflowInfo>().rel(true);
+	}
+
+
+	@RequestMapping(value = "/getEquipmentPushflowInfoMap", method = RequestMethod.GET)
+	public ObjectRestResponse<Map<String, Object>> getModelMap() {
+
+		Map<String, Object> map2 = new HashMap<String, Object>();
+		//String extendSql = "and user_status = 1 ";
+		map2.put("status", "1");
+		List<EquipmentPushflowInfo> datas = equipmentPushflowInfoService.findEntitysByCondition(map2);
+		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>(datas.size());
+		for (EquipmentPushflowInfo item : datas) {
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("value", item.getId());
+			map.put("text", String.valueOf(item.getName()));
+			list.add(map);
+		}
+		return new ObjectRestResponse<List<Map<String, Object>>>().rel(true).data(list);
 	}
 
 }
