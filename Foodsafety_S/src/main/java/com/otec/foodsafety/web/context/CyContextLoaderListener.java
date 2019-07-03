@@ -29,7 +29,7 @@ public class CyContextLoaderListener extends ContextLoaderListener implements Se
 	 
 	public void contextInitialized(ServletContextEvent event) {
 		super.contextInitialized(event);
-		
+
 		ServletContext sc = event.getServletContext();
 		ApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(sc);
 		SqlSessionFactory factory = context.getBean(SqlSessionFactory.class);
