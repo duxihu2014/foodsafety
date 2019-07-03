@@ -1,32 +1,26 @@
 package com.otec.foodsafety.web.alarm;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import com.otec.foodsafety.entity.enterprise.EnterpriseBaseChange;
+import com.cykj.grcloud.entity.page.GridDataModel;
+import com.cykj.grcloud.entity.page.PageObject;
+import com.google.common.collect.Maps;
+import com.otec.foodsafety.entity.alarm.Alarm;
+import com.otec.foodsafety.entity.jwt.AuthService;
 import com.otec.foodsafety.entity.jwt.ObjectRestResponse;
+import com.otec.foodsafety.service.alarm.AlarmService;
+import com.otec.foodsafety.service.system.SysAreaService;
 import com.otec.foodsafety.service.util.DateLocalService;
+import com.otec.foodsafety.util.vo.FrontUser;
+import com.otec.foodsafety.web.VueBaseController;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import com.cykj.grcloud.entity.page.GridDataModel;
-import com.cykj.grcloud.entity.page.PageObject;
-import com.google.common.collect.Maps;
-import com.otec.foodsafety.entity.alarm.Alarm;
-import com.otec.foodsafety.entity.enterprise.EnterpriseBase;
-import com.otec.foodsafety.entity.jwt.AuthService;
-import com.otec.foodsafety.entity.supervisory.PersonnelThree;
-import com.otec.foodsafety.entity.system.SysUser;
-import com.otec.foodsafety.service.alarm.AlarmService;
-import com.otec.foodsafety.service.enterprise.EnterpriseService;
-import com.otec.foodsafety.service.system.SysAreaService;
-import com.otec.foodsafety.util.vo.FrontUser;
-import com.otec.foodsafety.web.VueBaseController;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -128,5 +122,24 @@ public class AdminAlertController extends VueBaseController<AlarmService, Alarm,
 	 	alarmService.updateById(alarm);
 		return new ObjectRestResponse<>().rel(true);
 	}
+
+
+	/**
+	 * 公共方法，根据主键查询实体
+	 *
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
+	@ResponseBody
+	public ObjectRestResponse<Alarm> get(@PathVariable Long id) {
+
+		Alarm alarm = alarmService.findById(id);
+		alarm.setVideoUrl("http://101.132.144.237:8080/event_video/"+alarm.getVideoUrl());
+		return new ObjectRestResponse<Alarm>().rel(true)
+				.data(alarm);
+	}
+
+
 	
 }
