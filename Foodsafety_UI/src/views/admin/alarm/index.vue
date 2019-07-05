@@ -254,18 +254,19 @@ export default {
     handleView(row) {
       this.dialogFormVisible = true;
       getAlertObj(row.id).then(response => {
-        this.alarmEvent.id = row.id;
-        this.alarmEvent.indexCode = row.indexCode;
-        this.alarmEvent.alarmSource = row.alarmSource;
-        this.alarmEvent.eventId = row.eventId;
+        let alarmData = response.dara;
+        this.alarmEvent.id = alarmData.id;
+        this.alarmEvent.indexCode = alarmData.indexCode;
+        this.alarmEvent.alarmSource = alarmData.alarmSource;
+        this.alarmEvent.eventId = alarmData.eventId;
         this.alarmEvent.alarmType = parseValueToText(
-          row.eventId,
+          alarmData.eventId,
           this.staticData["报警类型"]
         ); //报警类型
-        this.alarmEvent.content = row.content;
-        this.alarmEvent.equName = row.equName;
-        this.alarmEvent.enterpriseName = row.enterpriseName;
-        this.alarmEvent.alarmTime = row.alarmTime;
+        this.alarmEvent.content = alarmData.content;
+        this.alarmEvent.equName = alarmData.equName;
+        this.alarmEvent.enterpriseName = alarmData.enterpriseName;
+        this.alarmEvent.alarmTime = alarmData.alarmTime;
         if (
           this.alarmEvent.eventId == "10001" ||
           this.alarmEvent.eventId == "10002"
@@ -275,8 +276,8 @@ export default {
           this.alarmEvent.sensorAlarmType = "sd";
         }
         if (this.tabPosition == "first") {
-          this.alarmEvent.imgUrl = row.imgUrl;
-          this.alarmEvent.videoUrl = row.videoUrl;
+          this.alarmEvent.imgUrl = alarmData.imgUrl;
+          this.alarmEvent.videoUrl = alarmData.videoUrl;
         }
         this.$nextTick(() => {
           this.$refs["alarmDiv"].initAlarm(this.alarmEvent);
