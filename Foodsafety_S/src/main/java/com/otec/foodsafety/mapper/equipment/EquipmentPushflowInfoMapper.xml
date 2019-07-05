@@ -12,7 +12,10 @@
                 AND device_id = #{deviceId}
             </if>
             <if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( name )">
-                AND name = #{name}
+                AND name like  '%${name}%'
+            </if>
+            <if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( status )">
+                AND status = #{status}
             </if>
 
         </where>

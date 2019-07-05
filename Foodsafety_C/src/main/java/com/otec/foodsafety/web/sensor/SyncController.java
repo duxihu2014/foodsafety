@@ -13,7 +13,6 @@ import com.otec.foodsafety.service.alarm.AlarmService;
 import com.otec.foodsafety.service.sensor.SensorInfoService;
 import com.otec.foodsafety.service.sensor.SensorMonitorService;
 import com.otec.foodsafety.service.system.SysDictService;
-import com.otec.foodsafety.util.DateUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -27,7 +26,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -73,7 +71,7 @@ public class SyncController {
             sensorMonitor.setLat(jsonObject.getString("lat"));
             sensorMonitor.setLon(jsonObject.getString("lon"));
 
-            Map<String, String> eventMap = sysDictService.getDetailValueMap("报警类型");
+            Map<String, String> eventMap = sysDictService.getDetailValueMap("IOT报警类型");
 //            System.out.println(eventMap);{温度低=10002, 温度高=10001, 湿度低=10004, 湿度高=10003}
             Map<String, Object> map = Maps.newHashMap();
             int alarmType = 0;

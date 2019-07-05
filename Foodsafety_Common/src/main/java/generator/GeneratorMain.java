@@ -23,21 +23,21 @@ public class GeneratorMain
 //        ServiceGenerator.generator("com.rwzx.governance", "organization", "t_trade_type", "t_society_economy_organization");
 //        ModuleGenerator.generator("com.rwzx.governance", "rectification",  "T_RECTIFICATION");
 // 连接，数据库名   ，  包名  ，模块名，  表名
-        EntityGenerator.generator(con,"Intelligent_Foodsafety", "com.otec.foodsafety", "collect",  "T_ALARM_TOTAL");
-//        generatorAll("com.rwzx.governance", "count",  "t_count");
+        EntityGenerator.generator(con,"Intelligent_Foodsafety", "com.otec.foodsafety", "equipment",  "T_EQUIPMENT_PUSHFLOW_INFO_TEST");
+       // generatorAll("com.otec.foodsafety", "count",  "t_count");
     }
 
     private static void generatorAll(String mainPackage, String module, String...tables){
-        EntityGenerator.generator(remote(), "Intelligent_Foodsafety", mainPackage, module,  tables);
-//        MapperGenerator.generator(mainPackage, module,  tables);
-//        ServiceGenerator.generator(mainPackage, module,  tables);
-//        ModuleGenerator.generator(mainPackage, module,  tables);
+        //EntityGenerator.generator(remote(), "Intelligent_Foodsafety", mainPackage, module,  tables);
+        //MapperGenerator.generator(mainPackage, module,  tables);
+        //ServiceGenerator.generator(mainPackage, module,  tables);
+        //ModuleGenerator.generator(mainPackage, module,  tables);
     }
 
     private static Connection local(){
-        String url = "jdbc:mysql://localhost:3306/test" ;
+        String url = "jdbc:mysql://106.75.119.205:3306/Intelligent_Foodsafety" ;
         String username = "root" ;
-        String password = "root" ;
+        String password = "otecgsgd2016" ;
         Connection con = null;
         try{
             con = DriverManager.getConnection(url , username , password ) ;
