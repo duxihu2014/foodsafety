@@ -51,7 +51,7 @@
       <el-table-column width="100px" align="center" label="负责人" prop="leader">
 
       </el-table-column>
-      <el-table-column width="200px" align="center" label="身份证号" prop="idCardNo">
+      <el-table-column width="200px" align="center" label="证件号码" prop="idCardNo">
 
       </el-table-column>
       <el-table-column width="150px" align="center" label="身份证照片" prop="idCardPhoto">
@@ -180,7 +180,7 @@
               </el-row>
               <el-row>
                 <el-col :span="12">
-                  <el-form-item label="身份证号" prop="idCardNo" ref="idCardNo" tab="1">
+                  <el-form-item label="证件号码" prop="idCardNo" ref="idCardNo" tab="1">
                     <el-input v-model.trim="form.idCardNo" placeholder="" :clearable="true" :readonly="!supplierManager_update"></el-input>
                   </el-form-item>
                 </el-col>

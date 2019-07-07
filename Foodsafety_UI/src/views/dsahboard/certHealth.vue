@@ -1,79 +1,42 @@
 <template>
-  <div class="app-container calendar-list-container">
-
-    <fieldset class="fieldset">
-      <legend class="legend">查询条件</legend>
-      <div class="field-box">
-        <el-form :inline="true" :model="listQuery">
-            <el-form-item label="姓名"  class="filter-item">
-              <el-input @keyup.enter.native="handleFilter" style="width: 200px;" placeholder="" v-model.trim="listQuery.staffName"> </el-input>
-            </el-form-item>
-
-          <el-form-item label="证件号码"  class="filter-item">
-            <el-input @keyup.enter.native="handleFilter" style="width: 200px;" placeholder="" v-model.trim="listQuery.idCardNo"> </el-input>
-          </el-form-item>
-
-          <el-form-item label="状态"  class="filter-item">
-                <el-select  v-model="listQuery.validStatus" placeholder="请选择" clearable>
-                <el-option v-for="item in  statusOptions" :key="item.value" :label="item.text" :value="item.value"> </el-option>
-              </el-select>
-          </el-form-item>
-
-           <el-form-item class="filter-item">
-              <el-button type="primary" v-waves  @click="handleFilter">搜索</el-button>
-              <el-button  v-waves  @click="resetQuery()">重置</el-button>
-           </el-form-item>
-        </el-form>
-    </div>
-     </fieldset>
-
-    <el-table   :data="list" v-loading.body="listLoading" border  highlight-current-row style="width: 100%" @selection-change="getSelection"  :row-class-name="tableRowClassName" :height="height"	>
+  <div >
+    <el-table :data="list" v-loading.body="listLoading" border  highlight-current-row style="width: 100%"   :row-class-name="tableRowClassName" height="60vh"	>
       <el-table-column  type="selection"  width="55"></el-table-column>
-      <el-table-column align="center" label="员工编号" width="150" prop="staffId" ></el-table-column>
-      <el-table-column align="center" label="姓名" width="150" prop="staffName" ></el-table-column>
+      <el-table-column align="center" label="员工编号" width="150" prop="staffId"></el-table-column>
+      <el-table-column align="center" label="企业名称" width="250" prop="enterpriseName"></el-table-column>
+      <el-table-column align="center" label="姓名" width="150" prop="staffName"></el-table-column>
       <el-table-column align="center" label="证件号码" width="200" prop="idCardNo" ></el-table-column>
       <el-table-column align="center" label="所属部门" width="150" prop="department" ></el-table-column>
-      <el-table-column align="center" label="工号" width="150" prop="employeeNumber" ></el-table-column>
       <el-table-column align="center" label="健康证号" width="150" prop="certificateNumber" ></el-table-column>
-      <el-table-column align="center" label="有效截至日期" width="200" prop="validDate" >
+      <el-table-column align="center" label="有效截至日期" width="180" prop="validDate" >
         <template slot-scope="scope">
           <span style="margin-left: 10px">{{ scope.row.validDate }}</span>
           <el-tag size="mini" :type="getValidDateType(scope.row.validStatus)" prop="validDate"  v-show="scope.row.validStatus!=1">{{statusFormatter(scope.row.validStatus)}}</el-tag>
         </template>
       </el-table-column>
-
-      <el-table-column  align="center" fixed="right" label="操作" width="250"  v-if="needFixedRight" >
+      <el-table-column  align="center" fixed="right" label="操作" width="100"  v-if="needFixedRight" >
         <template slot-scope="scope">
           <el-button size="mini" type="primary" @click="handleView(scope.row)">查看</el-button>
-          <el-button size="mini" type="success"  @click="handleUpdate(scope.row)" v-if="scope.row.validStatus!=3">编辑</el-button>
-          <el-button size="mini" type="danger"  @click="handleCreate(scope.row)" v-if="scope.row.validStatus!=1">更换</el-button>
-        </template>
-      </el-table-column>
-      <el-table-column  align="center"   label="操作" width="250"  v-else>
-        <template slot-scope="scope">
-         <el-button size="mini" type="primary"  @click="handleView(scope.row)">查看</el-button>
-          <el-button size="mini" type="success"  @click="handleUpdate(scope.row)" v-if="scope.row.validStatus!=3">编辑</el-button>
-          <el-button size="mini" type="danger"  @click="handleCreate(scope.row)" v-if="scope.row.validStatus!=1">更换</el-button>
          </template>
       </el-table-column>
+      <el-table-column  align="center"   label="操作" width="100"  v-else>
+        <template slot-scope="scope">
+         <el-button size="mini" type="primary"  @click="handleView(scope.row)">查看</el-button>
+          </template>
+      </el-table-column>
+
     </el-table>
     <div v-show="!listLoading" class="pagination-container" >
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page" :page-sizes="[10,20,30, 50]" :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"> </el-pagination>
     </div>
 
-    <el-dialog  :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" @close="closeDialog" :close-on-click-modal="false">
+    <el-dialog  title="查看" :visible.sync="dialogFormVisible" :close-on-click-modal="false" append-to-body>
       <div slot="title">
-        <template v-if="textMap[dialogStatus] === '创建'">
-          <i class="el-icon-document"> {{textMap[dialogStatus]}}</i>
-        </template>
-        <template v-else-if="textMap[dialogStatus] === '编辑'">
-          <i class="el-icon-edit"> {{textMap[dialogStatus]}}</i>
-        </template>
-        <template v-else="textMap[dialogStatus] === '查看'">
-          <i class="el-icon-view"> {{textMap[dialogStatus]}}</i>
+        <template >
+          <i class="el-icon-view"> 查看</i>
         </template>
       </div>
-      <el-form :model="form" :rules="rules" ref="form" label-width="120px">
+      <el-form :model="form"   ref="form" label-width="120px">
         <el-tabs >
           <el-tab-pane label="健康证信息">
             <el-row>
@@ -131,8 +94,6 @@
                       list-type="picture-card"
                       :file-list="listFile"
                       :on-preview="handlePictureCardPreview"
-                      :on-remove="handleImageRemove"
-                      :on-change="addImgFile"
                       :limit="1"
                       :auto-upload="false">
                       <i class="el-icon-plus"></i>
@@ -144,16 +105,11 @@
           </el-tab-pane>
         </el-tabs>
       </el-form>
-      <div slot="footer" class="dialog-footer" v-if="manager_update">
-        <el-button @click="cancel()">取 消</el-button>
-        <el-button v-if="dialogStatus=='create'" type="primary" @click="create('form')">确 定</el-button>
-        <el-button v-else type="primary" @click="update('form')">确 定</el-button>
-      </div>
     </el-dialog>
+
     <el-dialog  :visible.sync="dialogImageVisible" size="tiny" :close-on-click-modal="false" append-to-body>
       <img width="100%" :src="dialogImageUrl" alt="">
     </el-dialog>
-
   </div>
 </template>
 
@@ -162,21 +118,13 @@
   import { page, add,update, getObj} from "api/admin/staff/certificate/index";
   import { parseValueToText } from "utils/index";
   import { mapGetters } from "vuex";
-  import { loadGridHeight } from "api/screen";
   import {getToken} from 'utils/auth';
 
   export default {
-        name: "index",
-        data(){
-          const fileValidator =(rule, value, callback) =>{
-            if(this.listFile.length<1){
-              callback(new Error('请选择健康证照片'));
-            }else{
-              callback();
-            }
-          };
+    name: "health",
+    props: ["gridId"],
+    data(){
           return{
-            height:undefined,
             list: null,
             total: null,
             listLoading: false,
@@ -185,20 +133,16 @@
               limit: 20,
               staffName: "",
               idCardNo: "",
-              validStatus:""
+              validStatus:"4",
+              areaId: undefined,
+              gridId: undefined,
+              enterpriseId: undefined
             },
             form: {
               staffId:undefined,
               imageFile:undefined
             },
-            rules: {
-                certificateNumber: [{required: true, message: "请输入健康证号", trigger: "blur"}],
-                examinationDate: [{required: true, message: "请输入体检时间", trigger: "blur"}],
-                validDate: [{required: true, message: "请输入有效截至日期", trigger: "blur"}],
-                issuingDate: [{required: true, message: "请输入发证日期", trigger: "blur"}],
-                issuingUnit: [{required: true, message: "请输入发证单位", trigger: "blur"}],
-                imageFile: [{required: true,validator:fileValidator,message: "请选择健康证照片", trigger: "blur"} ]
-            },
+
             dialogFormVisible: false,
             viewReadOnly:false, //控制查看时的按钮显示
             dialogStatus: "",
@@ -242,7 +186,6 @@
           let tableDiv=  this.$el.querySelector('.el-table__body-wrapper');
           this.needFixedRight =!($(tableDiv).attr("class").indexOf("is-scrolling-none")>=0);
         }
-        this.height=loadGridHeight();
       },
       computed: {
         ...mapGetters(["staticData","user"]),
@@ -258,9 +201,17 @@
         workTypeOptions(){
           return this.staticData["行业工种"];
         }
-
       },
       methods: {
+        setAreaId(data){
+          this.listQuery.areaId = data;
+        },
+        setGridId(data){
+          this.listQuery.gridId = data;
+        },
+        setEnterpriseId(data){
+          this.listQuery.enterpriseId = data;
+        },
         imageClick(){
           this.dialogVisible=true;
           this.dialogImageUrl=this.imageUrl;
@@ -283,16 +234,13 @@
         },
         getList() {
           this.listLoading = true;
+          this.listQuery.gridId=this.gridId;
           page(this.listQuery).then(response => {
             this.list = response.rows;
             this.total = response.total;
             this.listLoading = false;
           });
 
-        },
-        handleFilter() {
-          this.listQuery.page=1;
-          this.getList();
         },
         handleSizeChange(val) {
           this.listQuery.limit = val;
@@ -301,77 +249,6 @@
         handleCurrentChange(val) {
           this.listQuery.page = val;
           this.getList();
-        },
-        resetQuery() {
-          this.listQuery.staffName="";
-          this.listQuery.idCardNo = "";
-          this.listQuery.validStatus="";
-        },
-
-        create(formName) {
-          const set = this.$refs;
-          set[formName].validate((valid,errors) => {
-            if (valid) {
-              // console.log(this.form)
-
-              let param = new FormData();
-              if(this.form.imageFile){
-                  param.append("imageFile", this.form.imageFile);
-              }
-              for(let item in this.form){
-                if(this.form.hasOwnProperty(item) && item !== 'imageFile'){
-                  if(this.form[item])
-                    param.append(item, this.form[item]);
-                }
-              }
-              param.append("enterpriseId",this.user.enterpriseId);
-               add(param).then(() => {
-                this.dialogFormVisible = false;
-                this.getList();
-                this.$message({
-                  showClose: true,
-                  message: "创建成功",
-                  type: "success",
-                  duration: 2000
-                });
-              });
-            } else {
-              return false;
-            }
-          });
-        },
-        cancel() {
-          this.dialogFormVisible = false;
-          this.resetTmp();
-        },
-        update(formName) {
-          const set = this.$refs;
-          set[formName].validate((valid,errors) => {
-            if (valid) {
-               let param = new FormData();
-              if(this.form.imageFile){
-                param.append("imageFile", this.form.imageFile);
-              }
-              for(let item in this.form){
-                if(this.form.hasOwnProperty(item) && item !== 'imageFile'){
-                  if(this.form[item])
-                    param.append(item, this.form[item]);
-                }
-              }
-               update(param).then(() => {
-                this.dialogFormVisible = false;
-                this.getList();
-                this.$message({
-                  showClose: true,
-                  message: "更新成功",
-                  type: "success",
-                  duration: 2000
-                });
-              });
-            } else {
-              return false;
-            }
-          });
         },
         handleView(row) {
           getObj(row.staffId).then(response => {
@@ -390,82 +267,16 @@
           });
 
         },
-        handleUpdate(row) {
-          getObj(row.staffId).then(response => {
-            this.manager_update = true;
-            this.form = response.data;
-            if(response.data.certificatePhoto) {
-              this.listFile.push({"url":this.serverImageUrl+'/'+response.data.resourcePath});
-              this.$nextTick(function () {
-                $(".el-upload--picture-card:eq(0)").hide();
-              });
-            }
-            this.viewReadOnly=false;
-            this.dialogFormVisible = true;
-            this.dialogStatus = "update";
-          });
-        },
-        handleCreate(row) {
-          this.form.staffName=row.staffName;
-          this.form.employeeNumber=row.employeeNumber;
-          this.manager_update = true;
-          this.dialogStatus = "create";
-          this.viewReadOnly=false;
-          this.dialogFormVisible = true;
-          this.form.staffId=row.staffId;
-
-        },
-        //关闭弹出框时，清除表单验证，并且设置表单元素为空
-        closeDialog(){
-          this.resetTmp();
-          this.tabPosition='0';
-        },
         statusFormatter( cellValue) {
           return parseValueToText(cellValue, this.statusOptions);
         },
         sexFormatter(row, column, cellValue) {
           return parseValueToText(cellValue, this.sexOptions);
         },
-        resetTmp() {
-          if (this.$refs["form"]) {
-            this.$refs["form"].resetFields();
-            this.form={ staffId:undefined, imageFile:undefined};
-            this.dialogImageUrl="";
-            this.listFile=[];
-            $(".el-upload--picture-card:eq(0)").show();
-            $(".el-icon-delete:eq(0)").show();
-          }
-        },
-        getSelection(selection) {
-          this.selection = selection;
-        },
-        //删除图片
-        handleImageRemove(file){
-          this.listFile=[];
-          if( this.listFile.length==0){
-            $(".el-upload--picture-card:eq(0)").show();
-          }
-        },
         // 点击"+"图标时显示弹出框
         handlePictureCardPreview(file) {
           this.dialogImageUrl = file.url;
           this.dialogImageVisible = true;
-        },
-        addImgFile(file) { // 添加图片回调
-          if(this.fileFormat.indexOf(file.raw.type) < 0 ){
-            this.$message({
-              type:'error',
-              showClose: true,
-              message: '只支持".jpg、.png、.bmp、.gif"格式的图片。'
-            });
-            return false;
-          }
-          this.$refs["imageFile"].resetField();//当添加图片后，重置图片验证功能。
-          this.listFile.push(file);
-          this.form.imageFile=file.raw;
-          if( this.listFile.length>0){
-            $(".el-upload--picture-card:eq(0)").hide();
-          }
         }
       }
     }

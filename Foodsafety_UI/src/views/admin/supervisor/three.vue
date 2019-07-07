@@ -9,7 +9,7 @@
             <el-input @keyup.enter.native="handleFilter" style="width: 200px;" placeholder="" v-model.trim="listQuery.personnelName"> </el-input>
           </el-form-item>
 
-          <el-form-item label="身份证号"  class="filter-item">
+          <el-form-item label="证件号码"  class="filter-item">
             <el-input @keyup.enter.native="handleFilter" style="width: 200px;" placeholder="" v-model.trim="listQuery.idCardNo"> </el-input>
           </el-form-item>
 
@@ -34,7 +34,7 @@
       <el-table-column align="center" label="人员编号" width="80" prop="personnelId"></el-table-column>
       <el-table-column align="center" label="人员姓名" width="150" prop="personnelName"></el-table-column>
       <el-table-column align="center" label="人员类型" width="150" prop="personnelType" :formatter="personnelTypeFormatter"></el-table-column>
-      <el-table-column align="center" label="身份证号" width="200" prop="idCardNo" ></el-table-column>
+      <el-table-column align="center" label="证件号码" width="200" prop="idCardNo" ></el-table-column>
       <el-table-column align="center" label="工作单位" width="200" prop="unit" ></el-table-column>
       <el-table-column align="center" label="人员状态" width="100" prop="personnelStatus" :formatter="personnelStatusFormatter"></el-table-column>
 
@@ -90,7 +90,7 @@
             <el-row>
 
               <el-col :span="12">
-                <el-form-item label="身份证号" prop="idCardNo"  >
+                <el-form-item label="证件号码" prop="idCardNo"  >
                   <el-input   v-model.trim="form.idCardNo"    :readonly="viewReadOnly"></el-input>
                 </el-form-item>
               </el-col>
@@ -154,22 +154,22 @@
     name: "index",
     data(){
        let vaildateIdCard=(rule, idCardNo, callback)=>{
-        //15位和18位身份证号码的基本校验
+        //15位和18位证件号码的基本校验
         if(!idCardNo) callback() ;
         let check = /^\d{15}|(\d{17}(\d|x|X))$/.test(idCardNo);
-        if(!check) return callback(new Error('请输入正确的身份证号码'));
+        if(!check) return callback(new Error('请输入正确的证件号码'));
         //判断长度为15位或18位
         if(idCardNo.length==15){
           if(!idCardNoUtil.check15IdCardNo(idCardNo)){
-            callback(new Error('请输入正确的身份证号码'));
+            callback(new Error('请输入正确的证件号码'));
           }else callback();
 
         }else if(idCardNo.length==18){
           if(!idCardNoUtil.check18IdCardNo(idCardNo))
-            callback(new Error('请输入正确的身份证号码'));
+            callback(new Error('请输入正确的证件号码'));
           else callback();
         }else{
-          callback(new Error('请输入正确的身份证号码'));
+          callback(new Error('请输入正确的证件号码'));
         }
 
       };
@@ -212,7 +212,7 @@
         rules: {
           personnelName: [{required: true, message: "请输入人员姓名", trigger: "blur"}],
           personnelType: [{required: true, message: "请选择人员类型", trigger:  "change"}],
-          idCardNo: [{required: true, message: "请输入身份证号", trigger: "blur"},
+          idCardNo: [{required: true, message: "请输入证件号码", trigger: "blur"},
             { validator: vaildateIdCard, trigger: "blur" }],
           unit: [{required: true, message: "请输入单位", trigger: "blur"}],
           contactNumber: [{required: true, message: "请输入联系电话", trigger: "blur"},

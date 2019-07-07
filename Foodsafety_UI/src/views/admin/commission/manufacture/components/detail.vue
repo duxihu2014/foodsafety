@@ -44,7 +44,7 @@
                         </el-form-item>
                       </el-col>
                       <el-col :span="11">
-                        <el-form-item label="身份证" prop="idCardNo">
+                        <el-form-item label="证件号码" prop="idCardNo">
                           <el-input v-model.trim="clientEnterprise.idCardNo" :clearable="!formEdit1"></el-input>
                         </el-form-item>
                       </el-col>
@@ -187,7 +187,7 @@
                         </el-form-item>
                       </el-col>
                       <el-col :span="11">
-                        <el-form-item label="身份证" prop="idCardNo">
+                        <el-form-item label="证件号码" prop="idCardNo">
                           <el-input v-model.trim="consigneeEnterprise.idCardNo" clearable></el-input>
                         </el-form-item>
                       </el-col>

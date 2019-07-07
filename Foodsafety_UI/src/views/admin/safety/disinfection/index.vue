@@ -56,7 +56,7 @@
       <el-table-column width="100px" align="center" label="负责人" prop="leader">
 
       </el-table-column>
-      <el-table-column width="200px" align="center" label="身份证号" prop="idCardNo">
+      <el-table-column width="200px" align="center" label="证件号码" prop="idCardNo">
 
       </el-table-column>
       <el-table-column width="150px" align="center" label="身份证照片" prop="idCardPhoto">
@@ -197,7 +197,7 @@
               </el-row>
               <el-row>
                 <el-col :span="12">
-                  <el-form-item label="身份证号" prop="idCardNo" ref="idCardNo" tab="1">
+                  <el-form-item label="证件号码" prop="idCardNo" ref="idCardNo" tab="1">
                     <el-input v-model.trim="form.idCardNo" placeholder="" :clearable="true" :readonly="!supplierManager_update"></el-input>
                   </el-form-item>
                 </el-col>
@@ -345,22 +345,22 @@
         }
       };
       const cardNoValidator = (rule, value, callback) => {
-        //15位和18位身份证号码的基本校验
+        //15位和18位证件号码的基本校验
         if(!value) callback() ;
         let check = /^\d{15}|(\d{17}(\d|x|X))$/.test(value);
-        if(!check) return callback(new Error('请输入正确的身份证号码'));
+        if(!check) return callback(new Error('请输入正确的证件号码'));
         //判断长度为15位或18位
         if(value.length==15){
           if(!idCardNoUtil.check15IdCardNo(value)){
-            callback(new Error('请输入正确的身份证号码'));
+            callback(new Error('请输入正确的证件号码'));
           }else callback();
 
         }else if(value.length==18){
           if(!idCardNoUtil.check18IdCardNo(value))
-            callback(new Error('请输入正确的身份证号码'));
+            callback(new Error('请输入正确的证件号码'));
           else callback();
         }else{
-          callback(new Error('请输入正确的身份证号码'));
+          callback(new Error('请输入正确的证件号码'));
         }
       };
       const mobileValidator = (rule, value, callback) => {
@@ -423,7 +423,7 @@
           supplierType: [{required: true, message: "请选择类型", trigger: "change"}],
           leader: [{required: true, message: "请输入负责人", trigger: "blur"},
             {max: 16, message: "长度不能超过16个字符", trigger: "blur"}],
-          idCardNo: [{required: true, message: "请输入身份证号", trigger: "blur"},
+          idCardNo: [{required: true, message: "请输入证件号码", trigger: "blur"},
             {max: 32, message: "长度不能超过32个字符", trigger: "blur"},
             { validator: cardNoValidator, trigger: "blur" }],
           contactNumber: [{required: true, message: "请输入联系电话", trigger: "blur"},

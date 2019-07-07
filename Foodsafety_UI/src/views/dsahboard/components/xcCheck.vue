@@ -1,33 +1,11 @@
 <template>
-  <div class="app-container calendar-list-container">
-    <fieldset class="fieldset">
-      <legend class="legend">查询条件</legend>
-      <div class="field-box">
-        <el-form :inline="true" :model="listQuery">
-          <el-form-item label="企业名称" class="filter-item">
-            <el-input @keyup.enter.native="handleFilter" placeholder="" :clearable="true" v-model.trim="listQuery.enterpriseName"> </el-input>
-          </el-form-item>
-          <el-form-item label="主体分类" class="filter-item">
-            <el-select  v-model="listQuery.subjectClassification" placeholder="请选择" clearable filterabler>
-              <el-option v-for="(item, index) in subjectClassificationOptions" :key="item.value" :label="item.text" :value="item.value"> </el-option>
-            </el-select>
-          </el-form-item>
-          <!--<el-form-item label="监管级别" class="filter-item">
-            <el-select  v-model="listQuery.superviseClassification" placeholder="请选择" clearable filterabler>
-              <el-option v-for="(item, index) in superviseClassificationOptions" :key="item.value" :label="item.text" :value="item.value"> </el-option>
-            </el-select>
-          </el-form-item>-->
-          <el-form-item class="filter-item">
-            <el-button type="primary" v-waves  @click="handleFilter">搜索</el-button>
-            <el-button  v-waves  @click="resetQuery()">重置</el-button>
-          </el-form-item>
-        </el-form>
-      </div>
-    </fieldset>
-
+  <div>
     <el-table :key='tableKey' :data="list" v-loading.body="listLoading"
               border fit highlight-current-row style="width: 100%" highlight-current-row
-              @selection-change="getSelection" :height="height">
+              @selection-change="getSelection" height="60vh">
+      <!--<el-table-column  type="selection"  width="55">
+      </el-table-column>-->
+      <!--<el-table-column align="center" label="企业编号" width="100" prop="enterpriseId"></el-table-column>-->
       <el-table-column align="center" label="" width="100px">
         <template slot-scope="scope">
           <el-tag :type="getEnterpriseStatus(scope.row.enterpriseStatus)" prop="inspectionDate">
@@ -46,23 +24,16 @@
       <el-table-column align="center" label="主体分类" width="200px" prop="subjectClassification" :show-overflow-tooltip="true" :formatter="subjectClassificationFormatter"></el-table-column>
       <el-table-column align="center" label="联系人" width="100" prop="contacts" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column align="center" label="联系电话" width="150" prop="contactNumber" :show-overflow-tooltip="true"></el-table-column>
+      <!--<el-table-column align="center" label="企业状态" width="100" prop="enterpriseStatus" :formatter="statusFormatter" :show-overflow-tooltip="true"></el-table-column>-->
       <el-table-column align="center" label="操作" width="100" fixed="right" v-if="needFixedRight">
         <template slot-scope="scope">
-          <el-button size="mini" type="primary" @click="handleDeal(scope.row)" v-if="scope.row.enterpriseStatus==='0'">
-            执行
-          </el-button>
-          <el-button size="mini" type="danger" @click="handleDeal(scope.row)" v-else>
-            跟进
+          <el-button size="mini" type="primary" @click="handleView(scope.row)">查看
           </el-button>
         </template>
       </el-table-column>
       <el-table-column align="center" label="操作" width="100" v-else>
         <template slot-scope="scope">
-          <el-button size="mini" type="primary" @click="handleDeal(scope.row)" v-if="scope.row.enterpriseStatus==='0'">
-            执行
-          </el-button>
-          <el-button size="mini" type="danger" @click="handleDeal(scope.row)" v-else>
-            跟进
+          <el-button size="mini" type="primary" @click="handleView(scope.row)">查看
           </el-button>
         </template>
       </el-table-column>
@@ -71,56 +42,14 @@
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page" :page-sizes="[10,20,30, 50]" :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"> </el-pagination>
     </div>
 
-    <el-dialog  title="现场核查" fullscreen :visible.sync="dialogFormVisible" @close="closeDialog" :close-on-click-modal="false">
+    <el-dialog  title="现场核查" fullscreen :visible.sync="dialogFormVisible" @close="closeDialog" :close-on-click-modal="false" append-to-body>
       <div slot="title">
         <i class="el-icon-document">现场核查</i>
       </div>
-      <el-form :model="result" ref="form" :rules="rules" label-width="100px">
+      <el-form :model="result" ref="form" label-width="100px">
         <div style="height: 79vh;">
           <el-tabs v-model="tabPosition">
-            <el-tab-pane label="核查信息">
-              <el-row>
-                <el-col :span="12">
-                  <el-form-item label="核查时间" prop="verificateTime" tab="0">
-                    <el-date-picker v-model="result.verificateTime" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" placeholder="请选择" clearable :picker-options="pickerOptions1"></el-date-picker>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label="核查模板" prop="templateId" tab="0">
-                    <el-select  v-model="result.templateId" placeholder="请选择" @change="templateChange" clearable filterabler>
-                      <el-option v-for="(item, index) in templateOptions" :key="item.templateId" :label="item.templateName" :value="item.templateId"> </el-option>
-                    </el-select>
-                  </el-form-item>
-                </el-col>
-              </el-row>
-              <el-row>
-                <el-col :span="24">
-                  <template-project :height="height" :templateId="templateId" :existResult="onsiteResultShow" :setProjectResult="setProjectResult" :isRevisit="isRevisit" ref="template"></template-project>
-                </el-col>
-              </el-row>
-              <el-row>
-                <el-col :span="23">
-                  <el-form-item label="主要问题" placeholder="" prop="mainProblems">
-                    <el-input type="textarea"  :rows="2"  v-model.trim="result.mainProblems"></el-input>
-                  </el-form-item>
-                </el-col>
-              </el-row>
-              <el-row>
-                <el-col :span="12">
-                  <el-form-item label="核查结果" prop="verificateConclusion">
-                    <el-select  v-model="result.verificateConclusion" placeholder="请选择" clearable filterabler>
-                      <el-option v-for="(item, index) in treatmentMeasuresOptions" :key="item.value" :label="item.text" :value="item.value"> </el-option>
-                    </el-select>
-                  </el-form-item>
-                </el-col>
-                <!--<el-col :span="12" v-if="form.enterpriseStatus==='2'">
-                  <el-form-item label="再次核查日期" prop="revisitDate">
-                    <el-date-picker v-model="result.revisitDate" type="date" value-format="yyyy-MM-dd HH:mm:ss" placeholder="请选择" clearable :picker-options="pickerOptions1"></el-date-picker>
-                  </el-form-item>
-                </el-col>-->
-              </el-row>
-            </el-tab-pane>
-            <el-tab-pane label="企业信息" name="first">
+            <el-tab-pane label="企业信息">
               <el-row>
                 <el-col :span="11">
                   <el-form-item label="企业名称" prop="enterpriseName">
@@ -175,7 +104,7 @@
                   </el-form-item>
                 </el-col>
               </el-row>
-              <el-row >
+              <el-row>
                 <el-col :span="11">
                   <el-form-item label="联系人" prop="contacts">
                     <el-input v-model="form.contacts" placeholder="联系人" :disabled="true"></el-input>
@@ -223,48 +152,81 @@
                   </el-form-item>
                 </el-col>
               </el-row>
-              <el-row >
+
+              <!--<el-row >
                 <el-col :span="22">
                   <el-form-item label="经营范围" prop="operationScope">
                     <el-input type="textarea" :rows="5" v-model="form.operationScope" placeholder="经营范围" :disabled="true"></el-input>
                   </el-form-item>
                 </el-col>
+              </el-row>-->
+            </el-tab-pane>
+            <el-tab-pane label="核查信息" v-if="onsiteResultShow">
+              <el-row>
+                <el-col :span="12">
+                  <el-form-item label="核查时间" prop="verificateTime" tab="0">
+                    <el-date-picker v-model="result.verificateTime" type="datetime" value-format="yyyy-MM-dd HH:mm:ss" placeholder="请选择" clearable></el-date-picker>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                  <el-form-item label="核查模板" prop="templateId" tab="0">
+                    <el-select  v-model="result.templateId" placeholder="请选择" @change="templateChange" clearable filterabler>
+                      <el-option v-for="(item, index) in templateOptions" :key="item.templateId" :label="item.templateName" :value="item.templateId"> </el-option>
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="24">
+                  <template-project height="30vh" :templateId="templateId" :existResult="onsiteResultShow" :setProjectResult="setProjectResult" ref="template"></template-project>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="23">
+                  <el-form-item label="主要问题" placeholder="" prop="mainProblems">
+                    <el-input type="textarea"  :rows="2"  v-model.trim="result.mainProblems"></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="12">
+                  <el-form-item label="核查结果" prop="verificateConclusion">
+                    <el-select  v-model="result.verificateConclusion" placeholder="请选择" clearable filterabler>
+                      <el-option v-for="(item, index) in treatmentMeasuresOptions" :key="item.value" :label="item.text" :value="item.value"> </el-option>
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <!--<el-col :span="12">
+                  <el-form-item label="回访日期" prop="revisitDate">
+                    <el-date-picker v-model="result.revisitDate" type="date" value-format="yyyy-MM-dd HH:mm:ss" placeholder="请选择" clearable></el-date-picker>
+                  </el-form-item>
+                </el-col>-->
               </el-row>
             </el-tab-pane>
 
           </el-tabs>
         </div>
       </el-form>
-
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="cancel()">取 消</el-button>
-        <el-button type="primary" @click="create()">确 定</el-button>
-      </div>
     </el-dialog>
 
   </div>
 </template>
 
 <script>
-  import { getOnsiteTask } from "api/admin/enterprise/index";
-  import { addObj, putObj, getOnsiteResult, getOnsiteResultItem } from "api/admin/enterprise/onsite/result";
+  import { getEnterprisePage } from "api/admin/enterprise/index";
+  import { getOnsiteResult, getOnsiteResultItem } from "api/admin/enterprise/onsite/result";
   import { all } from "api/admin/safety/inspection/template/index";
   import { mapGetters } from "vuex";
-  import { loadGridHeight } from "api/screen";
-  import { parseValueToText, parseTime, parseForm } from "utils/index";
+  import { parseValueToText } from "utils/index";
+  import {getOnsiteTask} from 'api/admin/dashboard/index';
   export default {
     name: "onsite",
     components: {
-      "template-project": () => import("../../safety/inspection/components/project"),
+      "template-project": () => import("views/admin/safety/inspection/components/project"),
     },
-    props: {
-      tabName:{
-        default: undefined
-      }
-    },
+    props: ["gridId"],
     data() {
       return {
-        height: undefined,
         form: {
           enterpriseId: undefined,
           enterpriseName: undefined,
@@ -292,40 +254,29 @@
           revisitDate: undefined,
           revisitPlanId: undefined
         },
-        projectResult: [],
-        rules: {
-          verificateTime: [{required: true, message: "请选择核查时间", trigger: "change"}],
-          templateId: [{required: true, message: "请选择核查模板", trigger: "change"}],
-          verificateConclusion: [{required: true, message: "请选择核查结果", trigger: "change"}]
-        },
         resultList : [],
         list: null,
-        projectList: null,
         total: null,
         listLoading: true,
         listQuery: {
           page: 1,
           limit: 20,
-
-          enterpriseName: undefined,
           subjectClassification: undefined,
           superviseClassification: undefined,
-          someStatus:"0,2"
+          areaId: undefined,
+          gridId: undefined,
+          enterpriseId: undefined,
+          someStatus: "0,2"
         },
         dialogFormVisible: false,
         onsiteResultShow: false,
-        isRevisit: false,
         tableKey: 0,
         onsiteSelect: [],
+        statusArray: [{value:'0', text:'待核查'}, {value:'1', text:'核查通过'}, {value:'2', text:'核查未通过'}],
         templateOptions: [],
         needFixedRight:false,
         templateId: undefined,
-        tabPosition: "0",
-        pickerOptions1: {
-          disabledDate(time) {
-            return time.getTime() >= Date.now();
-          },
-        }
+        tabPosition: "0"
       };
     },
     mounted () {
@@ -333,15 +284,11 @@
       this.$nextTick(function () {
         let tableDiv=  this.$el.querySelector('.el-table__body-wrapper');
         this.needFixedRight =!($(tableDiv).attr("class").indexOf("is-scrolling-none")>=0);
-
-        this.height = loadGridHeight(this.tabName);
       });
       //监听屏幕的改变
       window.onresize = () => {
         let tableDiv=  this.$el.querySelector('.el-table__body-wrapper');
         this.needFixedRight =!($(tableDiv).attr("class").indexOf("is-scrolling-none")>=0);
-
-        this.height = loadGridHeight(this.tabName);
       };
     },
     created() {
@@ -363,10 +310,19 @@
         return this.staticData["核查结论"];
       },
       statusOptions(){
-        return this.staticData["企业状态"];;
+        return this.statusArray;
       }
     },
     methods: {
+      setAreaId(data){
+        this.listQuery.areaId = data;
+      },
+      setGridId(data){
+        this.listQuery.gridId = data;
+      },
+      setEnterpriseId(data){
+        this.listQuery.enterpriseId = data;
+      },
       templateChange(value){
         if (value) {
           this.templateId = value;
@@ -384,12 +340,14 @@
         switch (enterpriseStatus){
           case '0':
             return 'primary';
+          case '1':
+            return 'success';
           case '2':
             return 'danger';
         }
       },
       getList() {
-        this.listLoading = true;
+        this.listQuery.gridId=this.gridId;
         getOnsiteTask(this.listQuery).then(response => {
           this.list = response.rows;
           this.total = response.total;
@@ -408,109 +366,20 @@
         this.listQuery.page = val;
         this.getList();
       },
-      create() {
-        const set = this.$refs;
-        set["form"].validate((valid, errors) => {
-          if (valid) {
-            this.projectResult = this.$refs.template.getProjectResult();
-            //console.log(this.projectResult);
-            let flag = false;
-            let photoResultData = [], photoRectifiedData = [];
-            this.projectResult.forEach(project => {
-              if (this.isRevisit) {
-                if (project.resultsUnqualified.length>0 && (project.isRectified == undefined || project.phoneRectified.length === 0)) {
-                  flag = true;
-                  return false;
-                }
-                if (project.phoneRectified.length > 0)
-                    photoRectifiedData.push(project.phoneRectified[0].raw);
-              } else {
-                if (project.resultsQualified == undefined /*|| project.resultsUnqualified.length === 0*/
-                  || project.resultsPhoto.length === 0) {
-                  flag = true;
-                  return false;
-                }
-                photoResultData.push(project.resultsPhoto[0].raw);
-              }
-            });
-            if (this.projectResult.length === 0 || flag) {
-              this.$message({
-                showClose: true,
-                message: '请完成项目的核查信息'
-              });
-              this.tabPosition = "0";
-              return false;
-            }
-            this.result.enterpriseId = this.form.enterpriseId;
-
-            let param = new FormData();
-            param.append('resultData', parseForm(this.result));
-            param.append('projectResultData', parseForm(this.projectResult));
-            // 多个图片必须往同一个参数里追加，不能直接传数组，后台会接收不到。
-            // param.append('photoResultData', photoResultData));
-            photoResultData.forEach(photo => {
-              param.append('photoResultData', photo);
-            });
-            photoRectifiedData.forEach(photo => {
-              param.append('photoRectifiedData', photo);
-            });
-
-            // console.log(parseForm(this.result))
-            // console.log(parseForm(this.projectResult))
-            // console.log(photoResultData)
-            // console.log(photoRectifiedData)
-            // console.log(param)
-
-            if (this.isRevisit) {
-              putObj(param).then(() => {
-                this.dialogFormVisible = false;
-                this.getList();
-                this.$message({
-                  showClose: true,
-                  message: "创建成功",
-                  type: "success",
-                  duration: 2000
-                });
-              });
-            } else {
-              addObj(param).then(() => {
-                this.dialogFormVisible = false;
-                this.getList();
-                this.$message({
-                  showClose: true,
-                  message: "创建成功",
-                  type: "success",
-                  duration: 2000
-                });
-              });
-            }
-          } else {
-            for (var key in errors) {
-              this.tabPosition = this.$refs[key].$attrs['tab'];
-              break;
-            }
-            return false;
-          }
-        });
-      },
-      handleDeal(row) {
+      handleView(row) {
+        // 查询检查计划详情
         this.form = row;
-        if(this.form.registerDate){
-          this.form.registerDate = this.timeFormatter(this.form.registerDate, '{y}-{m}-{d}');
-        }
         // 查询检查记录
         getOnsiteResult({enterpriseId:row.enterpriseId}).then(response => {
           if (response.rel) {
-            this.isRevisit = true;
-            this.result.templateId = response.data.templateId;
-            let resultId = response.data.resultId
+            // debugger
+            this.result = response.data;
+            this.onsiteResultShow = true;
             // 查询检查记录明细
-            getOnsiteResultItem({resultId:resultId}).then(response => {
-              // console.log("----------------------s")
-              // console.log(response.data)
+            getOnsiteResultItem({resultId:this.result.resultId}).then(response => {
               if (response.rel) {
+                // debugger
                 let data = response.data;
-                this.onsiteResultShow = true;
                 data.forEach(item => {
                   let resultsUnqualified = [];
                   if (item.resultsUnqualified) {
@@ -519,7 +388,7 @@
                       resultsUnqualified.push(parseInt(unqualified));
                     });
                   }
-                  let dataItem = {itemId: item.itemId, projectId: item.projectId, isRectified: item.isRectified, phoneRectified: item.rectifiedResourceId ? [item.rectifiedResourceId] : [], resultsQualified: item.resultsQualified, resultsUnqualified: resultsUnqualified, resultsPhoto: [item.resourceId]};
+                  let dataItem = {projectId: item.projectId, isRectified: item.isRectified, phoneRectified: item.rectifiedResourceId ? [item.rectifiedResourceId] : [], resultsQualified: item.resultsQualified, resultsUnqualified: resultsUnqualified, resultsPhoto: [item.resourceId]};
                   //console.log(dataItem);
                   this.resultList.push(dataItem);
                 });
@@ -546,7 +415,7 @@
         return parseValueToText(cellValue, this.staticData["监管级别"]);
       },
       statusFormatter(cellValue) {
-        return parseValueToText(cellValue, this.statusOptions);
+        return parseValueToText(cellValue, this.staticData["企业状态"]);
       },
       timeFormatter(datetime, format) {
         return parseTime(datetime, format);
@@ -555,10 +424,12 @@
         let page = this.listQuery.page;
         let limit = this.listQuery.limit;
         this.listQuery = {page: page, limit: limit,
-          enterpriseName: undefined,
           subjectClassification: undefined,
           superviseClassification: undefined,
-          someStatus:"0,2"};
+          areaId: undefined,
+          gridId: undefined,
+          enterpriseId: undefined,
+          someStatus: "0,1,2,3,4"};
       },
       getSelection(selection) {
         this.onsiteSelect = selection;
@@ -566,10 +437,6 @@
       closeDialog(){
         this.resetTmp();
         this.tabPosition='0';
-        this.resultList.length=0;
-      },
-      cancel() {
-        this.dialogFormVisible = false;
       },
       resetTmp() {
         this.result = {

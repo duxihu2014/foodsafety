@@ -1,7 +1,3 @@
-
-
-
-
 <template>
   <div class="app-container calendar-list-container">
     <fieldset class="fieldset">
@@ -49,14 +45,9 @@
           <el-tab-pane label="企业基本信息" name="first">
             <el-form label-width="120px" :model="form.registerBase" >
               <el-row>
-                <el-col :span="11">
+                <el-col :span="22">
                   <el-form-item label="企业名称" prop="enterpriseName">
                     <el-input v-model="form.registerBase.enterpriseName" placeholder="企业名称" :readonly="true"></el-input>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="11">
-                  <el-form-item label="社会信用代码" prop="organizingInstitutionBarCode">
-                    <el-input v-model="form.registerBase.organizingInstitutionBarCode" placeholder="社会信用代码" :readonly="true"></el-input>
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -67,8 +58,22 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="11">
-                  <el-form-item label="身份证号" prop="idCardNo">
-                    <el-input v-model="form.registerBase.idCardNo" placeholder="身份证号" :readonly="true"></el-input>
+                  <el-form-item label="社会信用代码" prop="organizingInstitutionBarCode">
+                    <el-input v-model="form.registerBase.organizingInstitutionBarCode" placeholder="社会信用代码" :readonly="true"></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="11">
+                  <el-form-item label="证件类型" prop="idType">
+                    <el-select  v-model="form.registerBase.idType" placeholder="请选择" :clearable="true">
+                      <el-option v-for="item in idTypeOptions" :key="item.value" :label="item.text" :value="item.value"> </el-option>
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="11">
+                  <el-form-item label="证件号码" prop="idCardNo">
+                    <el-input v-model.trim="form.registerBase.idCardNo" placeholder="证件号码" :clearable="true"></el-input>
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -363,6 +368,9 @@
         },
         economicNatureOptions(){
           return this.staticData["企业经济性质"];
+        },
+        idTypeOptions(){
+          return this.staticData["证件类型"];
         }
       },
       mounted () {

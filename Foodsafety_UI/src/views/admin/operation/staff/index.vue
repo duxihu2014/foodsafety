@@ -9,7 +9,7 @@
               <el-input @keyup.enter.native="handleFilter" style="width: 200px;" placeholder="" v-model.trim="listQuery.staffName"> </el-input>
             </el-form-item>
 
-          <el-form-item label="身份证号"  class="filter-item">
+          <el-form-item label="证件号码"  class="filter-item">
             <el-input @keyup.enter.native="handleFilter" style="width: 200px;" placeholder="" v-model.trim="listQuery.idCardNo"> </el-input>
           </el-form-item>
 
@@ -35,10 +35,11 @@
     </div>
     <el-table :data="list" v-loading.body="listLoading" border  highlight-current-row style="width: 100%" @selection-change="getSelection"  :row-class-name="tableRowClassName" :height="height"	>
       <el-table-column  type="selection"  width="55"></el-table-column>
-      <el-table-column align="center" label="员工编号" width="150" prop="staffId"></el-table-column>
+      <el-table-column align="center" label="员工编号" width="100" prop="staffId"></el-table-column>
       <el-table-column align="center" label="姓名" width="150" prop="staffName"></el-table-column>
-      <el-table-column align="center" label="性别" width="150" prop="sex" :formatter="sexFormatter"></el-table-column>
-      <el-table-column align="center" label="身份证号" width="200" prop="idCardNo" ></el-table-column>
+      <el-table-column align="center" label="性别" width="100" prop="sex" :formatter="sexFormatter"></el-table-column>
+      <el-table-column align="center" label="证件类型" width="150" prop="idType" :formatter="idTypeFormatter"></el-table-column>
+      <el-table-column align="center" label="证件号码" width="200" prop="idCardNo" ></el-table-column>
       <el-table-column align="center" label="所属部门" width="150" prop="department" ></el-table-column>
       <el-table-column align="center" label="工号" width="150" prop="employeeNumber" ></el-table-column>
       <el-table-column align="center" label="员工状态" width="100" prop="staffStatus" :formatter="statusFormatter"></el-table-column>
@@ -80,8 +81,24 @@
                   <el-input v-model.trim="form.staffName" placeholder=""   :readonly="viewReadOnly"></el-input>
                 </el-form-item>
               </el-col>
+               <el-col :span="12">
+                 <el-form-item label="性别" prop="sex"  ref="sex" tab="0">
+                   <el-radio-group v-model="form.sex"   :disabled="viewReadOnly" >
+                     <el-radio v-for="item in  sexOptions"  :key="item.value"  :label="item.value">{{item.text}}</el-radio>
+                   </el-radio-group>
+                 </el-form-item>
+               </el-col>
+            </el-row>
+            <el-row>
               <el-col :span="12">
-                <el-form-item label="身份证号" prop="idCardNo" ref="idCardNo" tab="0">
+                <el-form-item label="证件类型" prop="idType">
+                  <el-select  v-model="form.idType" placeholder="请选择" :clearable="true">
+                    <el-option v-for="item in idTypeOptions" :readonly="viewReadOnly" :key="item.value" :label="item.text" :value="item.value"> </el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="证件号码" prop="idCardNo" ref="idCardNo" tab="0">
                   <el-input  v-model.trim="form.idCardNo"  :readonly="viewReadOnly"></el-input>
                 </el-form-item>
               </el-col>
@@ -99,10 +116,8 @@
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="性别" prop="sex"  ref="sex" tab="0">
-                  <el-radio-group v-model="form.sex"   :disabled="viewReadOnly" >
-                    <el-radio v-for="item in  sexOptions"  :key="item.value"  :label="item.value">{{item.text}}</el-radio>
-                  </el-radio-group>
+                <el-form-item label="住址" prop="homeAddress">
+                  <el-input v-model.trim="form.homeAddress" placeholder=""  :readonly="viewReadOnly"></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -167,18 +182,7 @@
                   </el-select>
                 </el-form-item>
               </el-col>
-
-
             </el-row>
-            <el-row>
-              <el-col :span="24">
-                <el-form-item label="住址" prop="homeAddress">
-                  <el-input v-model.trim="form.homeAddress" placeholder=""  :readonly="viewReadOnly"></el-input>
-                </el-form-item>
-              </el-col>
-            </el-row>
-
-
 
           </el-tab-pane>
           <el-tab-pane label="健康证信息">
@@ -276,24 +280,24 @@
             }
           };
           let vaildateIdCard=(rule, idCardNo, callback)=>{
-              //15位和18位身份证号码的基本校验
+              //15位和18位证件号码的基本校验
               if(!idCardNo) callback() ;
+              if(this.form.idType != '1') callback();
               let check = /^\d{15}|(\d{17}(\d|x|X))$/.test(idCardNo);
-              if(!check) return callback(new Error('请输入正确的身份证号码'));
+              if(!check) return callback(new Error('请输入正确的证件号码'));
               //判断长度为15位或18位
               if(idCardNo.length==15){
                 if(!idCardNoUtil.check15IdCardNo(idCardNo)){
-                  callback(new Error('请输入正确的身份证号码'));
+                  callback(new Error('请输入正确的证件号码'));
                 }else callback();
 
               }else if(idCardNo.length==18){
                 if(!idCardNoUtil.check18IdCardNo(idCardNo))
-                  callback(new Error('请输入正确的身份证号码'));
+                  callback(new Error('请输入正确的证件号码'));
                 else callback();
               }else{
-                callback(new Error('请输入正确的身份证号码'));
+                callback(new Error('请输入正确的证件号码'));
               }
-
           };
           const fileValidator =(rule, value, callback) =>{
             if(this.listFile.length<1){
@@ -321,22 +325,22 @@
             rules: {
               staffName: [{required: true, message: "请输入员工姓名", trigger: "blur"},
                 {required: true, max: 32, message: "长度不能超过32个字符", trigger: "blur"}],
-              idCardNo: [{required: true, message: "请输入身份证号", trigger: "blur"},
-                { validator: vaildateIdCard,message: '请输入有效身份证号', trigger: 'blur' }],
+              idType:[{required: true, message: "请选择证件类型", trigger: "blur"}],
+              idCardNo: [{required: true, message: "请输入证件号码", trigger: "blur"},
+                { validator: vaildateIdCard,message: '请输入有效证件号码', trigger: 'blur' }],
               sex:[{required: true, message: "请选择性别", trigger: "blur"}],
               birthDate:[{required: true, message: "请选择出生日期", trigger: "blur"}],
               employeeNumber:[{required: true, message: "请输入工号", trigger: "blur"}],
               employmentDate:[{required: true, message: "请输入入职日期", trigger: "blur"}],
               workType:[{required: true, message: "请选择工种", trigger: "change"}],
               staffStatus:[{required: true, message: "请选择员工状态", trigger: "change"}],
-                contactNumber: [{validator: mobileValidator, trigger: "blur" }],
-                certificateNumber: [{required: true, message: "请输入健康证号", trigger: "blur"}],
-                examinationDate: [{required: true, message: "请输入体检时间", trigger: "blur"}],
-                validDate: [{required: true, message: "请输入有效截至日期", trigger: "blur"}],
-                issuingDate: [{required: true, message: "请输入发证日期", trigger: "blur"}],
-                issuingUnit: [{required: true, message: "请输入发证单位", trigger: "blur"}],
+              contactNumber: [{validator: mobileValidator, trigger: "blur" }],
+              certificateNumber: [{required: true, message: "请输入健康证号", trigger: "blur"}],
+              examinationDate: [{required: true, message: "请输入体检时间", trigger: "blur"}],
+              validDate: [{required: true, message: "请输入有效截至日期", trigger: "blur"}],
+              issuingDate: [{required: true, message: "请输入发证日期", trigger: "blur"}],
+              issuingUnit: [{required: true, message: "请输入发证单位", trigger: "blur"}],
               imageFile: [{ required: true,validator: fileValidator,message: "请选择健康证照片", trigger: "blur"} ]
-
             },
             dialogFormVisible: false,
             viewReadOnly:false, //控制查看时的按钮显示
@@ -396,11 +400,12 @@
         },
         workTypeOptions(){
           return this.staticData["行业工种"];
+        },
+        idTypeOptions(){
+          return this.staticData["证件类型"];
         }
-
       },
       methods: {
-
         tableRowClassName({row, rowIndex}) {
           if (row.staffStatus === '0') {
             return 'warning-row';
@@ -560,7 +565,9 @@
         getAreaName(){
           return this.listQuery.areaName;
         },
-
+        idTypeFormatter(row, column, cellValue) {
+          return parseValueToText(cellValue, this.idTypeOptions);
+        },
         resetTmp() {
             this.form={ staffId:undefined, imageFile:undefined};
             this.dialogImageUrl="";
