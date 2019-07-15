@@ -31,7 +31,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="11">
-          <el-form-item label="身份证" prop="idCardNo">
+          <el-form-item label="证件号码" prop="idCardNo">
             <el-input v-model.trim="supplyObject.idCardNo" :disabled="selectOption"></el-input>
           </el-form-item>
         </el-col>
@@ -199,22 +199,22 @@
       },
       data(){
         const cardNoValidator = (rule, value, callback) => {
-          //15位和18位身份证号码的基本校验
+          //15位和18位证件号码的基本校验
           if(!value) callback() ;
           let check = /^\d{15}|(\d{17}(\d|x|X))$/.test(value);
-          if(!check) return callback(new Error('请输入正确的身份证号码'));
+          if(!check) return callback(new Error('请输入正确的证件号码'));
           //判断长度为15位或18位
           if(value.length==15){
             if(!idCardNoUtil.check15IdCardNo(value)){
-              callback(new Error('请输入正确的身份证号码'));
+              callback(new Error('请输入正确的证件号码'));
             }else callback();
 
           }else if(value.length==18){
             if(!idCardNoUtil.check18IdCardNo(value))
-              callback(new Error('请输入正确的身份证号码'));
+              callback(new Error('请输入正确的证件号码'));
             else callback();
           }else{
-            callback(new Error('请输入正确的身份证号码'));
+            callback(new Error('请输入正确的证件号码'));
           }
         };
         const mobileValidator = (rule, value, callback) => {
@@ -270,7 +270,7 @@
             productionAddress:[{required: true, message: "请输入生产地址", trigger: "blur"}],
             subjectClassification:[{required: true, message: "请选择主体分类", trigger: "blur"}],
             corporateRepresentative:[{required: true, message: "请输入法人代表", trigger: "blur"}],
-            idCardNo:[{required: true, message: "请输入身份证号", trigger: "blur"},{ validator: cardNoValidator, trigger: "blur" }],
+            idCardNo:[{required: true, message: "请输入证件号码", trigger: "blur"},{ validator: cardNoValidator, trigger: "blur" }],
             economicNature:[{required: true, message: "请选择企业经济性质", trigger: "blur"}],
             operationScope:[{required: true, message: "请输入企业经营范围", trigger: "blur"}],
             contacts:[{required: true, message: "请输入联系人", trigger: "blur"}],

@@ -8,8 +8,8 @@ import com.otec.foodsafety.entity.enterprise.EnterpriseProductChange;
 import com.otec.foodsafety.entity.enterprise.EnterpriseProductExt;
 import com.otec.foodsafety.entity.enterprise.EnterpriseVerify;
 
+import com.otec.foodsafety.entity.system.SysResource;
 import org.springframework.remoting.service.annotation.RemoteService;
-import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 
@@ -34,34 +34,34 @@ public interface EnterpriseProductService extends BaseService<EnterpriseProduct,
 	EnterpriseProductChange findByChangeId(Long id);
 
 	void verifyEnterpriseCertificate(EnterpriseProduct enterpriseProduct, EnterpriseProductChange epc,
-			EnterpriseVerify enterpriseVerify);
+                                     EnterpriseVerify enterpriseVerify);
 
 	/**
 	 * 添加企业产品
 	 * 
 	 * @param uploadUrl         上传URL
 	 * @param imageFolder       图片保存文件夹
-	 * @param multipartFile     图片数据
+	 * @param resource     		图片数据
 	 * @param userId            当前用户ID
 	 * @param reason            变更原因
 	 * @param enterpriseProduct 企业产品
 	 * @throws Exception
 	 */
-	void addEnterpriseProduct(String uploadUrl, String imageFolder, MultipartFile multipartFile, Long userId,
-			String reason, EnterpriseProduct enterpriseProduct) throws Exception;
+	void addEnterpriseProduct(String uploadUrl, String imageFolder, SysResource resource, Long userId,
+                              String reason, EnterpriseProduct enterpriseProduct) throws Exception;
 
 	/**
 	 * 修改
 	 * 
 	 * @param uploadUrl         上传URL
 	 * @param imageFolder       图片保存文件夹
-	 * @param multipartFile     图片数据
+	 * @param resource     		图片数据
 	 * @param userId            当前用户ID
 	 * @param reason            变更原因
 	 * @param enterpriseProduct 企业产品
 	 * @param operType          操作类型 1添加 2 修改 3删除
 	 * @throws Exception
 	 */
-	void modifyEnterpriseProduct(String uploadUrl, String imageFolder, MultipartFile multipartFile, Long userId,
-			String reason, EnterpriseProduct enterpriseProduct, String operType) throws Exception;
+	void modifyEnterpriseProduct(String uploadUrl, String imageFolder, SysResource resource, Long userId,
+                                 String reason, EnterpriseProduct enterpriseProduct, String operType) throws Exception;
 }

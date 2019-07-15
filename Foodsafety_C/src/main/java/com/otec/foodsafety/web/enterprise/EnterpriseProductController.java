@@ -10,17 +10,15 @@ import java.util.Map;
 import com.cykj.grcloud.entity.page.GridDataModel;
 import com.cykj.grcloud.entity.page.PageObject;
 import com.otec.foodsafety.entity.enterprise.EnterpriseCertificateChange;
-import com.otec.foodsafety.entity.enterprise.EnterpriseEquipment;
 import com.otec.foodsafety.entity.enterprise.EnterpriseProduct;
 import com.otec.foodsafety.entity.enterprise.EnterpriseProductChange;
 import com.otec.foodsafety.entity.enterprise.EnterpriseProductType;
 import com.otec.foodsafety.entity.enterprise.EnterpriseProductExt;
 import com.otec.foodsafety.entity.enterprise.EnterpriseProductTypeTree;
 import com.otec.foodsafety.entity.enterprise.EnterpriseVerify;
-import com.otec.foodsafety.entity.equipment.Audio;
 import com.otec.foodsafety.entity.jwt.AuthService;
 import com.otec.foodsafety.entity.jwt.ObjectRestResponse;
-import com.otec.foodsafety.entity.system.AreaTree;
+import com.otec.foodsafety.entity.system.SysResource;
 import com.otec.foodsafety.entity.system.SysUser;
 import com.otec.foodsafety.service.enterprise.EnterpriseProductChangeService;
 import com.otec.foodsafety.service.enterprise.EnterpriseProductService;
@@ -34,7 +32,6 @@ import com.otec.foodsafety.util.SysInitConfig;
 import com.otec.foodsafety.web.VueBaseController;
 import com.otec.foodsafety.web.context.SessionFilter;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -101,7 +98,7 @@ public class EnterpriseProductController extends VueBaseController<EnterprisePro
 	 * @return
 	 */
 	@RequestMapping(value = "/verify", method = RequestMethod.POST)
-	public ObjectRestResponse<EnterpriseVerify> auditEnterpriseCertificate(@RequestParam("changeId") String changeId,
+	public ObjectRestResponse<EnterpriseVerify> auditEnterpriseProduct(@RequestParam("changeId") String changeId,
 			@RequestParam("auditType") String auditType, @RequestParam("verifyConclusion") String verifyConclusion,
 			@RequestParam("verifyId") String verifyId) {
 		try {
@@ -149,12 +146,12 @@ public class EnterpriseProductController extends VueBaseController<EnterprisePro
 	 * 添加企业产品信息
 	 * 
 	 * @param multipartFile
-	 * @param enterpriseCertificateStr
+	 * @param enterpriseProductStr
 	 * @param reason
 	 * @return
 	 */
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
-	public ObjectRestResponse<EnterpriseProductChange> addCertificate(
+	public ObjectRestResponse<EnterpriseProductChange> addEnterpriseProduct(
 			@RequestPart(value = "file", required = false) MultipartFile multipartFile,
 			@RequestParam(value = "EnterpriseProduct") String enterpriseProductStr,
 			@RequestParam(value = "reason") String reason) {
@@ -163,8 +160,11 @@ public class EnterpriseProductController extends VueBaseController<EnterprisePro
 			String uploadUrl = SysInitConfig.getInstance().get(SysInitConfig.CfgProp.UPLOADURL);
 			String imageFolder = SysInitConfig.getInstance().get(SysInitConfig.CfgProp.IMAGEFOLDER);
 			EnterpriseProduct enterpriseProduct = JSONUtils.fromJson(enterpriseProductStr, EnterpriseProduct.class);
-
-			enterpriseProductService.addEnterpriseProduct(uploadUrl, imageFolder, multipartFile, sysUser.getUserId(),
+			SysResource resource = new SysResource();
+			resource.setResourceName(multipartFile.getOriginalFilename());
+			resource.setResourceContent(multipartFile.getBytes());
+			resource.setResourceLength(multipartFile.getSize());
+			enterpriseProductService.addEnterpriseProduct(uploadUrl, imageFolder, resource, sysUser.getUserId(),
 					reason, enterpriseProduct);
 			return new ObjectRestResponse<EnterpriseProductChange>().rel(true);
 		} catch (Exception e) {
@@ -180,12 +180,12 @@ public class EnterpriseProductController extends VueBaseController<EnterprisePro
 	 * 修改企业证照信息
 	 * 
 	 * @param multipartFile
-	 * @param enterpriseCertificateStr
+	 * @param enterpriseProductStr
 	 * @param reason
 	 * @return
 	 */
 	@RequestMapping(value = "/change", method = RequestMethod.POST)
-	public ObjectRestResponse<EnterpriseProductChange> changrCertificate(
+	public ObjectRestResponse<EnterpriseProductChange> changeEnterpriseProduct(
 			@RequestPart(value = "file", required = false) MultipartFile multipartFile,
 			@RequestParam(value = "EnterpriseProduct") String enterpriseProductStr,
 			@RequestParam(value = "reason") String reason) {
@@ -194,8 +194,14 @@ public class EnterpriseProductController extends VueBaseController<EnterprisePro
 			String uploadUrl = SysInitConfig.getInstance().get(SysInitConfig.CfgProp.UPLOADURL);
 			String imageFolder = SysInitConfig.getInstance().get(SysInitConfig.CfgProp.IMAGEFOLDER);
 			EnterpriseProduct enterpriseProduct = JSONUtils.fromJson(enterpriseProductStr, EnterpriseProduct.class);
-
-			enterpriseProductService.modifyEnterpriseProduct(uploadUrl, imageFolder, multipartFile, sysUser.getUserId(),
+			SysResource resource = null;
+			if(multipartFile!=null){
+				resource = new SysResource();
+				resource.setResourceName(multipartFile.getOriginalFilename());
+				resource.setResourceContent(multipartFile.getBytes());
+				resource.setResourceLength(multipartFile.getSize());
+			}
+			enterpriseProductService.modifyEnterpriseProduct(uploadUrl, imageFolder, resource, sysUser.getUserId(),
 					reason, enterpriseProduct, "2");// 修改
 			return new ObjectRestResponse<EnterpriseProductChange>().rel(true);
 		} catch (Exception e) {
@@ -254,7 +260,7 @@ public class EnterpriseProductController extends VueBaseController<EnterprisePro
 	 * @return
 	 */
 	@RequestMapping(value = "/verify/query", method = RequestMethod.GET)
-	public GridDataModel getCertificateChangePage(@RequestParam Map<String, String> params) {
+	public GridDataModel getProductChangePage(@RequestParam Map<String, String> params) {
 		// 查询列表数据
 		PageObject po = getPageObject(params);
 		po.getCondition().putAll(params);

@@ -20,6 +20,7 @@
 		<result property="organizingInstitutionBarCode" column="ORGANIZING_INSTITUTION_BAR_CODE"></result>
 		<result property="subjectClassification" column="SUBJECT_CLASSIFICATION"></result>
 		<result property="corporateRepresentative" column="CORPORATE_REPRESENTATIVE"></result>
+		<result property="idType" column="ID_TYPE"></result>
 		<result property="idCardNo" column="ID_CARD_NO"></result>
 		<result property="registeredCapital" column="REGISTERED_CAPITAL"></result>
 		<result property="economicNature" column="ECONOMIC_NATURE"></result>
@@ -33,12 +34,12 @@
 	</resultMap>
 	<insert id="addRegisterBase" parameterType="java.util.Map">
 		insert into T_REGISTER_BASE(REGISTER_ID,ENTERPRISE_NAME,AREA_ID,REGISTER_ADDRESS,PRODUCTION_ADDRESS,
-					ORGANIZING_INSTITUTION_BAR_CODE,SUBJECT_CLASSIFICATION,CORPORATE_REPRESENTATIVE,ID_CARD_NO,
+					ORGANIZING_INSTITUTION_BAR_CODE,SUBJECT_CLASSIFICATION,CORPORATE_REPRESENTATIVE,ID_TYPE,ID_CARD_NO,
 					 REGISTERED_CAPITAL,ECONOMIC_NATURE,OPERATION_SCOPE,POSTAL_CODE,CONTACTS,CONTACT_NUMBER,
 					 CONTACT_MOBILE,INSPECTOR_MOBILE, REGISTER_DATE )
 		VALUES
 		(#{registerId},#{enterpriseName},#{areaId},#{registerAddress},#{productionAddress},#{organizingInstitutionBarCode},
-		#{subjectClassification},#{corporateRepresentative},#{idCardNo},#{registeredCapital},#{economicNature},#{operationScope},
+		#{subjectClassification},#{corporateRepresentative},#{idType},#{idCardNo},#{registeredCapital},#{economicNature},#{operationScope},
 		#{postalCode},#{contacts},#{contactNumber},#{contactMobile},#{inspectorMobile},#{registerDate})
 	</insert>
 	<select id="getByOrganizingInstitutionBarCode" resultMap="resultPage" parameterType="String">

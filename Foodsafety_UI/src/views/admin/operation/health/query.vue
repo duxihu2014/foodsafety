@@ -10,7 +10,7 @@
           <el-form-item label="员工姓名"  class="filter-item">
             <el-input @keyup.enter.native="handleFilter" style="width: 200px;" placeholder="" v-model.trim="listQuery.staffName"> </el-input>
           </el-form-item>
-          <el-form-item label="身份证号"  class="filter-item">
+          <el-form-item label="证件号码"  class="filter-item">
             <el-input @keyup.enter.native="handleFilter" style="width: 200px;" placeholder="" v-model.trim="listQuery.idCardNo"> </el-input>
           </el-form-item>
           <el-form-item label="状态"  class="filter-item">
@@ -32,7 +32,7 @@
       <el-table-column align="center" label="员工编号" width="150" prop="staffId"></el-table-column>
       <el-table-column align="center" label="企业名称" width="250" prop="enterpriseName"></el-table-column>
       <el-table-column align="center" label="姓名" width="150" prop="staffName"></el-table-column>
-      <el-table-column align="center" label="身份证号" width="200" prop="idCardNo" ></el-table-column>
+      <el-table-column align="center" label="证件号码" width="200" prop="idCardNo" ></el-table-column>
       <el-table-column align="center" label="所属部门" width="150" prop="department" ></el-table-column>
       <el-table-column align="center" label="健康证号" width="150" prop="certificateNumber" ></el-table-column>
       <el-table-column align="center" label="有效截至日期" width="200" prop="validDate" >

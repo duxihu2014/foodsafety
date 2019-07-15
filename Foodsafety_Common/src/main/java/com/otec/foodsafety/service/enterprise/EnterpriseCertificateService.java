@@ -4,8 +4,8 @@ import com.cykj.grcloud.service.base.BaseService;
 import com.otec.foodsafety.entity.enterprise.EnterpriseCertificate;
 import com.otec.foodsafety.entity.enterprise.EnterpriseCertificateChange;
 import com.otec.foodsafety.entity.enterprise.EnterpriseVerify;
+import com.otec.foodsafety.entity.system.SysResource;
 import org.springframework.remoting.service.annotation.RemoteService;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -31,27 +31,27 @@ public interface EnterpriseCertificateService extends BaseService<EnterpriseCert
      *修改企业证照信息
      * @param uploadUrl
      * @param imageFolder
-     * @param multipartFile
+     * @param resource
      * @param userId
      * @param reason
      * @param enterpriseCertificate
      * @param operType 操作类型 1添加 2 修改 3删除
      */
-    public void modifyEnterpriseCertificate(String uploadUrl,String imageFolder,MultipartFile multipartFile,
-                                            Long userId,String reason,EnterpriseCertificate enterpriseCertificate ,String operType) throws Exception;
+    public void modifyEnterpriseCertificate(String uploadUrl, String imageFolder, SysResource resource,
+                                            Long userId, String reason, EnterpriseCertificate enterpriseCertificate, String operType) throws Exception;
 
     /**
      * 新增企业证照信息
      * @param uploadUrl
      * @param imageFolder
-     * @param multipartFile
+     * @param resource
      * @param userId
      * @param reason
      * @param enterpriseCertificate
      * @throws Exception
      */
-    public void addEnterpriseCertificate(String uploadUrl,String imageFolder,MultipartFile multipartFile,
-                                            Long userId,String reason,EnterpriseCertificate enterpriseCertificate) throws Exception;
+    public void addEnterpriseCertificate(String uploadUrl, String imageFolder, SysResource resource,
+                                         Long userId, String reason, EnterpriseCertificate enterpriseCertificate) throws Exception;
 
     /**
      * 根据变更id获取证照变更数据
@@ -74,8 +74,8 @@ public interface EnterpriseCertificateService extends BaseService<EnterpriseCert
      * @param enterpriseVerify
      */
     public void verifyEnterpriseCertificate(EnterpriseCertificate enterpriseCertificate,
-                                       EnterpriseCertificateChange enterpriseCertificateChange,
-                                       EnterpriseVerify enterpriseVerify);
+                                            EnterpriseCertificateChange enterpriseCertificateChange,
+                                            EnterpriseVerify enterpriseVerify);
 
     /**
      * 获取企业证照修改数据分页总条数

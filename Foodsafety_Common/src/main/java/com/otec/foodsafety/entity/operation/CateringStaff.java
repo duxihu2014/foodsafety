@@ -1,13 +1,11 @@
 package com.otec.foodsafety.entity.operation;
 
-import java.util.Date;
-import java.io.Serializable;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.apache.ibatis.annotation.myibatis.DataBase;
 import org.apache.ibatis.annotation.myibatis.Table;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.multipart.MultipartFile;
+
+import java.io.Serializable;
+import java.util.Date;
 
 @Table(dataBase = DataBase.MYSQL, tabName = "T_CATERING_STAFF", pkId = "staffId", seqName = "",notColumn = {"enterpriseName","resourcePath","validStatus","certificateStatus","certificateId","certificatePhoto","issuingUnit","issuingDate","certificateNumber","examinationDate","validDate"})
 public class CateringStaff implements Serializable {
@@ -21,8 +19,10 @@ private static final long serialVersionUID = 1L;
 	private String staffName;
 	
 	private String sex;
-	
-	private String idCardNo;
+
+	private String idType;
+
+    private String idCardNo;
 	
 	@JsonFormat(pattern="yyyy-MM-dd", timezone="GMT+8")
 	private Date birthDate;
@@ -189,6 +189,14 @@ private static final long serialVersionUID = 1L;
 	public String getSex() {
 		return this.sex;
 	}
+
+    public String getIdType() {
+        return idType;
+    }
+
+    public void setIdType(String idType) {
+        this.idType = idType;
+    }
 
 	public void setIdCardNo(String idCardNo) {
 		this.idCardNo = idCardNo;

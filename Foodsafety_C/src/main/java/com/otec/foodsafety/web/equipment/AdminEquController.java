@@ -1,11 +1,15 @@
 package com.otec.foodsafety.web.equipment;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.cykj.grcloud.entity.page.GridDataModel;
 import com.cykj.grcloud.entity.page.PageObject;
 import com.google.common.collect.Maps;
 import com.otec.foodsafety.entity.equipment.Equipment;
+import com.otec.foodsafety.entity.equipment.EquipmentPushflowInfo;
 import com.otec.foodsafety.entity.jwt.AuthService;
 import com.otec.foodsafety.entity.jwt.ObjectRestResponse;
+import com.otec.foodsafety.service.equipment.EquipmentPushflowInfoService;
 import com.otec.foodsafety.service.equipment.EquipmentService;
 import com.otec.foodsafety.util.vo.FrontUser;
 import com.otec.foodsafety.web.VueBaseController;
@@ -13,6 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -31,6 +36,9 @@ public class AdminEquController extends VueBaseController<EquipmentService, Equi
 	private EquipmentService equipmentService;
 	@Autowired
 	private AuthService authService;
+
+	@Autowired
+	private EquipmentPushflowInfoService equipmentPushflowInfoService;
 
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	@ResponseBody
@@ -145,48 +153,89 @@ public class AdminEquController extends VueBaseController<EquipmentService, Equi
 			return resp;
 		}
 	}
+
+//	//播放接口
+//	@RequestMapping(value = "play/{id}", method = RequestMethod.GET)
+//	@ResponseBody
+//	public ObjectRestResponse<Map<String, Object>> play(@PathVariable Long id) {
+//		Map<String, Object> result = Maps.newHashMap();
+//		boolean canSee = false;
+//		String token = request.getHeader("access-token");
+//		FrontUser userInfo = authService.getUserInfo(token);
+//
+//		if(userInfo.getUserId() == 1){
+//			canSee = true;
+//		}else {
+//			PageObject pageObject = new PageObject();
+//			pageObject.setCurrPage(1);
+//			pageObject.setPageSize(2);
+//			pageObject.addCondition("equipmentId", id);
+//			if(StringUtils.equalsIgnoreCase(userInfo.getUserType(), "4")){
+//				pageObject.getCondition().put("enterpriseId", userInfo.getEnterpriseId());
+//			}else if(!StringUtils.equalsIgnoreCase(userInfo.getUserType(), "1")){
+//				pageObject.getCondition().put("areaId", userInfo.getAreaId());
+//			}
+//
+//			pageObject.addCondition("status", 1);
+//			GridDataModel gm=equipmentService.getGridDataByCondition(pageObject);
+//			Integer count=gm.getTotal();
+//			if(count>0){
+//				canSee=true;
+//			}
+//		}
+//
+//		result.put("flag", canSee);
+//		if(canSee){
+//			String url = equipmentService.getPlayUrl(id);
+//			if(StringUtils.isNotBlank(url)){
+//				result.put("result", "success");
+//				result.put("url", url);
+//			}else {
+//				result.put("result", "error");
+//				result.put("url", "");
+//			}
+//		}
+//		return new ObjectRestResponse<Equipment>().rel(true).data(result);
+//	}
+
+
 	@RequestMapping(value = "play/{id}", method = RequestMethod.GET)
 	@ResponseBody
-	public ObjectRestResponse<Map<String, Object>> play(@PathVariable Long id) {
-		Map<String, Object> result = Maps.newHashMap();
-		boolean canSee = false;
-		String token = request.getHeader("access-token");
-		FrontUser userInfo = authService.getUserInfo(token);
-		
-		if(userInfo.getUserId() == 1){
-			canSee = true;
-		}else {
-			PageObject pageObject = new PageObject();
-			pageObject.setCurrPage(1);
-			pageObject.setPageSize(2);
-			pageObject.addCondition("equipmentId", id);			
-			if(StringUtils.equalsIgnoreCase(userInfo.getUserType(), "4")){
-				pageObject.getCondition().put("enterpriseId", userInfo.getEnterpriseId());
-			}else if(!StringUtils.equalsIgnoreCase(userInfo.getUserType(), "1")){
-				pageObject.getCondition().put("areaId", userInfo.getAreaId());
-			}			
-			
-			pageObject.addCondition("status", 1);
-			GridDataModel gm=equipmentService.getGridDataByCondition(pageObject);
-			Integer count=gm.getTotal();
-			if(count>0){
-				canSee=true;
-			}
-		}
+	public ObjectRestResponse<Map<String, Object>> play(@PathVariable Long id) throws IOException {
+			Equipment equipment = equipmentService.findById(id);
+			if(equipment!=null){
+				EquipmentPushflowInfo equipmentPushflowInfo = equipmentPushflowInfoService.findById(equipment.getEquipmentPushId());
+				if(equipmentPushflowInfo!=null){
+					String device_id = equipmentPushflowInfo.getDeviceId();
+					String equipmentId = String.valueOf(id);
+					String rtsp_address = equipment.getVideotapeUrl();
 
-		result.put("flag", canSee);
-		if(canSee){   
-			String url = equipmentService.getPlayUrl(id);
-			if(StringUtils.isNotBlank(url)){
-				result.put("result", "success");
-				result.put("url", url);
-			}else {
-				result.put("result", "error");
-				result.put("url", "");
+					String base64Str = VideoUtil.getBase64Str(rtsp_address,device_id,equipmentId);
+					System.out.println("base64Str--->"+base64Str);
+					String getToken = VideoUtil.getToken(rtsp_address,device_id,equipmentId);
+					System.out.println("getToken--->"+getToken);
+
+					String returnVal = HttpOk.post("http://58.215.171.233:18080/gsms/video/getCameraM3u8Url?token=" + getToken, base64Str);
+
+					System.out.println("returnVal--->"+returnVal);
+					JSONObject jsonObject = JSON.parseObject(returnVal);
+					String resultUrl = (String)jsonObject.get("result");
+					System.out.println("result--->"+resultUrl);
+					Map<String, Object> result = Maps.newHashMap();
+					result.put("flag", true);
+					result.put("result", "success");
+					result.put("url", resultUrl);
+					return new ObjectRestResponse<Equipment>().rel(true).data(result);
+				}
 			}
-		}
-		return new ObjectRestResponse<Equipment>().rel(true).data(result);
+		Map<String, Object> result = Maps.newHashMap();
+		result.put("flag", false);
+		result.put("result", "success");
+		result.put("url", "");
+		return new ObjectRestResponse<Equipment>().rel(false).data(result);
+
 	}
+
 	/**
 	 * 实体预处理
 	 * 

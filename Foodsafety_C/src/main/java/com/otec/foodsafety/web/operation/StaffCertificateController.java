@@ -5,9 +5,11 @@ import com.cykj.grcloud.entity.page.PageObject;
 import com.otec.foodsafety.entity.operation.CateringStaff;
 import com.otec.foodsafety.entity.operation.CateringStaffCertificate;
 import com.otec.foodsafety.entity.jwt.ObjectRestResponse;
+import com.otec.foodsafety.entity.system.SysResource;
 import com.otec.foodsafety.entity.system.SysUser;
 import com.otec.foodsafety.service.catering.StaffCertificateService;
 import com.otec.foodsafety.service.system.SysAreaService;
+import com.otec.foodsafety.service.system.SysResourceService;
 import com.otec.foodsafety.util.DateUtils;
 import com.otec.foodsafety.util.StringUtils;
 import com.otec.foodsafety.util.SysInitConfig;
@@ -17,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -31,6 +32,8 @@ public class StaffCertificateController extends VueBaseController<StaffCertifica
     private SessionFilter sessionFilter;
     @Autowired
     SysAreaService sysAreaService;
+    @Autowired
+    SysResourceService sysResourceService;
 
     @RequestMapping(value = "/getCertificateList", method = RequestMethod.GET)
     public GridDataModel getUserList(@RequestParam Map<String, String> params) {
@@ -71,14 +74,17 @@ public class StaffCertificateController extends VueBaseController<StaffCertifica
             csc.setValidDate(DateUtils.getDate(validDate,"yyyy-MM-dd"));
             csc.setIssuingDate(DateUtils.getDate(issuingDate,"yyyy-MM-dd"));
             csc.setIssuingUnit(issuingUnit);
-
             csc.setStaffId(Long.parseLong(staffId));
-
-
             String uploadUrl = SysInitConfig.getInstance().get(SysInitConfig.CfgProp.UPLOADURL);
             String imageFolder = SysInitConfig.getInstance().get(SysInitConfig.CfgProp.IMAGEFOLDER);
-
-            staffCertificateService.update(csc,imageFile, uploadUrl, imageFolder);
+            SysResource resource = null;
+            if(imageFile!=null){
+                resource = sysResourceService.findById(staffCertificateService.findById(csc.getCertificateId()).getCertificatePhoto());
+                resource.setResourceName(imageFile.getOriginalFilename());
+                resource.setResourceContent(imageFile.getBytes());
+                resource.setResourceLength(imageFile.getSize());
+            }
+            staffCertificateService.update(csc,resource, uploadUrl, imageFolder);
 
             return new ObjectRestResponse<CateringStaff>().rel(true);
 
@@ -113,10 +119,11 @@ public class StaffCertificateController extends VueBaseController<StaffCertifica
 
             String uploadUrl = SysInitConfig.getInstance().get(SysInitConfig.CfgProp.UPLOADURL);
             String imageFolder = SysInitConfig.getInstance().get(SysInitConfig.CfgProp.IMAGEFOLDER);
-
-
-            staffCertificateService.add(csc,imageFile, uploadUrl, imageFolder);
-
+            SysResource resource = new SysResource();
+            resource.setResourceName(imageFile.getOriginalFilename());
+            resource.setResourceContent(imageFile.getBytes());
+            resource.setResourceLength(imageFile.getSize());
+            staffCertificateService.add(csc,resource, uploadUrl, imageFolder);
             return new ObjectRestResponse<CateringStaff>().rel(true);
 
         } catch (Exception e) {

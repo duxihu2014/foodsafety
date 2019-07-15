@@ -1,8 +1,9 @@
 package com.otec.foodsafety.entity.equipment;
 
-import java.io.Serializable;
 import org.apache.ibatis.annotation.myibatis.DataBase;
 import org.apache.ibatis.annotation.myibatis.Table;
+
+import java.io.Serializable;
 import java.util.Date;
 
 @Table(pkId = "equipmentId", usingSeq = true, seqName = "", dataBase=DataBase.MYSQL, tabName = "T_EQUIPMENT", notColumn = { "enterpriseName",
@@ -90,7 +91,7 @@ public class Equipment implements Serializable{
 	//
 	private String areaCode1; 
 
-	//
+
 	private String areaCode3;
 
 	private Long enterpriseId;

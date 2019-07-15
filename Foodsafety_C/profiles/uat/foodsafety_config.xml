@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<foodsafety-config>
+	<path>
+		<remoteServerUrl>http://106.75.119.205:8089/Foodsafety_S/remoting/</remoteServerUrl>
+		<imageServerUrl>http://106.75.119.205:8289</imageServerUrl>
+	</path>
+	<webservice>
+		<httpClientPolicy>
+			<ConnectionTimeout>35000</ConnectionTimeout>
+			<ReceiveTimeout>35000</ReceiveTimeout>
+			<AllowChunking>false</AllowChunking>
+		</httpClientPolicy>
+	</webservice>
+	<passwrod>
+		<defaultPassword>123456</defaultPassword>
+	</passwrod>
+	<version>1.0.0</version>
+	<uploadUrl>http://106.75.119.205:8089/IntelligentCity_IMG/receiveDataServlet</uploadUrl>
+	<imageFolder>intelligentFoodsafety</imageFolder>
+</foodsafety-config>

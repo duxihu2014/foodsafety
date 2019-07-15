@@ -23,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.cykj.grcloud.service.impl.base.BaseServiceImpl;
 import com.otec.foodsafety.entity.purchase.Materials;
 import com.otec.foodsafety.mapper.purchase.MaterialsMapper;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Transactional
@@ -62,25 +61,23 @@ public class MaterialsServiceImpl extends BaseServiceImpl<Materials, Long> imple
 
 	@Override
 	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-	public void add(Materials entity, MultipartFile imageFile, String uploadUrl, String imageFolder) throws  Exception {
-
-		if(imageFile!=null){
-			String fileName = imageFile.getOriginalFilename();
-			String str = HttpURLConnectionUtils.sendMessage(uploadUrl + "?fileName=" + fileName+ "&imageFolder="+imageFolder,
-					imageFile.getBytes());
+	public void add(Materials entity, SysResource resource, String uploadUrl, String imageFolder) throws  Exception {
+		if(resource!=null){
+			String fileName = resource.getResourceName();
+			byte[] fileByte = resource.getResourceContent();
+			String str = HttpURLConnectionUtils.sendMessage(uploadUrl + "?fileName=" + fileName+ "&imageFolder="+imageFolder, fileByte);
 			JSONObject jSONObject = JSON.parseObject(str);
 			String path = jSONObject.getString("imgUrl");
 			String subfix= fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length());//文件后缀
 			String rename = path.split("/")[path.split("/").length-1];
 			//2.将图片信息写入数据库
-			SysResource resource = new SysResource();
 			resource.setResourceName(fileName);
 			resource.setResourceRename(rename);
 			resource.setResourceStorage(ResourceStorage.LOCAL.toString());
 			resource.setResourceExtension(subfix);
 			resource.setResourceStatus("1");
 			resource.setResourceType(ResourceType.getTypeBySuffix(resource.getResourceExtension()));
-			resource.setResourceLength(imageFile.getSize());
+			resource.setResourceContent(null);
 			resource.setResourcePath( path );
 			sysResourceMapper.persist(resource);
 			entity.setProductionCertificatePhoto(resource.getResourceId());

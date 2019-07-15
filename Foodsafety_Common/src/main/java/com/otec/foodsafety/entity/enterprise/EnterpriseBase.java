@@ -1,6 +1,5 @@
 package com.otec.foodsafety.entity.enterprise;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import org.apache.ibatis.annotation.myibatis.DataBase;
 import org.apache.ibatis.annotation.myibatis.Table;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -35,6 +34,8 @@ public class EnterpriseBase implements Serializable {
     private String superviseClassification;
 
     private String corporateRepresentative;
+
+    private String idType;
 
     private String idCardNo;
 
@@ -153,6 +154,14 @@ public class EnterpriseBase implements Serializable {
 
     public void setCorporateRepresentative(String corporateRepresentative) {
         this.corporateRepresentative = corporateRepresentative == null ? null : corporateRepresentative.trim();
+    }
+
+    public String getIdType() {
+        return idType;
+    }
+
+    public void setIdType(String idType) {
+        this.idType = idType;
     }
 
     public String getIdCardNo() {

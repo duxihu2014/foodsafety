@@ -13,7 +13,6 @@ import com.otec.foodsafety.service.alarm.AlarmService;
 import com.otec.foodsafety.service.sensor.SensorInfoService;
 import com.otec.foodsafety.service.sensor.SensorMonitorService;
 import com.otec.foodsafety.service.system.SysDictService;
-import com.otec.foodsafety.util.DateUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -27,7 +26,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -58,81 +56,106 @@ public class SyncController {
             System.out.println("--------data="+content);
             //{"t": "30", "id": "th001", "h": "34"}
             JSONObject jsonObject = JSON.parseObject(content);
-
-            SensorMonitor sensorMonitor = new SensorMonitor();
-            sensorMonitor.setMsg(content);
-            sensorMonitor.setHumidity(jsonObject.getFloat("t"));//温度
-            sensorMonitor.setDampness(jsonObject.getFloat("h"));//湿度
-            if(sensorMonitor.getHumidity() == null || sensorMonitor.getDampness() == null){
-                logger.warn("监控数据非法："+content);
-                return;
+            String type = jsonObject.getString("type");
+            if(StringUtils.equalsIgnoreCase(type, "1")){
+                handleSensor1(jsonObject, content);
+            }else if(StringUtils.equalsIgnoreCase(type, "2")){
+                handleSensor2(jsonObject, content);
             }
-            sensorMonitor.setCreateTime(new Date());
-            sensorMonitor.setSensorNo(jsonObject.getString("id"));
-
-            sensorMonitor.setLat(jsonObject.getString("lat"));
-            sensorMonitor.setLon(jsonObject.getString("lon"));
-
-            Map<String, String> eventMap = sysDictService.getDetailValueMap("报警类型");
-//            System.out.println(eventMap);{温度低=10002, 温度高=10001, 湿度低=10004, 湿度高=10003}
-            Map<String, Object> map = Maps.newHashMap();
-            int alarmType = 0;
-            if(StringUtils.isNotBlank(sensorMonitor.getSensorNo())){
-                map.put("sensorNo", sensorMonitor.getSensorNo());
-                List<SensorInfo> sensorInfoList = sensorInfoService.findEntitysByCondition(map);
-                if(sensorInfoList.size() > 0){
-                    SensorInfo sensorInfo = sensorInfoList.get(0);
-                    if(sensorInfo.getHumidityHigh() != null){
-                        if(sensorMonitor.getHumidity() > sensorInfo.getHumidityHigh()){
-                            saveAlarm("10001", sensorInfo, eventMap, sensorMonitor.getHumidity());
-                            alarmType++;
-                        }
-                    }
-                    if(sensorInfo.getHumidityLow() != null){
-                        if(sensorMonitor.getHumidity() < sensorInfo.getHumidityLow()){
-                            saveAlarm("10002", sensorInfo, eventMap, sensorMonitor.getHumidity());
-                            alarmType++;
-                        }
-                    }
-                    if(sensorInfo.getDampnessHigh() != null){
-                        if(sensorMonitor.getDampness() > sensorInfo.getDampnessHigh()){
-                            saveAlarm("10003", sensorInfo, eventMap, sensorMonitor.getDampness());
-                            alarmType = alarmType + 10;
-                        }
-                    }
-                    if(sensorInfo.getDampnessLow() != null){
-                        if(sensorMonitor.getDampness() < sensorInfo.getDampnessLow()){
-                            saveAlarm("10004", sensorInfo, eventMap, sensorMonitor.getDampness());
-                            alarmType = alarmType + 10;
-                        }
-                    }
-
-                }
-            }
-            Date createTime = sensorMonitor.getCreateTime();
-            DateTime dateTime = new DateTime(createTime);
-            int sec = dateTime.getSecondOfMinute();
-            if(alarmType > 0){
-                if(alarmType == 1){
-                    sensorMonitor.setWdAlarmSec(sec+60);
-                    sensorMonitor.setSdAlarmSec(sec);
-                }else if(alarmType == 10){
-                    sensorMonitor.setWdAlarmSec(sec);
-                    sensorMonitor.setSdAlarmSec(sec+60);
-                }else if(alarmType == 11){
-                    sensorMonitor.setWdAlarmSec(sec+60);
-                    sensorMonitor.setSdAlarmSec(sec+60);
-                }
-            }else {
-                sensorMonitor.setWdAlarmSec(sec);
-                sensorMonitor.setSdAlarmSec(sec);
-            }
-            sensorMonitorService.persist(sensorMonitor);
-
 
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    // 温湿度传感器处理
+    private void handleSensor1(JSONObject jsonObject, String content){
+        SensorMonitor sensorMonitor = new SensorMonitor();
+        sensorMonitor.setMsg(content);
+        sensorMonitor.setHumidity(jsonObject.getFloat("t"));//温度
+        sensorMonitor.setDampness(jsonObject.getFloat("h"));//湿度
+        if(sensorMonitor.getHumidity() == null || sensorMonitor.getDampness() == null){
+            logger.warn("监控数据非法："+content);
+            return;
+        }
+        sensorMonitor.setCreateTime(new Date());
+        sensorMonitor.setSensorNo(jsonObject.getString("id"));
+
+        sensorMonitor.setLat(jsonObject.getString("lat"));
+        sensorMonitor.setLon(jsonObject.getString("lon"));
+
+        Map<String, String> eventMap = sysDictService.getDetailValueMap("IOT报警类型");
+//            System.out.println(eventMap);{温度低=10002, 温度高=10001, 湿度低=10004, 湿度高=10003}
+        Map<String, Object> map = Maps.newHashMap();
+        int alarmType = 0;
+        if(StringUtils.isNotBlank(sensorMonitor.getSensorNo())){
+            map.put("sensorNo", sensorMonitor.getSensorNo());
+            List<SensorInfo> sensorInfoList = sensorInfoService.findEntitysByCondition(map);
+            if(sensorInfoList.size() > 0){
+                SensorInfo sensorInfo = sensorInfoList.get(0);
+                if(sensorInfo.getHumidityHigh() != null){
+                    if(sensorMonitor.getHumidity() > sensorInfo.getHumidityHigh()){
+                        saveAlarm("10001", sensorInfo, eventMap, sensorMonitor.getHumidity());
+                        alarmType++;
+                    }
+                }
+                if(sensorInfo.getHumidityLow() != null){
+                    if(sensorMonitor.getHumidity() < sensorInfo.getHumidityLow()){
+                        saveAlarm("10002", sensorInfo, eventMap, sensorMonitor.getHumidity());
+                        alarmType++;
+                    }
+                }
+                if(sensorInfo.getDampnessHigh() != null){
+                    if(sensorMonitor.getDampness() > sensorInfo.getDampnessHigh()){
+                        saveAlarm("10003", sensorInfo, eventMap, sensorMonitor.getDampness());
+                        alarmType = alarmType + 10;
+                    }
+                }
+                if(sensorInfo.getDampnessLow() != null){
+                    if(sensorMonitor.getDampness() < sensorInfo.getDampnessLow()){
+                        saveAlarm("10004", sensorInfo, eventMap, sensorMonitor.getDampness());
+                        alarmType = alarmType + 10;
+                    }
+                }
+
+            }
+        }
+        Date createTime = sensorMonitor.getCreateTime();
+        DateTime dateTime = new DateTime(createTime);
+        int sec = dateTime.getSecondOfMinute();
+        if(alarmType > 0){
+            if(alarmType == 1){
+                sensorMonitor.setWdAlarmSec(sec+60);
+                sensorMonitor.setSdAlarmSec(sec);
+            }else if(alarmType == 10){
+                sensorMonitor.setWdAlarmSec(sec);
+                sensorMonitor.setSdAlarmSec(sec+60);
+            }else if(alarmType == 11){
+                sensorMonitor.setWdAlarmSec(sec+60);
+                sensorMonitor.setSdAlarmSec(sec+60);
+            }
+        }else {
+            sensorMonitor.setWdAlarmSec(sec);
+            sensorMonitor.setSdAlarmSec(sec);
+        }
+        sensorMonitorService.persist(sensorMonitor);
+    }
+
+    //水浸传感器处理
+    private void handleSensor2(JSONObject jsonObject, String content){
+        String sensorNo = jsonObject.getString("id");
+        String alarmContent = jsonObject.getString("s");
+        Alarm alarm = new Alarm();
+        alarm.setIndexCode(sensorNo);
+        alarm.setContent(alarmContent);
+        alarm.setEventId("1");
+        alarm.setEventType(EventTypeConstants.SENSOR);
+//        alarm.setAlarmType(alarmName);
+        alarm.setAlarmTime(new Date());
+        alarm.setAlarmSource("传感器报警");
+        alarm.setStatus("1");
+        alarm.setCreateTime(new Date());
+        alarmService.persist(alarm);
     }
 
     private void saveAlarm(String eventType, SensorInfo sensorInfo, Map<String, String> eventMap, float value){
@@ -213,7 +236,14 @@ public class SyncController {
             alarm.setIndexCode(jsonObject.getString("camera_num"));
             alarm.setEventId(jsonObject.getString("event_type"));
             alarm.setAlarmSource("摄像头报警");
-            alarm.setContent(jsonObject.getString("event_type_name"));
+            Map<String, String> eventMap = sysDictService.getDetailValueMap("摄像头报警类型");
+            String c = eventMap.get(jsonObject.getString("event_type"));
+            if(StringUtils.isNotBlank(c)){
+                alarm.setContent(c);
+            }else {
+                alarm.setContent("未知报警");
+            }
+
             alarm.setAlarmTime(jsonObject.getDate("event_time"));
             alarm.setVideoUrl(jsonObject.getString("event_video"));
             alarm.setImgUrl(jsonObject.getString("result_image"));

@@ -16,9 +16,7 @@ import com.otec.foodsafety.util.ResourceStorage;
 import com.otec.foodsafety.util.ResourceType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.HashMap;
 import java.util.List;
@@ -44,27 +42,24 @@ public class RegisterServiceImpl extends BaseServiceImpl<RegisterUser, Long> imp
     public void addRegister(Map<String, Object> registerUserMap,
                             Map<String, Object> registerBaseMap,
                             Map<String, Object> registerCertificateMap ,
-                            MultipartFile multipartFile,String uploadUrl,String imageFolder) throws Exception  {
-
-        String fileName = multipartFile.getOriginalFilename();
+                            SysResource resource,String uploadUrl,String imageFolder) throws Exception  {
+        String fileName = resource.getResourceName();
+        byte[] fileByte = resource.getResourceContent();
         //1.先将图片上传服务器
         String str = HttpURLConnectionUtils.sendMessage(
-                uploadUrl + "?fileName=" + fileName+ "&imageFolder="+imageFolder,
-                multipartFile.getBytes());
+                uploadUrl + "?fileName=" + fileName+ "&imageFolder="+imageFolder, fileByte);
         JSONObject jSONObject = JSON.parseObject(str);
         String path = jSONObject.getString("imgUrl");
         String subfix= fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length());//文件后缀
         String rename = path.split("/")[path.split("/").length-1];
         //2.将图片信息写入数据库
-        SysResource resource = new SysResource();
-        resource.setResourceName(fileName);
         resource.setResourceRename(rename);
-        resource.setResourceStorage(ResourceStorage.LOCAL.toString());
+        resource.setResourceStorage(ResourceStorage.REMOTE.toString());
         resource.setResourceExtension(subfix);
         resource.setResourceStatus("1");
         resource.setResourceType(ResourceType.getTypeBySuffix(resource.getResourceExtension()));
-        resource.setResourceLength(multipartFile.getSize());
         resource.setResourcePath( path );
+        resource.setResourceContent(null);
         sysResourceMapper.persist(resource);
         Map param = new HashMap();
         param.put("resourceName",fileName);
@@ -126,32 +121,30 @@ public class RegisterServiceImpl extends BaseServiceImpl<RegisterUser, Long> imp
     }
 
     @Override
-    public void updateRegister(RegisterUser registerUser,MultipartFile multipartFile,String uploadUrl,String imageFolder)  throws Exception{
+    public void updateRegister(RegisterUser registerUser,SysResource resource,String uploadUrl,String imageFolder)  throws Exception{
         RegisterBase registerBase = registerUser.getRegisterBase();
         RegisterCertificate registerCertificate = registerUser.getRegisterCertificate();
-        //1.判断multipartFile是否未空,不为空则要更新资源表
-        if(multipartFile!=null){
-            String fileName = multipartFile.getOriginalFilename();
-            //先将图片上传服务器
+        //1.判断resource是否为空,不为空则要更新资源表
+        if(resource!=null){
+            String fileName = resource.getResourceName();
+            byte[] fileByte = resource.getResourceContent();
+            //1.先将图片上传服务器
             String str = HttpURLConnectionUtils.sendMessage(
-                    uploadUrl + "?fileName=" + fileName+ "&imageFolder="+imageFolder,
-                    multipartFile.getBytes());
+                    uploadUrl + "?fileName=" + fileName+ "&imageFolder="+imageFolder, fileByte);
             JSONObject jSONObject = JSON.parseObject(str);
             String path = jSONObject.getString("imgUrl");
             String subfix= fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length());//文件后缀
             String rename = path.split("/")[path.split("/").length-1];
-            //2.将图片信息写入数据库
-            SysResource resource = new SysResource();
+            //2.修改数据库资源表数据
             resource.setResourceName(fileName);
             resource.setResourceRename(rename);
-            resource.setResourceStorage(ResourceStorage.LOCAL.toString());
+            resource.setResourceStorage(ResourceStorage.REMOTE.toString());
             resource.setResourceExtension(subfix);
             resource.setResourceStatus("1");
             resource.setResourceType(ResourceType.getTypeBySuffix(resource.getResourceExtension()));
-            resource.setResourceLength(multipartFile.getSize());
             resource.setResourcePath( path );
-            sysResourceMapper.persist(resource);
-            registerCertificate.setCertificatePhoto(resource.getResourceId());
+            resource.setResourceContent(null);
+            sysResourceMapper.updateById(resource);
         }
         //2.每次修改都需要将注册状态改为待审核
         registerUser.setRegisterStatus("0");
