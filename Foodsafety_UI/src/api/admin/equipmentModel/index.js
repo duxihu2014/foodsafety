@@ -89,3 +89,11 @@ export function getModelMap(){
     method:'get'
   })
 }
+
+/**获取推流设备编号Map**/
+export function getPushModelMap(){
+  return fetch({
+    url:'/api/admin/equipmentPushFlowInfo/getEquipmentPushflowInfoMap',
+    method:'get'
+  })
+}
