@@ -71,7 +71,14 @@
               </el-row>
               <el-row>
                 <el-col :span="8">
-                  <el-form-item label="身份证" prop="idCardNo">
+                  <el-form-item label="证件类型" prop="idType">
+                    <el-select  v-model="form.idType" placeholder="请选择" :clearable="true">
+                      <el-option v-for="item in idTypeOptions" :key="item.value" :label="item.text" :value="item.value"> </el-option>
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                  <el-form-item label="证件号码" prop="idCardNo">
                     <el-input v-model.trim="form.idCardNo"></el-input>
                   </el-form-item>
                 </el-col>
@@ -298,6 +305,9 @@
       },
       economicNatureOptions(){
         return this.staticData["企业经济性质"];
+      },
+      idTypeOptions(){
+        return this.staticData["证件类型"];
       }
     },
     created(){
@@ -418,10 +428,12 @@
           return "企业的名称";
         }else if(cellValue=='organizingInstitutionBarCode'){
           return "社会信用代码";
-        }else if(cellValue=='corporateRepresentative'){
+        }else if(cellValue=='corporateRepresentative') {
           return "企业法人";
+        }else if(cellValue=='idType'){
+          return "证件类型";
         }else if(cellValue=='idCardNo'){
-          return "身份证";
+          return "证件号码";
         }else if(cellValue=='subjectClassification'){
           return "主体分类";
         }else if(cellValue=='economicNature'){
@@ -463,6 +475,8 @@
         let cellValue=row.old;
         if(row.name=='subjectClassification') {
           return parseValueToText(cellValue, this.staticData["企业主体分类"]);
+        }else if(row.name=='idType'){
+          return parseValueToText(cellValue, this.staticData["证件类型"]);
         }else if(row.name=='economicNature'){
           return parseValueToText(cellValue, this.staticData["企业经济性质"]);
         }else if(row.name=='areaId'){
@@ -477,6 +491,8 @@
         let cellValue=row.new;
         if(row.name=='subjectClassification') {
           return parseValueToText(cellValue, this.staticData["企业主体分类"]);
+        }else if(row.name=='idType'){
+          return parseValueToText(cellValue, this.staticData["证件类型"]);
         }else if(row.name=='economicNature'){
           return parseValueToText(cellValue, this.staticData["企业经济性质"]);
         }else if(row.name=='areaId'){
@@ -487,8 +503,6 @@
           return cellValue;
         }
       },
-
-
     },
   }
 </script>

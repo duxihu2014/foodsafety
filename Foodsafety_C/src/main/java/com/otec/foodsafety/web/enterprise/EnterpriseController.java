@@ -3,22 +3,13 @@ package com.otec.foodsafety.web.enterprise;
 import com.otec.foodsafety.entity.enterprise.EnterpriseBase;
 import com.otec.foodsafety.entity.enterprise.EnterpriseBaseChange;
 import com.otec.foodsafety.entity.jwt.ObjectRestResponse;
-import com.otec.foodsafety.entity.system.SysInstitution;
 import com.otec.foodsafety.entity.system.SysUser;
 import com.otec.foodsafety.service.enterprise.EnterpriseService;
-import com.otec.foodsafety.service.system.SysInstitutionService;
-import com.otec.foodsafety.service.system.SysUserEnterpriseService;
-import com.otec.foodsafety.service.system.SysUserInstitutionService;
 import com.otec.foodsafety.util.JSONUtils;
 import com.otec.foodsafety.web.VueBaseController;
 import com.otec.foodsafety.web.context.SessionFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("api/enterprise")
@@ -55,9 +46,6 @@ public class EnterpriseController extends VueBaseController<EnterpriseService, E
             resp.setMessage("error");
             return resp;
         }
-
-
     }
-    /*获取企业证照信息*/
 }
 

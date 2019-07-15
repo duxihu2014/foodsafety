@@ -5,8 +5,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.cykj.grcloud.entity.page.GridDataModel;
 import com.cykj.grcloud.entity.page.PageObject;
 import com.cykj.grcloud.service.impl.base.BaseServiceImpl;
-import com.otec.foodsafety.entity.enterprise.EnterpriseCertificateChange;
-import com.otec.foodsafety.entity.enterprise.EnterpriseEquipmentChange;
 import com.otec.foodsafety.entity.enterprise.EnterpriseProduct;
 import com.otec.foodsafety.entity.enterprise.EnterpriseProductChange;
 import com.otec.foodsafety.entity.enterprise.EnterpriseProductExt;
@@ -20,7 +18,6 @@ import com.otec.foodsafety.util.HttpURLConnectionUtils;
 import com.otec.foodsafety.util.ResourceStorage;
 import com.otec.foodsafety.util.ResourceType;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -31,7 +28,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Transactional
@@ -106,30 +102,30 @@ public class EnterpriseProductServiceImpl extends BaseServiceImpl<EnterpriseProd
 	}
 
 	@Override
-	public void addEnterpriseProduct(String uploadUrl, String imageFolder, MultipartFile multipartFile, Long userId,
+	public void addEnterpriseProduct(String uploadUrl, String imageFolder, SysResource resource, Long userId,
 			String reason, EnterpriseProduct enterpriseProduct) throws Exception {
 		EnterpriseProductChange enterpriseProductChange = new EnterpriseProductChange();
 		BeanUtils.copyProperties(enterpriseProduct, enterpriseProductChange);
 		// 1.更新图片资源。
-		if (multipartFile != null) {
-			String fileName = multipartFile.getOriginalFilename();
-			// 1.1先将图片上传服务器
+		if (resource != null) {
+			String fileName = resource.getResourceName();
+            byte[] fileByte = resource.getResourceContent();
+            // 1.1先将图片上传服务器
 			String str = HttpURLConnectionUtils.sendMessage(
-					uploadUrl + "?fileName=" + fileName + "&imageFolder=" + imageFolder, multipartFile.getBytes());
+					uploadUrl + "?fileName=" + fileName + "&imageFolder=" + imageFolder, fileByte);
 			JSONObject jSONObject = JSON.parseObject(str);
 			String path = jSONObject.getString("imgUrl");
 			String subfix = fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length());// 文件后缀
 			String rename = path.split("/")[path.split("/").length - 1];
 			// 1.2.将图片信息写入数据库
-			SysResource resource = new SysResource();
 			resource.setResourceName(fileName);
 			resource.setResourceRename(rename);
-			resource.setResourceStorage(ResourceStorage.LOCAL.toString());
+			resource.setResourceStorage(ResourceStorage.REMOTE.toString());
 			resource.setResourceExtension(subfix);
 			resource.setResourceStatus("1");
 			resource.setResourceType(ResourceType.getTypeBySuffix(resource.getResourceExtension()));
-			resource.setResourceLength(multipartFile.getSize());
 			resource.setResourcePath(path);
+			resource.setResourceContent(null);
 			sysResourceMapper.persist(resource);
 			enterpriseProductChange.setProductPicture(resource.getResourceId());
 		}
@@ -157,7 +153,7 @@ public class EnterpriseProductServiceImpl extends BaseServiceImpl<EnterpriseProd
 	 * 
 	 * @param uploadUrl         上传URL
 	 * @param imageFolder       图片保存文件夹
-	 * @param multipartFile     图片数据
+	 * @param resource          图片数据
 	 * @param userId            当前用户ID
 	 * @param reason            变更原因
 	 * @param enterpriseProduct 企业产品
@@ -165,30 +161,30 @@ public class EnterpriseProductServiceImpl extends BaseServiceImpl<EnterpriseProd
 	 * @throws Exception
 	 */
 	@Override
-	public void modifyEnterpriseProduct(String uploadUrl, String imageFolder, MultipartFile multipartFile, Long userId,
+	public void modifyEnterpriseProduct(String uploadUrl, String imageFolder, SysResource resource, Long userId,
 			String reason, EnterpriseProduct enterpriseProduct, String operType) throws Exception {
 		EnterpriseProductChange enterpriseProductChange = new EnterpriseProductChange();
 		BeanUtils.copyProperties(enterpriseProduct, enterpriseProductChange);
 		// 1.更新图片资源。
-		if (multipartFile != null) {
-			String fileName = multipartFile.getOriginalFilename();
-			// 1.1先将图片上传服务器
+		if (resource != null) {
+			String fileName = resource.getResourceName();
+            byte[] fileByte = resource.getResourceContent();
+            // 1.1先将图片上传服务器
 			String str = HttpURLConnectionUtils.sendMessage(
-					uploadUrl + "?fileName=" + fileName + "&imageFolder=" + imageFolder, multipartFile.getBytes());
+					uploadUrl + "?fileName=" + fileName + "&imageFolder=" + imageFolder, fileByte);
 			JSONObject jSONObject = JSON.parseObject(str);
 			String path = jSONObject.getString("imgUrl");
 			String subfix = fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length());// 文件后缀
 			String rename = path.split("/")[path.split("/").length - 1];
 			// 1.2.将图片信息写入数据库
-			SysResource resource = new SysResource();
 			resource.setResourceName(fileName);
 			resource.setResourceRename(rename);
-			resource.setResourceStorage(ResourceStorage.LOCAL.toString());
+			resource.setResourceStorage(ResourceStorage.REMOTE.toString());
 			resource.setResourceExtension(subfix);
 			resource.setResourceStatus("1");
 			resource.setResourceType(ResourceType.getTypeBySuffix(resource.getResourceExtension()));
-			resource.setResourceLength(multipartFile.getSize());
 			resource.setResourcePath(path);
+            resource.setResourceContent(null);
 			sysResourceMapper.persist(resource);
 			enterpriseProductChange.setProductPicture(resource.getResourceId());
 		}

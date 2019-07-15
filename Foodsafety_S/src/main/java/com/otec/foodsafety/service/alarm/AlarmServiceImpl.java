@@ -3,9 +3,12 @@ package com.otec.foodsafety.service.alarm;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.otec.foodsafety.entity.enterprise.EnterpriseBase;
+import com.otec.foodsafety.mapper.alarm.AlarmMapper;
 import com.otec.foodsafety.mapper.util.PushService;
 import com.otec.foodsafety.service.enterprise.EnterpriseBaseService;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.ibatis.session.RowBounds;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,6 +44,7 @@ public class AlarmServiceImpl extends BaseServiceImpl<Alarm, Long> implements Al
 
 	@Override
 	public GridDataModel getGridDataModelByCondition(PageObject po) {
+
 		String tabType = (String)po.getCondition().get("tabType");
 		if (StringUtils.isNotBlank(tabType)) {
 			if (StringUtils.equalsIgnoreCase("1", tabType)) {
@@ -75,6 +79,13 @@ public class AlarmServiceImpl extends BaseServiceImpl<Alarm, Long> implements Al
                 alarmExt.setVideoUrl("http://101.132.144.237:8080/event_video/"+alarmExt.getVideoUrl());
             }
         }
+
+//		for(AlarmExt alarmExt:results){
+//			alarmExt.setMsg(alarmExt.getMsg().replaceAll("\"event_video\":\"","\"event_video\":\""+"http://101.132.144.237:8080/event_video/"));
+//			alarmExt.setVideoUrl("http://101.132.144.237:8080/event_video/"+alarmExt.getVideoUrl());
+//		}
+
+
 		return new GridDataModel(results, totalCount.intValue());
 	}
 

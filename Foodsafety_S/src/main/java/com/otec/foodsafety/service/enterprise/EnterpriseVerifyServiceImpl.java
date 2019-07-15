@@ -1,7 +1,6 @@
 package com.otec.foodsafety.service.enterprise;
 
 import com.cykj.grcloud.service.impl.base.BaseServiceImpl;
-import com.otec.foodsafety.entity.enterprise.EnterpriseCertificate;
 import com.otec.foodsafety.entity.enterprise.EnterpriseVerify;
 import com.otec.foodsafety.mapper.enterprise.EnterpriseVerifyMapper;
 import org.apache.ibatis.session.RowBounds;
@@ -9,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

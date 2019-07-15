@@ -52,9 +52,9 @@ const idCardNoUtil= {
     var mod = power % 11;
     return idCardNoUtil.parityBit[mod];
   },
-//校验15位的身份证号码
+//校验15位的证件号码
   check15IdCardNo: function (idCardNo) {
-//15位身份证号码的基本校验
+//15位证件号码的基本校验
     var check = /^[1-9]\d{7}((0[1-9])|(1[0-2]))((0[1-9])|([1-2][0-9])|(3[0-1]))\d{3}$/.test(idCardNo);
     if (!check) return false;
 //校验地址码
@@ -67,9 +67,9 @@ const idCardNoUtil= {
 //校验日期码
     return idCardNoUtil.checkBirthDayCode(birDayCode);
   },
-//校验18位的身份证号码
+//校验18位的证件号码
   check18IdCardNo: function (idCardNo) {
-//18位身份证号码的基本格式校验
+//18位证件号码的基本格式校验
     var check = /^[1-9]\d{5}[1-9]\d{3}((0[1-9])|(1[0-2]))((0[1-9])|([1-2][0-9])|(3[0-1]))\d{3}(\d|x|X)$/.test(idCardNo);
     if (!check) return false;
 //校验地址码

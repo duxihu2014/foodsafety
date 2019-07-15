@@ -2,8 +2,6 @@ package com.otec.foodsafety.service.enterprise;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.cykj.grcloud.entity.page.GridDataModel;
-import com.cykj.grcloud.entity.page.PageObject;
 import com.cykj.grcloud.service.impl.base.BaseServiceImpl;
 import com.otec.foodsafety.entity.enterprise.EnterpriseCertificate;
 import com.otec.foodsafety.entity.enterprise.EnterpriseCertificateChange;
@@ -21,7 +19,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 import java.util.List;
@@ -78,31 +75,30 @@ public class EnterpriseCertificateServiceImpl extends BaseServiceImpl<Enterprise
      * @param operType 操作类型 1添加 2 修改 3删除
      */
     @Override
-    public void modifyEnterpriseCertificate(String uploadUrl, String imageFolder,MultipartFile multipartFile,
+    public void modifyEnterpriseCertificate(String uploadUrl, String imageFolder,SysResource resource,
                                             Long userId, String reason, EnterpriseCertificate enterpriseCertificate,String operType) throws Exception{
         EnterpriseCertificateChange enterpriseCertificateChange = new EnterpriseCertificateChange();
         BeanUtils.copyProperties(enterpriseCertificate,enterpriseCertificateChange);
-        //1.更新图片资源。（如果multipartFile为空，说明图片文件没有被修改，则不不要更新资源表）
-        if(multipartFile!=null){
-            String fileName = multipartFile.getOriginalFilename();
+        //1.更新图片资源。（如果resource为空，说明图片文件没有被修改，则不不要更新资源表）
+        if(resource!=null){
+            String fileName = resource.getResourceName();
+            byte[] fileByte = resource.getResourceContent();
             //1.1先将图片上传服务器
             String str = HttpURLConnectionUtils.sendMessage(
-                    uploadUrl + "?fileName=" + fileName+ "&imageFolder="+imageFolder,
-                    multipartFile.getBytes());
+                    uploadUrl + "?fileName=" + fileName+ "&imageFolder="+imageFolder, fileByte);
             JSONObject jSONObject = JSON.parseObject(str);
             String path = jSONObject.getString("imgUrl");
             String subfix= fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length());//文件后缀
             String rename = path.split("/")[path.split("/").length-1];
             //1.2.将图片信息写入数据库
-            SysResource resource = new SysResource();
             resource.setResourceName(fileName);
             resource.setResourceRename(rename);
-            resource.setResourceStorage(ResourceStorage.LOCAL.toString());
+            resource.setResourceStorage(ResourceStorage.REMOTE.toString());
             resource.setResourceExtension(subfix);
             resource.setResourceStatus("1");
             resource.setResourceType(ResourceType.getTypeBySuffix(resource.getResourceExtension()));
-            resource.setResourceLength(multipartFile.getSize());
             resource.setResourcePath( path );
+            resource.setResourceContent(null);
             sysResourceMapper.persist(resource);
             enterpriseCertificateChange.setCertificatePhoto(resource.getResourceId());
         }
@@ -129,40 +125,37 @@ public class EnterpriseCertificateServiceImpl extends BaseServiceImpl<Enterprise
      *
      * @param uploadUrl
      * @param imageFolder
-     * @param multipartFile
+     * @param resource
      * @param userId
      * @param reason
      * @param enterpriseCertificate
      * @throws Exception
      */
     @Override
-    public void addEnterpriseCertificate(String uploadUrl, String imageFolder, MultipartFile multipartFile, Long userId, String reason, EnterpriseCertificate enterpriseCertificate) throws Exception {
+    public void addEnterpriseCertificate(String uploadUrl, String imageFolder, SysResource resource, Long userId, String reason, EnterpriseCertificate enterpriseCertificate) throws Exception {
         EnterpriseCertificateChange enterpriseCertificateChange = new EnterpriseCertificateChange();
         BeanUtils.copyProperties(enterpriseCertificate,enterpriseCertificateChange);
-        //1.更新图片资源。
-        if(multipartFile!=null){
-            String fileName = multipartFile.getOriginalFilename();
-            //1.1先将图片上传服务器
-            String str = HttpURLConnectionUtils.sendMessage(
-                    uploadUrl + "?fileName=" + fileName+ "&imageFolder="+imageFolder,
-                    multipartFile.getBytes());
-            JSONObject jSONObject = JSON.parseObject(str);
-            String path = jSONObject.getString("imgUrl");
-            String subfix= fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length());//文件后缀
-            String rename = path.split("/")[path.split("/").length-1];
-            //1.2.将图片信息写入数据库
-            SysResource resource = new SysResource();
-            resource.setResourceName(fileName);
-            resource.setResourceRename(rename);
-            resource.setResourceStorage(ResourceStorage.LOCAL.toString());
-            resource.setResourceExtension(subfix);
-            resource.setResourceStatus("1");
-            resource.setResourceType(ResourceType.getTypeBySuffix(resource.getResourceExtension()));
-            resource.setResourceLength(multipartFile.getSize());
-            resource.setResourcePath( path );
-            sysResourceMapper.persist(resource);
-            enterpriseCertificateChange.setCertificatePhoto(resource.getResourceId());
-        }
+        //1.添加图片资源。
+        String fileName = resource.getResourceName();
+        byte[] fileByte = resource.getResourceContent();
+        //1.1先将图片上传服务器
+        String str = HttpURLConnectionUtils.sendMessage(
+                uploadUrl + "?fileName=" + fileName+ "&imageFolder="+imageFolder, fileByte);
+        JSONObject jSONObject = JSON.parseObject(str);
+        String path = jSONObject.getString("imgUrl");
+        String subfix= fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length());//文件后缀
+        String rename = path.split("/")[path.split("/").length-1];
+        //1.2.将图片信息写入数据库
+        resource.setResourceName(fileName);
+        resource.setResourceRename(rename);
+        resource.setResourceStorage(ResourceStorage.LOCAL.toString());
+        resource.setResourceExtension(subfix);
+        resource.setResourceStatus("1");
+        resource.setResourceType(ResourceType.getTypeBySuffix(resource.getResourceExtension()));
+        resource.setResourcePath( path );
+        resource.setResourceContent(null);
+        sysResourceMapper.persist(resource);
+        enterpriseCertificateChange.setCertificatePhoto(resource.getResourceId());
         //2.新增证照改变表
         enterpriseCertificateChange.setVerifyStatus("1");//设置状态为待审批
         enterpriseCertificateChange.setChangeType("1");

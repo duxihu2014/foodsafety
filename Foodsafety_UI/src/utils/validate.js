@@ -106,19 +106,19 @@ export function validatePhone2(rule, value, callback) {
 
 //验证身份证(不是必填时)
 export function vaildateIdCard(rule, idCardNo, callback) {
-  //15位和18位身份证号码的基本校验
+  //15位和18位证件号码的基本校验
   if(!idCardNo) return ;
   var check = /^\d{15}|(\d{17}(\d|x|X))$/.test(idCardNo);
-  if(!check) return callback(new Error('请输入正确的身份证号码'));
+  if(!check) return callback(new Error('请输入正确的证件号码'));
   //判断长度为15位或18位
   if(idCardNo.length==15){
     if(!idCardNoUtil.check15IdCardNo(idCardNo)){
-      callback(new Error('请输入正确的身份证号码'));
+      callback(new Error('请输入正确的证件号码'));
     }
 
   }else if(idCardNo.length==18){
      if(!idCardNoUtil.check18IdCardNo(idCardNo))
-       callback(new Error('请输入正确的身份证号码'));
+       callback(new Error('请输入正确的证件号码'));
   }else{
      callback();
   }

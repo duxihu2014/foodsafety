@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import com.otec.foodsafety.entity.system.SysResource;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -101,7 +102,17 @@ public class ComplainEvaluateController extends VueBaseController<ComplainEvalua
 			String uploadUrl = SysInitConfig.getInstance().get(SysInitConfig.CfgProp.UPLOADURL);
 			String imageFolder = SysInitConfig.getInstance().get(SysInitConfig.CfgProp.IMAGEFOLDER);
 			ComplainEvaluate complainEvaluate = JSONUtils.fromJson(complainEvaluateStr, ComplainEvaluate.class);
-			complainEvaluateService.chargeComplainEvaluate(uploadUrl, imageFolder, multipartFileArr,
+			List<SysResource> resourceList = new ArrayList<SysResource>();
+			if (multipartFileArr != null && multipartFileArr.length > 0) {
+				for (MultipartFile multipartFile : multipartFileArr) {
+					SysResource resource = new SysResource();
+					resource.setResourceContent(multipartFile.getBytes());
+					resource.setResourceName(multipartFile.getOriginalFilename());
+					resource.setResourceLength(multipartFile.getSize());
+					resourceList.add(resource);
+				}
+			}
+			complainEvaluateService.chargeComplainEvaluate(uploadUrl, imageFolder, resourceList,
 					sysUser.getUserId(), complainEvaluate, "1");
 		
 			return new ObjectRestResponse<ComplainEvaluate>().rel(true);
@@ -128,8 +139,17 @@ public class ComplainEvaluateController extends VueBaseController<ComplainEvalua
 			String uploadUrl = SysInitConfig.getInstance().get(SysInitConfig.CfgProp.UPLOADURL);
 			String imageFolder = SysInitConfig.getInstance().get(SysInitConfig.CfgProp.IMAGEFOLDER);
 			ComplainEvaluate complainEvaluate = JSONUtils.fromJson(complainEvaluateStr, ComplainEvaluate.class);
-
-			complainEvaluateService.chargeComplainEvaluate(uploadUrl, imageFolder, multipartFileArr,
+			List<SysResource> resourceList = new ArrayList<SysResource>();
+			if (multipartFileArr != null && multipartFileArr.length > 0) {
+				for (MultipartFile multipartFile : multipartFileArr) {
+					SysResource resource = new SysResource();
+					resource.setResourceContent(multipartFile.getBytes());
+					resource.setResourceName(multipartFile.getOriginalFilename());
+					resource.setResourceLength(multipartFile.getSize());
+					resourceList.add(resource);
+				}
+			}
+			complainEvaluateService.chargeComplainEvaluate(uploadUrl, imageFolder, resourceList,
 					sysUser.getUserId(), complainEvaluate, "2");
 
 			return new ObjectRestResponse<ComplainEvaluate>().rel(true);

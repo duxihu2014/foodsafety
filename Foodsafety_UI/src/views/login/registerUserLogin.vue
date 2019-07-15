@@ -58,14 +58,9 @@
           <el-tab-pane label="企业基本信息">
             <el-form label-width="120px" :rules="rules" ref="form1" :model="form.registerBase" >
               <el-row>
-                <el-col :span="11">
+                <el-col :span="22">
                   <el-form-item label="企业名称" prop="enterpriseName" ref="enterpriseName" tab="0">
                     <el-input v-model.trim="form.registerBase.enterpriseName" placeholder="企业名称" :readonly="readable" :clearable="true"></el-input>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="11">
-                  <el-form-item label="社会信用代码" prop="organizingInstitutionBarCode" ref="organizingInstitutionBarCode" tab="0">
-                    <el-input v-model.trim="form.registerBase.organizingInstitutionBarCode" placeholder="社会信用代码" :readonly="readable" :clearable="true"></el-input>
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -76,8 +71,22 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="11">
-                  <el-form-item label="身份证号" prop="idCardNo" ref="idCardNo" tab="0">
-                    <el-input v-model.trim="form.registerBase.idCardNo" placeholder="身份证号" :readonly="readable" :clearable="true"></el-input>
+                  <el-form-item label="社会信用代码" prop="organizingInstitutionBarCode" ref="organizingInstitutionBarCode" tab="0">
+                    <el-input v-model.trim="form.registerBase.organizingInstitutionBarCode" placeholder="社会信用代码" :readonly="readable" :clearable="true"></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+              <el-row>
+                <el-col :span="11">
+                  <el-form-item label="证件类型" prop="idType">
+                    <el-select  v-model="form.registerBase.idType" placeholder="请选择" :readonly="readable" :clearable="true">
+                      <el-option v-for="item in idTypeOptions" :readonly="readable" :key="item.value" :label="item.text" :value="item.value"> </el-option>
+                    </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="11">
+                  <el-form-item label="证件号码" prop="idCardNo" ref="idCardNo" tab="0">
+                    <el-input v-model.trim="form.registerBase.idCardNo" placeholder="证件号码" :readonly="readable" :clearable="true"></el-input>
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -157,18 +166,19 @@
                 </el-col>
               </el-row>
               <el-row >
-                <el-col :span="11">
+                <el-col :span="22">
                   <el-form-item label="注册地址" prop="registerAddress" ref="registerAddress" tab="0">
                     <el-input v-model.trim="form.registerBase.registerAddress" placeholder="注册地址" :readonly="readable" :clearable="true"></el-input>
                   </el-form-item>
                 </el-col>
-                <el-col :span="11">
+              </el-row>
+              <el-row>
+                <el-col :span="22">
                   <el-form-item label="生产地址" prop="productionAddress" ref="productionAddress" tab="0">
                     <el-input v-model.trim="form.registerBase.productionAddress" placeholder="生产地址" :readonly="readable" :clearable="true"></el-input>
                   </el-form-item>
                 </el-col>
               </el-row>
-
               <el-row >
                 <el-col :span="22">
                   <el-form-item label="经营范围" prop="operationScope" ref="operationScope" tab="0">
@@ -236,7 +246,7 @@
           </el-tab-pane>
         </el-tabs>
       </div>
-      <div style="margin-top: 15px;float:right;clear: both;margin-right:50%;" :class="{hideClass:isActive }">
+      <div style="margin-top: 45px;float:right;clear: both;margin-right:50%;" :class="{hideClass:isActive }">
         <el-button  type="primary" @click="commitBtn()">修 改</el-button>
       </div>
     </div>
@@ -268,22 +278,23 @@
           }
         };
         const cardNoValidator = (rule, value, callback) => {
-          //15位和18位身份证号码的基本校验
+          //15位和18位证件号码的基本校验
           if(!value) callback() ;
+          if(this.form.registerBase.idType != '1') callback();
           let check = /^\d{15}|(\d{17}(\d|x|X))$/.test(value);
-          if(!check) return callback(new Error('请输入正确的身份证号码'));
+          if(!check) return callback(new Error('请输入正确的证件号码'));
           //判断长度为15位或18位
           if(value.length==15){
             if(!idCardNoUtil.check15IdCardNo(value)){
-              callback(new Error('请输入正确的身份证号码'));
+              callback(new Error('请输入正确的证件号码'));
             }else callback();
 
           }else if(value.length==18){
             if(!idCardNoUtil.check18IdCardNo(value))
-              callback(new Error('请输入正确的身份证号码'));
+              callback(new Error('请输入正确的证件号码'));
             else callback();
           }else{
-            callback(new Error('请输入正确的身份证号码'));
+            callback(new Error('请输入正确的证件号码'));
           }
         };
         const fileValidator =(rule, value, callback) =>{
@@ -337,7 +348,8 @@
               organizingInstitutionBarCode:[{required: true, message: "请输入社会信用代码", trigger: "blur"},{validator: organizingInstitutionBarCodeValidator, trigger: "blur" }],
               subjectClassification:[{required: true, message: "请选择主体分类", trigger: "blur"}],
               corporateRepresentative:[{required: true, message: "请输入法人代表", trigger: "blur"}],
-              idCardNo:[{required: true, message: "请输入身份证号", trigger: "blur"},{ validator: cardNoValidator, trigger: "blur" }],
+              idType:[{required: true, message: "请选择证件类型", trigger: "blur"}],
+              idCardNo:[{required: true, message: "请输入证件号码", trigger: "blur"},{ validator: cardNoValidator, trigger: "blur" }],
               economicNature:[{required: true, message: "请选择企业经济性质", trigger: "blur"}],
               operationScope:[{required: true, message: "请输入企业经营范围", trigger: "blur"}],
               contacts:[{required: true, message: "请输入联系人", trigger: "blur"}],
@@ -375,6 +387,9 @@
         economicNatureOptions(){
           return this.dictData["企业经济性质"];
         },
+        idTypeOptions(){
+          return this.dictData["证件类型"];
+        }
       },
       created(){
 

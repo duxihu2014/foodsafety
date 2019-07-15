@@ -49,6 +49,7 @@
 			<result property="organizingInstitutionBarCode" column="ORGANIZING_INSTITUTION_BAR_CODE"></result>
 			<result property="subjectClassification" column="SUBJECT_CLASSIFICATION"></result>
 			<result property="corporateRepresentative" column="CORPORATE_REPRESENTATIVE"></result>
+			<result property="idType" column="ID_TYPE"></result>
 			<result property="idCardNo" column="ID_CARD_NO"></result>
 			<result property="registeredCapital" column="REGISTERED_CAPITAL"></result>
 			<result property="economicNature" column="ECONOMIC_NATURE"></result>

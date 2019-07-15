@@ -88,7 +88,7 @@
             :autosize="{ minRows: 2, maxRows: 4}"
             placeholder="请输入处理结果"
             v-model="processingForm.processingResult">
-          </el-input>
+            getAlertObj     </el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer" >

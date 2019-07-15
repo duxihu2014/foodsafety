@@ -6,6 +6,7 @@ import com.otec.foodsafety.entity.enterprise.EnterpriseCertificate;
 import com.otec.foodsafety.entity.enterprise.EnterpriseCertificateChange;
 import com.otec.foodsafety.entity.enterprise.EnterpriseVerify;
 import com.otec.foodsafety.entity.jwt.ObjectRestResponse;
+import com.otec.foodsafety.entity.system.SysResource;
 import com.otec.foodsafety.entity.system.SysUser;
 import com.otec.foodsafety.service.enterprise.EnterpriseCertificateService;
 import com.otec.foodsafety.service.enterprise.EnterpriseVerifyService;
@@ -15,7 +16,6 @@ import com.otec.foodsafety.util.SysInitConfig;
 import com.otec.foodsafety.web.VueBaseController;
 import com.otec.foodsafety.web.context.SessionFilter;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -61,7 +61,14 @@ public class EnterpriseCertificateController extends VueBaseController<Enterpris
             String uploadUrl = SysInitConfig.getInstance().get(SysInitConfig.CfgProp.UPLOADURL);
             String imageFolder = SysInitConfig.getInstance().get(SysInitConfig.CfgProp.IMAGEFOLDER);
             EnterpriseCertificate enterpriseCertificate = JSONUtils.fromJson(enterpriseCertificateStr,EnterpriseCertificate.class);
-            enterpriseCertificateService.modifyEnterpriseCertificate(uploadUrl,imageFolder,multipartFile,sysUser.getUserId(),reason,enterpriseCertificate,"2");
+            SysResource resource = null;
+            if(multipartFile!=null){
+                resource = new SysResource();
+                resource.setResourceName(multipartFile.getOriginalFilename());
+                resource.setResourceContent(multipartFile.getBytes());
+                resource.setResourceLength(multipartFile.getSize());
+            }
+            enterpriseCertificateService.modifyEnterpriseCertificate(uploadUrl,imageFolder,resource,sysUser.getUserId(),reason,enterpriseCertificate,"2");
             return new ObjectRestResponse<EnterpriseCertificateChange>().rel(true);
         }catch(Exception e){
             e.printStackTrace();
@@ -112,7 +119,11 @@ public class EnterpriseCertificateController extends VueBaseController<Enterpris
             String uploadUrl = SysInitConfig.getInstance().get(SysInitConfig.CfgProp.UPLOADURL);
             String imageFolder = SysInitConfig.getInstance().get(SysInitConfig.CfgProp.IMAGEFOLDER);
             EnterpriseCertificate enterpriseCertificate = JSONUtils.fromJson(enterpriseCertificateStr,EnterpriseCertificate.class);
-            enterpriseCertificateService.addEnterpriseCertificate(uploadUrl,imageFolder,multipartFile,sysUser.getUserId(),reason,enterpriseCertificate);
+            SysResource resource = new SysResource();
+            resource.setResourceName(multipartFile.getOriginalFilename());
+            resource.setResourceContent(multipartFile.getBytes());
+            resource.setResourceLength(multipartFile.getSize());
+            enterpriseCertificateService.addEnterpriseCertificate(uploadUrl,imageFolder,resource,sysUser.getUserId(),reason,enterpriseCertificate);
             return new ObjectRestResponse<EnterpriseCertificateChange>().rel(true);
         }catch(Exception e){
             e.printStackTrace();
@@ -227,7 +238,7 @@ public class EnterpriseCertificateController extends VueBaseController<Enterpris
     
     /**
      * 根据企业ID获取证照信息
-     * @param enterpriseId
+     * @param id
      * @return
      */
     @RequestMapping(value="/getCertificateDetail/{id}",method = RequestMethod.GET)

@@ -3,13 +3,11 @@ package com.otec.foodsafety.service.purchase;
 import java.util.List;
 import java.util.Map;
 
-import com.otec.foodsafety.entity.operation.CateringStaff;
 import com.otec.foodsafety.entity.system.SysResource;
 import org.springframework.remoting.service.annotation.RemoteService;
 
 import com.cykj.grcloud.service.base.BaseService;
 import com.otec.foodsafety.entity.purchase.Materials;
-import org.springframework.web.multipart.MultipartFile;
 
 @RemoteService
 public interface MaterialsService extends BaseService<Materials, Long> {
@@ -18,13 +16,13 @@ public interface MaterialsService extends BaseService<Materials, Long> {
 	/**
 	 * 根据原料id得到原料的信息
 	 * 
-	 * @param id
+	 * @param condition
 	 * @return
 	 */
 	Materials findMaterialByCondition(Map<String, Object> condition);
 
 
-	void add(Materials entity, MultipartFile productionCertificateFile, String uploadUrl, String imageFolder) throws  Exception;
+	void add(Materials entity, SysResource resource, String uploadUrl, String imageFolder) throws  Exception;
 
 	Materials findByMaterialId(Long id);
 

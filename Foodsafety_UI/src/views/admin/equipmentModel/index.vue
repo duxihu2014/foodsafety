@@ -26,6 +26,7 @@
         <span class="mg-r-15 head-item" v-if="recoverFlag" @click.stop.prevent="handleRevocer"><i class="fa el-icon-circle-check  menu-icon vam" aria-hidden="true"></i>恢复</span>
       </div>
     </div>
+
     <el-table :key='tableKey' :data="list" v-loading.body="listLoading" border highlight-current-row style="width: 100%" @selection-change="getSelection" :height="height">
       <el-table-column type="selection" width="55">
       </el-table-column>
@@ -60,9 +61,13 @@
         </template>
       </el-table-column>
     </el-table>
+
+
     <div v-show="!listLoading" class="pagination-container">
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page.sync="listQuery.page" :page-sizes="[10,20,30, 50]" :page-size="listQuery.limit" layout="total, sizes, prev, pager, next, jumper" :total="total"> </el-pagination>
     </div>
+
+
     <el-dialog  :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" :before-close="beforeClose" :close-on-click-modal="false">
       <div slot="title">
         <template v-if="textMap[dialogStatus] === '创建'">
@@ -99,12 +104,15 @@
           </el-tab-pane>
         </el-tabs>
       </el-form>
+
       <div slot="footer" class="dialog-footer" v-if="equModel_update">
         <el-button @click="cancel('form')">取 消</el-button>
         <el-button v-if="dialogStatus=='create'" type="primary" @click="create('form')">确 定</el-button>
         <el-button v-else type="primary" @click="update('form')">确 定</el-button>
       </div>
     </el-dialog>
+
+
   </div>
 </template>
 

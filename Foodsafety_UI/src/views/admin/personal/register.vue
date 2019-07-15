@@ -97,8 +97,8 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="11">
-                  <el-form-item label="身份证号" prop="idCardNo">
-                    <el-input v-model="form.idCardNo" placeholder="身份证号" :disabled="true"></el-input>
+                  <el-form-item label="证件号码" prop="idCardNo">
+                    <el-input v-model="form.idCardNo" placeholder="证件号码" :disabled="true"></el-input>
                   </el-form-item>
                 </el-col>
               </el-row>

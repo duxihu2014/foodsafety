@@ -70,7 +70,14 @@ public class MaterialsController extends VueBaseController<MaterialsService, Mat
         try {
             String uploadUrl = SysInitConfig.getInstance().get(SysInitConfig.CfgProp.UPLOADURL);
             String imageFolder = SysInitConfig.getInstance().get(SysInitConfig.CfgProp.IMAGEFOLDER);
-            materialsService.add(entity,productionCertificateFile,uploadUrl,imageFolder);
+            SysResource resource = null;
+            if(productionCertificateFile!=null){
+                resource = new SysResource();
+                resource.setResourceName(productionCertificateFile.getOriginalFilename());
+                resource.setResourceContent(productionCertificateFile.getBytes());
+                resource.setResourceLength(productionCertificateFile.getSize());
+            }
+            materialsService.add(entity,resource,uploadUrl,imageFolder);
             return new ObjectRestResponse<Materials>().rel(true);
         } catch (Exception e) {
             e.printStackTrace();

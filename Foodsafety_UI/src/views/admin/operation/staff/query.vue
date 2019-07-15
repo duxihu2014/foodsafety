@@ -12,7 +12,7 @@
             <el-input @keyup.enter.native="handleFilter" style="width: 200px;" placeholder="" v-model.trim="listQuery.staffName"> </el-input>
           </el-form-item>
 
-          <el-form-item label="身份证号"  class="filter-item">
+          <el-form-item label="证件号码"  class="filter-item">
             <el-input @keyup.enter.native="handleFilter" style="width: 200px;" placeholder="" v-model.trim="listQuery.idCardNo"> </el-input>
           </el-form-item>
 
@@ -32,11 +32,12 @@
 
     <el-table   :data="list" v-loading.body="listLoading" border  highlight-current-row style="width: 100%" @selection-change="getSelection"  :row-class-name="tableRowClassName" :height="height"	>
       <el-table-column  type="selection"  width="55"></el-table-column>
+      <el-table-column  type="selection"  width="55"></el-table-column>
       <el-table-column align="center" label="员工编号" width="100" prop="staffId"></el-table-column>
-      <el-table-column align="center" label="企业名称" width="250" prop="enterpriseName"></el-table-column>
       <el-table-column align="center" label="姓名" width="150" prop="staffName"></el-table-column>
-      <el-table-column align="center" label="性别" width="150" prop="sex" :formatter="sexFormatter"></el-table-column>
-      <el-table-column align="center" label="身份证号" width="200" prop="idCardNo" ></el-table-column>
+      <el-table-column align="center" label="性别" width="100" prop="sex" :formatter="sexFormatter"></el-table-column>
+      <el-table-column align="center" label="证件类型" width="150" prop="idType" :formatter="idTypeFormatter"></el-table-column>
+      <el-table-column align="center" label="证件号码" width="200" prop="idCardNo" ></el-table-column>
       <el-table-column align="center" label="所属部门" width="150" prop="department" ></el-table-column>
       <el-table-column align="center" label="工号" width="150" prop="employeeNumber" ></el-table-column>
       <el-table-column align="center" label="员工状态" width="100" prop="staffStatus" :formatter="statusFormatter"></el-table-column>
@@ -78,7 +79,23 @@
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="身份证号" prop="idCardNo" ref="idCardNo" tab="0">
+                <el-form-item label="性别" prop="sex"  ref="sex" tab="0">
+                  <el-radio-group v-model="form.sex"  :disabled="viewReadOnly"  >
+                    <el-radio v-for="item in  sexOptions"  :key="item.value" :label="item.value" >{{item.text}}</el-radio>
+                  </el-radio-group>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="证件类型" prop="idType">
+                  <el-select  v-model="form.idType" placeholder="请选择" :clearable="true">
+                    <el-option v-for="item in idTypeOptions" :readonly="viewReadOnly" :key="item.value" :label="item.text" :value="item.value"> </el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="证件号码" prop="idCardNo" ref="idCardNo" tab="0">
                   <el-input  v-model.trim="form.idCardNo"  :readonly="viewReadOnly"></el-input>
                 </el-form-item>
               </el-col>
@@ -96,10 +113,8 @@
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="性别" prop="sex"  ref="sex" tab="0">
-                  <el-radio-group v-model="form.sex"  :disabled="viewReadOnly"  >
-                    <el-radio v-for="item in  sexOptions"  :key="item.value" :label="item.value" >{{item.text}}</el-radio>
-                  </el-radio-group>
+                <el-form-item label="住址" prop="homeAddress">
+                  <el-input v-model.trim="form.homeAddress" placeholder=""  :readonly="viewReadOnly"></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -167,15 +182,6 @@
 
 
             </el-row>
-            <el-row>
-              <el-col :span="24">
-                <el-form-item label="住址" prop="homeAddress">
-                  <el-input v-model.trim="form.homeAddress" placeholder=""  :readonly="viewReadOnly"></el-input>
-                </el-form-item>
-              </el-col>
-            </el-row>
-
-
 
           </el-tab-pane>
           <el-tab-pane label="健康证信息">
@@ -273,22 +279,22 @@
         }
       };
       let vaildateIdCard=(rule, idCardNo, callback)=>{
-        //15位和18位身份证号码的基本校验
+        //15位和18位证件号码的基本校验
         if(!idCardNo) callback() ;
         let check = /^\d{15}|(\d{17}(\d|x|X))$/.test(idCardNo);
-        if(!check) return callback(new Error('请输入正确的身份证号码'));
+        if(!check) return callback(new Error('请输入正确的证件号码'));
         //判断长度为15位或18位
         if(idCardNo.length==15){
           if(!idCardNoUtil.check15IdCardNo(idCardNo)){
-            callback(new Error('请输入正确的身份证号码'));
+            callback(new Error('请输入正确的证件号码'));
           }else callback();
 
         }else if(idCardNo.length==18){
           if(!idCardNoUtil.check18IdCardNo(idCardNo))
-            callback(new Error('请输入正确的身份证号码'));
+            callback(new Error('请输入正确的证件号码'));
           else callback();
         }else{
-          callback(new Error('请输入正确的身份证号码'));
+          callback(new Error('请输入正确的证件号码'));
         }
 
       };
@@ -372,8 +378,10 @@
       },
       workTypeOptions(){
         return this.staticData["行业工种"];
+      },
+      idTypeOptions(){
+        return this.staticData["证件类型"];
       }
-
     },
     methods: {
       setAreaId(data){
@@ -462,7 +470,9 @@
       getAreaName(){
         return this.listQuery.areaName;
       },
-
+      idTypeFormatter(row, column, cellValue) {
+        return parseValueToText(cellValue, this.idTypeOptions);
+      },
       resetTmp() {
         if (this.$refs["form"]) {
           this.$refs["form"].resetFields();

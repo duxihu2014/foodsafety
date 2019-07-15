@@ -1,7 +1,10 @@
 package com.otec.foodsafety.web.equipment;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.cykj.grcloud.entity.page.GridDataModel;
 import com.cykj.grcloud.entity.page.PageObject;
+import com.google.common.collect.Maps;
 import com.otec.foodsafety.entity.equipment.Equipment;
 import com.otec.foodsafety.entity.equipment.EquipmentPushflowInfo;
 import com.otec.foodsafety.entity.jwt.AuthService;
@@ -151,7 +154,7 @@ public class AdminEquController extends VueBaseController<EquipmentService, Equi
 		}
 	}
 
-	//播放接口
+//	//播放接口
 //	@RequestMapping(value = "play/{id}", method = RequestMethod.GET)
 //	@ResponseBody
 //	public ObjectRestResponse<Map<String, Object>> play(@PathVariable Long id) {
@@ -196,24 +199,41 @@ public class AdminEquController extends VueBaseController<EquipmentService, Equi
 //	}
 
 
-		@RequestMapping(value = "play/{id}", method = RequestMethod.GET)
+	@RequestMapping(value = "play/{id}", method = RequestMethod.GET)
 	@ResponseBody
 	public ObjectRestResponse<Map<String, Object>> play(@PathVariable Long id) throws IOException {
 			Equipment equipment = equipmentService.findById(id);
+			if(equipment!=null){
+				EquipmentPushflowInfo equipmentPushflowInfo = equipmentPushflowInfoService.findById(equipment.getEquipmentPushId());
+				if(equipmentPushflowInfo!=null){
+					String device_id = equipmentPushflowInfo.getDeviceId();
+					String equipmentId = String.valueOf(id);
+					String rtsp_address = equipment.getVideotapeUrl();
 
-			EquipmentPushflowInfo equipmentPushflowInfo = equipmentPushflowInfoService.findById(equipment.getEquipmentPushId());
-			String device_id = equipmentPushflowInfo.getDeviceId();
-			String equipmentId = String.valueOf(id);
-			String rtsp_address = equipment.getVideotapeUrl();
+					String base64Str = VideoUtil.getBase64Str(rtsp_address,device_id,equipmentId);
+					System.out.println("base64Str--->"+base64Str);
+					String getToken = VideoUtil.getToken(rtsp_address,device_id,equipmentId);
+					System.out.println("getToken--->"+getToken);
 
-			String base64Str = VideoUtil.getBase64Str(rtsp_address,device_id,equipmentId);
-			System.out.println("base64Str--->"+base64Str);
-			String getToken = VideoUtil.getToken(rtsp_address,device_id,equipmentId);
-			System.out.println("getToken--->"+getToken);
+					String returnVal = HttpOk.post("http://58.215.171.233:18080/gsms/video/getCameraM3u8Url?token=" + getToken, base64Str);
 
-			String returnVal = HttpOk.post("http://58.215.171.233:18080/gsms/video/getCameraM3u8Url?token=" + getToken, base64Str);
-			System.out.println("returnVal--->"+returnVal);
-			return new ObjectRestResponse<Equipment>().rel(true).data(returnVal);
+					System.out.println("returnVal--->"+returnVal);
+					JSONObject jsonObject = JSON.parseObject(returnVal);
+					String resultUrl = (String)jsonObject.get("result");
+					System.out.println("result--->"+resultUrl);
+					Map<String, Object> result = Maps.newHashMap();
+					result.put("flag", true);
+					result.put("result", "success");
+					result.put("url", resultUrl);
+					return new ObjectRestResponse<Equipment>().rel(true).data(result);
+				}
+			}
+		Map<String, Object> result = Maps.newHashMap();
+		result.put("flag", false);
+		result.put("result", "success");
+		result.put("url", "");
+		return new ObjectRestResponse<Equipment>().rel(false).data(result);
+
 	}
 
 	/**

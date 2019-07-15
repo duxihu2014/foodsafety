@@ -10,10 +10,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.cykj.grcloud.entity.page.GridDataModel;
 import com.cykj.grcloud.entity.page.PageObject;
@@ -21,8 +19,6 @@ import com.otec.foodsafety.entity.enterprise.EnterpriseMaterial;
 import com.otec.foodsafety.entity.enterprise.EnterpriseMaterialChange;
 import com.otec.foodsafety.entity.enterprise.EnterpriseMaterialExt;
 import com.otec.foodsafety.entity.enterprise.EnterpriseProduct;
-import com.otec.foodsafety.entity.enterprise.EnterpriseProductChange;
-import com.otec.foodsafety.entity.enterprise.EnterpriseProductExt;
 import com.otec.foodsafety.entity.enterprise.EnterpriseVerify;
 import com.otec.foodsafety.entity.jwt.ObjectRestResponse;
 import com.otec.foodsafety.entity.system.SysUser;
@@ -31,7 +27,6 @@ import com.otec.foodsafety.service.enterprise.EnterpriseMaterialService;
 import com.otec.foodsafety.service.enterprise.EnterpriseVerifyService;
 import com.otec.foodsafety.util.CompareObjectUtil;
 import com.otec.foodsafety.util.JSONUtils;
-import com.otec.foodsafety.util.SysInitConfig;
 import com.otec.foodsafety.web.VueBaseController;
 import com.otec.foodsafety.web.context.SessionFilter;
 
@@ -56,7 +51,7 @@ public class EnterpriseMaterialController
 	/**
 	 * 通过变更编号获取变更记录，对比历史记录返回同列内容不同的信息
 	 * 
-	 * @param id变更编号
+	 * @param id
 	 * 
 	 */
 	@RequestMapping(value = "/getChange/{id}", method = RequestMethod.GET)
@@ -91,7 +86,7 @@ public class EnterpriseMaterialController
 	 * @param verifyId         企业信息审批表主键
 	 */
 	@RequestMapping(value = "/verify", method = RequestMethod.POST)
-	public ObjectRestResponse<EnterpriseVerify> auditEnterpriseCertificate(@RequestParam("changeId") String changeId,
+	public ObjectRestResponse<EnterpriseVerify> auditEnterpriseMaterial(@RequestParam("changeId") String changeId,
 			@RequestParam("auditType") String auditType, @RequestParam("verifyConclusion") String verifyConclusion,
 			@RequestParam("verifyId") String verifyId) {
 		try {
@@ -137,14 +132,12 @@ public class EnterpriseMaterialController
 
 	/**
 	 * 添加企业原料信息
-	 * 
-	 * @param multipartFile
-	 * @param enterpriseCertificateStr
+	 * @param enterpriseMaterialStr
 	 * @param reason
 	 * @return
 	 */
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
-	public ObjectRestResponse<EnterpriseMaterialChange> addCertificate(
+	public ObjectRestResponse<EnterpriseMaterialChange> addEnterpriseMaterial(
 			@RequestParam(value = "EnterpriseMaterial") String enterpriseMaterialStr,
 			@RequestParam(value = "reason") String reason) {
 		try {
@@ -166,20 +159,18 @@ public class EnterpriseMaterialController
 	/**
 	 * 修改
 	 * 
-	 * @param multipartFile
-	 * @param enterpriseCertificateStr
+	 * @param enterpriseMaterialStr
 	 * @param reason
 	 * @return
 	 */
 	@RequestMapping(value = "/change", method = RequestMethod.POST)
-	public ObjectRestResponse<EnterpriseMaterialChange> changrCertificate(
-			@RequestParam(value = "EnterpriseMaterial") String enterpriseProductStr,
+	public ObjectRestResponse<EnterpriseMaterialChange> changeEnterpriseMaterial(
+			@RequestParam(value = "EnterpriseMaterial") String enterpriseMaterialStr,
 			@RequestParam(value = "reason") String reason) {
 		try {
 			SysUser sysUser = sessionFilter.getJWTUser(request);
 
-			EnterpriseMaterial enterpriseMaterial = JSONUtils.fromJson(enterpriseProductStr, EnterpriseMaterial.class);
-
+			EnterpriseMaterial enterpriseMaterial = JSONUtils.fromJson(enterpriseMaterialStr, EnterpriseMaterial.class);
 			enterpriseMaterialService.modifyEnterpriseMaterial(sysUser.getUserId(), reason, enterpriseMaterial, "2");// 修改
 			return new ObjectRestResponse<EnterpriseMaterialChange>().rel(true);
 		} catch (Exception e) {
