@@ -135,7 +135,10 @@ public class AdminAlertController extends VueBaseController<AlarmService, Alarm,
 	public ObjectRestResponse<Alarm> get(@PathVariable Long id) {
 
 		Alarm alarm = alarmService.findById(id);
+
+		alarm.setMsg(alarm.getMsg().replaceAll("\"event_video\":\"","\"event_video\":\""+"http://101.132.144.237:8080/event_video/"));
 		alarm.setVideoUrl("http://101.132.144.237:8080/event_video/"+alarm.getVideoUrl());
+
 		return new ObjectRestResponse<Alarm>().rel(true)
 				.data(alarm);
 	}

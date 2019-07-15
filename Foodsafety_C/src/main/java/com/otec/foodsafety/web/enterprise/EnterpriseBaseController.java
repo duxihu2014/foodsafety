@@ -1,43 +1,28 @@
 package com.otec.foodsafety.web.enterprise;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.cykj.grcloud.entity.page.GridDataModel;
 import com.cykj.grcloud.entity.page.PageObject;
 import com.otec.foodsafety.entity.enterprise.*;
 import com.otec.foodsafety.entity.jwt.AuthService;
 import com.otec.foodsafety.entity.jwt.ObjectRestResponse;
-import com.otec.foodsafety.entity.safety.OnsiteVerificationResult;
-import com.otec.foodsafety.entity.safety.OnsiteVerificationResultItem;
 import com.otec.foodsafety.entity.supervisory.PersonnelThree;
-import com.otec.foodsafety.entity.system.SysResource;
 import com.otec.foodsafety.entity.system.SysUser;
 import com.otec.foodsafety.service.enterprise.EnterpriseBaseService;
 import com.otec.foodsafety.service.enterprise.EnterpriseSupervisionService;
 import com.otec.foodsafety.service.enterprise.EnterpriseVerifyService;
 import com.otec.foodsafety.service.supervisory.PersonnelThreeService;
 import com.otec.foodsafety.util.CompareObjectUtil;
-import com.otec.foodsafety.util.HttpURLConnectionUtils;
 import com.otec.foodsafety.util.JSONUtils;
-import com.otec.foodsafety.util.ResourceStorage;
-import com.otec.foodsafety.util.ResourceType;
-import com.otec.foodsafety.util.SysInitConfig;
-import com.otec.foodsafety.util.vo.FrontUser;
 import com.otec.foodsafety.web.VueBaseController;
 import com.otec.foodsafety.web.context.SessionFilter;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 @RestController
 @RequestMapping("api/enterpriseBase")

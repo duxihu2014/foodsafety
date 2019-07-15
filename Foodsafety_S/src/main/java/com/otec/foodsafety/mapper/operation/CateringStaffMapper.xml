@@ -25,15 +25,13 @@
 		</where>
 	</sql>
 
-
-
 	<resultMap id="BaseResultMap" type="com.otec.foodsafety.entity.operation.CateringStaff" >
 		<id column="STAFF_ID" property="staffId" jdbcType="INTEGER" />
-
 		<result column="ENTERPRISE_ID" property="enterpriseId" jdbcType="INTEGER" />
 		<result column="ENTERPRISE_NAME" property="enterpriseName" jdbcType="INTEGER" />
 		<result column="STAFF_NAME" property="staffName" jdbcType="VARCHAR" />
 		<result column="SEX" property="sex" jdbcType="VARCHAR" />
+		<result column="ID_TYPE" property="idType" jdbcType="VARCHAR" />
 		<result column="ID_CARD_NO" property="idCardNo" jdbcType="VARCHAR" />
 		<result column="BIRTH_DATE" property="birthDate" jdbcType="DATE" />
 		<result column="HOME_ADDRESS" property="homeAddress" jdbcType="VARCHAR" />

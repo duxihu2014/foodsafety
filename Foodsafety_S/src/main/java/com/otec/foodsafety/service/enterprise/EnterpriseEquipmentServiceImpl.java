@@ -2,7 +2,6 @@ package com.otec.foodsafety.service.enterprise;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -13,26 +12,17 @@ import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.cykj.grcloud.entity.page.GridDataModel;
 import com.cykj.grcloud.entity.page.PageObject;
 import com.cykj.grcloud.service.impl.base.BaseServiceImpl;
 import com.otec.foodsafety.entity.enterprise.EnterpriseEquipment;
 import com.otec.foodsafety.entity.enterprise.EnterpriseEquipmentChange;
 import com.otec.foodsafety.entity.enterprise.EnterpriseEquipmentExt;
-import com.otec.foodsafety.entity.enterprise.EnterpriseProduct;
-import com.otec.foodsafety.entity.enterprise.EnterpriseProductChange;
-import com.otec.foodsafety.entity.enterprise.EnterpriseProductExt;
 import com.otec.foodsafety.entity.enterprise.EnterpriseVerify;
-import com.otec.foodsafety.entity.system.SysResource;
 import com.otec.foodsafety.mapper.enterprise.EnterpriseEquipmentChangeMapper;
 import com.otec.foodsafety.mapper.enterprise.EnterpriseEquipmentMapper;
 import com.otec.foodsafety.mapper.enterprise.EnterpriseVerifyMapper;
 import com.otec.foodsafety.mapper.system.SysResourceMapper;
-import com.otec.foodsafety.util.HttpURLConnectionUtils;
-import com.otec.foodsafety.util.ResourceStorage;
-import com.otec.foodsafety.util.ResourceType;
 
 @Service
 @Transactional
@@ -99,9 +89,9 @@ public class EnterpriseEquipmentServiceImpl extends BaseServiceImpl<EnterpriseEq
 	}
 
 	@Override
-	public EnterpriseEquipmentExt getEnterpriseEquipmentById(Long productId) {
+	public EnterpriseEquipmentExt getEnterpriseEquipmentById(Long equipmentId) {
 		Map<String, Object> cond = new HashMap<String, Object>();
-		cond.put("productId", productId);
+		cond.put("equipmentId", equipmentId);
 		List<EnterpriseEquipmentExt> item = enterpriseEquipmentMapper.findEnterpriseEquipmentByCondition(cond);
 
 		return item == null ? null : item.get(0);

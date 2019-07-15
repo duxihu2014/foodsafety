@@ -95,6 +95,7 @@ public class RegisterVerifyServiceImpl extends BaseServiceImpl<RegisterVerify, L
             enterpriseBase.setAreaId(registerBase.getAreaId());
             enterpriseBase.setEconomicNature(registerBase.getEconomicNature());
             enterpriseBase.setEnterpriseStatus("0");
+            enterpriseBase.setIdType(registerBase.getIdType());
             enterpriseBase.setIdCardNo(registerBase.getIdCardNo());
             enterpriseBase.setSubjectClassification(registerBase.getSubjectClassification());
             enterpriseBase.setRegisterAddress(registerBase.getRegisterAddress());

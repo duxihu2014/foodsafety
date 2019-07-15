@@ -1,5 +1,6 @@
 package com.otec.foodsafety.web.equipment;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.codec.binary.Base64;
@@ -139,8 +140,9 @@ public class VideoUtil {
         String returnVal = HttpOk.post("http://58.215.171.233:18080/gsms/video/getCameraM3u8Url?token=" + getToken, base64Str);
         System.out.println("returnVal--->"+returnVal);
 
-
-
+        JSONObject jsonObject = JSON.parseObject(returnVal);
+        String result = (String)jsonObject.get("result");
+        System.out.println("result--->"+result);
 //        String postUrlStr = "http://58.215.171.233:18080/gsms/video/set_video_device_info";
 //        HttpOk.post(postUrlStr, "{\"id\":\"ig_qft2rg3s9u5_6\",\"deviceId\":\"19g06k03r4\",\"name\":\"达永推流设备1\"}");
 

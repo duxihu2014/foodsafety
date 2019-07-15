@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import java.lang.reflect.Type;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -87,7 +86,11 @@ public class RegisterController {
             }.getType());
             String uploadUrl = SysInitConfig.getInstance().get(SysInitConfig.CfgProp.UPLOADURL);
             String imageFolder = SysInitConfig.getInstance().get(SysInitConfig.CfgProp.IMAGEFOLDER);
-            registerService.addRegister(registerUserMap, registerBaseMap, registerCertificateMap, multipartFile, uploadUrl, imageFolder);
+            SysResource resource = new SysResource();
+            resource.setResourceName(multipartFile.getOriginalFilename());
+            resource.setResourceContent(multipartFile.getBytes());
+            resource.setResourceLength(multipartFile.getSize());
+            registerService.addRegister(registerUserMap, registerBaseMap, registerCertificateMap, resource, uploadUrl, imageFolder);
             return ResponseEntity.ok("success");
         } catch (Exception e) {
             e.printStackTrace();
@@ -166,7 +169,15 @@ public class RegisterController {
             String uploadUrl = SysInitConfig.getInstance().get(SysInitConfig.CfgProp.UPLOADURL);
             String imageFolder = SysInitConfig.getInstance().get(SysInitConfig.CfgProp.IMAGEFOLDER);
             RegisterUser registerUser = JSONUtils.fromJson(registerUserStr,RegisterUser.class);
-            registerService.updateRegister(registerUser,multipartFile,uploadUrl,imageFolder);
+            SysResource resource = null;
+            if(multipartFile!=null){
+                //如果multipartFile不为空则说明图片修改了，需要更新图片
+                resource = sysResourceService.getResourceById(registerUser.getRegisterCertificate().getCertificatePhoto());
+                resource.setResourceName(multipartFile.getOriginalFilename());
+                resource.setResourceContent(multipartFile.getBytes());
+                resource.setResourceLength(multipartFile.getSize());
+            }
+            registerService.updateRegister(registerUser,resource,uploadUrl,imageFolder);
             return new ObjectRestResponse<RegisterUser>().rel(true);
         } catch (Exception e) {
             e.printStackTrace();

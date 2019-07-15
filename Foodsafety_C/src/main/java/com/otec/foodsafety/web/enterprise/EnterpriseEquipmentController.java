@@ -10,21 +10,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.cykj.grcloud.entity.page.GridDataModel;
 import com.cykj.grcloud.entity.page.PageObject;
 import com.otec.foodsafety.entity.enterprise.EnterpriseEquipment;
 import com.otec.foodsafety.entity.enterprise.EnterpriseEquipmentChange;
 import com.otec.foodsafety.entity.enterprise.EnterpriseEquipmentExt;
-import com.otec.foodsafety.entity.enterprise.EnterpriseMaterial;
-import com.otec.foodsafety.entity.enterprise.EnterpriseMaterialChange;
 import com.otec.foodsafety.entity.enterprise.EnterpriseMaterialExt;
 import com.otec.foodsafety.entity.enterprise.EnterpriseProduct;
-import com.otec.foodsafety.entity.enterprise.EnterpriseScale;
 import com.otec.foodsafety.entity.enterprise.EnterpriseVerify;
 import com.otec.foodsafety.entity.jwt.ObjectRestResponse;
 import com.otec.foodsafety.entity.system.SysUser;
@@ -59,7 +54,7 @@ public class EnterpriseEquipmentController
 	
 	/**
 	 * 通过变更编号获取变更记录，对比历史记录返回同列内容不同的信息
-	 * @param id变更编号
+	 * @param id
 	 * 
 	 * */
 	@RequestMapping(value = "/getChange/{id}", method = RequestMethod.GET)
@@ -98,7 +93,7 @@ public class EnterpriseEquipmentController
 	 * @param verifyId 企业信息审批表主键
 	 * */
 	@RequestMapping(value="/verify",method = RequestMethod.POST)
-    public ObjectRestResponse<EnterpriseVerify> auditEnterpriseCertificate(@RequestParam("changeId") String changeId,
+    public ObjectRestResponse<EnterpriseVerify> auditEnterpriseEquipment(@RequestParam("changeId") String changeId,
                                                                            @RequestParam("auditType") String auditType,
                                                                            @RequestParam("verifyConclusion") String verifyConclusion,
                                                                            @RequestParam("verifyId") String verifyId) {
@@ -139,22 +134,19 @@ public class EnterpriseEquipmentController
 
 
 	/**
-	 * 添加企业产品信息
+	 * 添加企业设备
 	 * 
-	 * @param multipartFile
-	 * @param enterpriseCertificateStr
+	 * @param enterpriseEquipmentStr
 	 * @param reason
 	 * @return
 	 */
 	@RequestMapping(value = "/add", method = RequestMethod.POST)
-	public ObjectRestResponse<EnterpriseEquipmentChange> addCertificate(			
+	public ObjectRestResponse<EnterpriseEquipmentChange> addEquipment(
 			@RequestParam(value = "EnterpriseEquipment") String enterpriseEquipmentStr,
 			@RequestParam(value = "reason") String reason) {
 		try {
 			SysUser sysUser = sessionFilter.getJWTUser(request);
-
 			EnterpriseEquipment enterpriseEqu = JSONUtils.fromJson(enterpriseEquipmentStr, EnterpriseEquipment.class);
-
 			enterpriseEquipmentService.addEnterpriseEquipment(sysUser.getUserId(), reason, enterpriseEqu);
 			return new ObjectRestResponse<EnterpriseEquipmentChange>().rel(true);
 		} catch (Exception e) {
@@ -167,22 +159,19 @@ public class EnterpriseEquipmentController
 	}
 
 	/**
-	 * 修改企业证照信息
+	 * 修改企业设备信息
 	 * 
-	 * @param multipartFile
-	 * @param enterpriseCertificateStr
+	 * @param enterpriseEquipmentStr
 	 * @param reason
 	 * @return
 	 */
 	@RequestMapping(value = "/change", method = RequestMethod.POST)
-	public ObjectRestResponse<EnterpriseEquipmentChange> changrCertificate(
-			@RequestParam(value = "EnterpriseEquipment") String enterpriseProductStr,
+	public ObjectRestResponse<EnterpriseEquipmentChange> changeEquipment(
+			@RequestParam(value = "EnterpriseEquipment") String enterpriseEquipmentStr,
 			@RequestParam(value = "reason") String reason) {
 		try {
 			SysUser sysUser = sessionFilter.getJWTUser(request);
-
-			EnterpriseEquipment enterpriseEqu = JSONUtils.fromJson(enterpriseProductStr, EnterpriseEquipment.class);
-
+			EnterpriseEquipment enterpriseEqu = JSONUtils.fromJson(enterpriseEquipmentStr, EnterpriseEquipment.class);
 			enterpriseEquipmentService.modifyEnterpriseEquipment(sysUser.getUserId(), reason, enterpriseEqu, "2");// 修改
 			return new ObjectRestResponse<EnterpriseEquipmentChange>().rel(true);
 		} catch (Exception e) {
@@ -218,7 +207,7 @@ public class EnterpriseEquipmentController
      * @return
      */
     @RequestMapping(value = "/verify/query" ,method = RequestMethod.GET)
-    public GridDataModel getCertificateChangePage(@RequestParam Map<String, String> params) {
+    public GridDataModel getEquipmentChangePage(@RequestParam Map<String, String> params) {
     	  // 查询列表数据
         PageObject po = getPageObject(params);
         po.getCondition().putAll(params);

@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -75,30 +74,26 @@ public  class CateringStaffServiceImpl extends BaseServiceImpl<CateringStaff, Lo
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public void add(CateringStaff cs, CateringStaffCertificate csc, MultipartFile imageFile,String uploadUrl,String imageFolder) throws Exception {
-     //    CateringStaffCertificate staffCert =entity.getStaffCert();
-         cateringStaffMapper.persist(cs);
-
-        String fileName = imageFile.getOriginalFilename();
+    public void add(CateringStaff cs, CateringStaffCertificate csc, SysResource resource,String uploadUrl,String imageFolder) throws Exception {
+        cateringStaffMapper.persist(cs);
+        String fileName = resource.getResourceName();
+        byte[] fileByte = resource.getResourceContent();
         String str = HttpURLConnectionUtils.sendMessage(
-                uploadUrl + "?fileName=" + fileName+ "&imageFolder="+imageFolder,
-                imageFile.getBytes());
+                uploadUrl + "?fileName=" + fileName+ "&imageFolder="+imageFolder,fileByte);
         JSONObject jSONObject = JSON.parseObject(str);
         String path = jSONObject.getString("imgUrl");
         String subfix= fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length());//文件后缀
         String rename = path.split("/")[path.split("/").length-1];
         //2.将图片信息写入数据库
-        SysResource resource = new SysResource();
         resource.setResourceName(fileName);
         resource.setResourceRename(rename);
         resource.setResourceStorage(ResourceStorage.LOCAL.toString());
         resource.setResourceExtension(subfix);
         resource.setResourceStatus("1");
         resource.setResourceType(ResourceType.getTypeBySuffix(resource.getResourceExtension()));
-        resource.setResourceLength(imageFile.getSize());
         resource.setResourcePath( path );
+        resource.setResourceContent(null);
         sysResourceMapper.persist(resource);
-
         csc.setCertificatePhoto(resource.getResourceId());
         csc.setStaffId(cs.getStaffId());
         csc.setCertificateStatus("1");
@@ -109,63 +104,52 @@ public  class CateringStaffServiceImpl extends BaseServiceImpl<CateringStaff, Lo
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public void update(CateringStaff cs, CateringStaffCertificate csc, MultipartFile imageFile,String uploadUrl,String imageFolder)throws Exception {
+    public void update(CateringStaff cs, CateringStaffCertificate csc, SysResource resource,String uploadUrl,String imageFolder)throws Exception {
         CateringStaff old=cateringStaffMapper.findById(cs.getStaffId());
         CommonUtil.copyBean(cs,old,false);
         cateringStaffMapper.updateById(old);
 
         CateringStaffCertificate cscold=cateringStaffCertificateMapper.findById(csc.getCertificateId());
-
-        if(imageFile!=null){
-            String fileName = imageFile.getOriginalFilename();
+        if(resource!=null){
+            String fileName = resource.getResourceName();
+            byte[] fileByte = resource.getResourceContent();
             //1.先将图片上传服务器
             String str = HttpURLConnectionUtils.sendMessage(
-                    uploadUrl + "?fileName=" + fileName+ "&imageFolder="+imageFolder,
-                    imageFile.getBytes());
+                    uploadUrl + "?fileName=" + fileName+ "&imageFolder="+imageFolder,fileByte);
             JSONObject jSONObject = JSON.parseObject(str);
             String path = jSONObject.getString("imgUrl");
             String subfix= fileName.substring(fileName.lastIndexOf(".") + 1, fileName.length());//文件后缀
             String rename = path.split("/")[path.split("/").length-1];
             //2.将图片信息写入数据库
-            SysResource resource  =sysResourceMapper.getResourceById(cscold.getCertificatePhoto());
-
             resource.setResourceName(fileName);
             resource.setResourceRename(rename);
             resource.setResourceStorage(ResourceStorage.LOCAL.toString());
             resource.setResourceExtension(subfix);
             resource.setResourceStatus("1");
             resource.setResourceType(ResourceType.getTypeBySuffix(resource.getResourceExtension()));
-            resource.setResourceLength(imageFile.getSize());
             resource.setResourcePath( path );
-
+            resource.setResourceContent(null);
             if(cscold.getCertificateNumber().equals(csc.getCertificateNumber())){ //替换
-
                 sysResourceMapper.updateResource(resource);
                 csc.setCertificatePhoto(resource.getResourceId());
-
-            }else//更新
-            {
+            }else{//更新
                 sysResourceMapper.addResource(resource);
                 csc.setCertificatePhoto(resource.getResourceId());
             }
         }
-
         if(cscold.getCertificateNumber().equals(csc.getCertificateNumber())){ //替换
             csc.setCertificateStatus(cscold.getCertificateStatus());
             csc.setCertificatePhoto(cscold.getCertificatePhoto());
-              CommonUtil.copyBean(csc,cscold,false);
+            CommonUtil.copyBean(csc,cscold,false);
             cateringStaffCertificateMapper.updateById(cscold);
 
-        }else//更新
-        {
+        }else {//更新
             csc.setStaffId(cs.getStaffId());
-
             cscold.setCertificateStatus("2");//设置老数据过期
             cateringStaffCertificateMapper.updateById(cscold);
             csc.setCertificateStatus("1");
             cateringStaffCertificateMapper.persist(csc);
         }
-
      }
 
     @Override

@@ -20,14 +20,14 @@ public interface EnterpriseMaterialService extends BaseService<EnterpriseMateria
 	EnterpriseMaterialChange findByChangeId(Long id);
 
 	void verifyEnterpriseCertificate(EnterpriseMaterial enterpriseMaterial, EnterpriseMaterialChange emc,
-			EnterpriseVerify enterpriseVerify);
+                                     EnterpriseVerify enterpriseVerify);
 
 	/**
 	 * 得到页面列表分页数据
 	 */
 	GridDataModel getGridDataModelByCondition(PageObject po);
 
-	EnterpriseMaterialExt getEnterpriseMaterialById(Long productId);
+	EnterpriseMaterialExt getEnterpriseMaterialById(Long materialId);
 
 	/**
 	 * 添加
@@ -35,7 +35,7 @@ public interface EnterpriseMaterialService extends BaseService<EnterpriseMateria
 	 * 
 	 * @param userId            当前用户ID
 	 * @param reason            变更原因
-	 * @param enterpriseProduct 企业产品
+	 * @param enterpriseMaterial 企业原料
 	 * @throws Exception
 	 */
 	void addEnterpriseMaterial(Long userId, String reason, EnterpriseMaterial enterpriseMaterial) throws Exception;
@@ -46,7 +46,7 @@ public interface EnterpriseMaterialService extends BaseService<EnterpriseMateria
 	 * 
 	 * @param userId            当前用户ID
 	 * @param reason            变更原因
-	 * @param enterpriseProduct 企业产品
+	 * @param enterpriseMaterial 企业原料
 	 * @param operType          操作类型 1添加 2 修改 3删除
 	 * @throws Exception
 	 */

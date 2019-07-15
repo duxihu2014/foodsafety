@@ -5,9 +5,12 @@ import com.cykj.grcloud.entity.page.PageObject;
 import com.otec.foodsafety.entity.operation.CateringStaff;
 import com.otec.foodsafety.entity.operation.CateringStaffCertificate;
 import com.otec.foodsafety.entity.jwt.ObjectRestResponse;
+import com.otec.foodsafety.entity.system.SysResource;
 import com.otec.foodsafety.entity.system.SysUser;
 import com.otec.foodsafety.service.catering.CateringStaffService;
+import com.otec.foodsafety.service.catering.StaffCertificateService;
 import com.otec.foodsafety.service.system.SysAreaService;
+import com.otec.foodsafety.service.system.SysResourceService;
 import com.otec.foodsafety.util.DateUtils;
 import com.otec.foodsafety.util.StringUtils;
 import com.otec.foodsafety.util.SysInitConfig;
@@ -18,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -29,10 +31,13 @@ public class CateringStaffController extends VueBaseController<CateringStaffServ
     @Autowired
     private CateringStaffService cateringStaffService;
     @Autowired
+    StaffCertificateService staffCertificateService;
+    @Autowired
     private SessionFilter sessionFilter;
     @Autowired
     SysAreaService sysAreaService;
-
+    @Autowired
+    SysResourceService sysResourceService;
 
     @Override
      public GridDataModel list(@RequestParam Map<String, String> params) {
@@ -59,6 +64,7 @@ public class CateringStaffController extends VueBaseController<CateringStaffServ
     public ObjectRestResponse<CateringStaff> save(
               @RequestParam(value = "imageFile",required = false) MultipartFile imageFile,
               @RequestParam("staffName") String staffName,
+              @RequestParam("idType") String idType,
               @RequestParam("idCardNo")String idCardNo,
               @RequestParam("sex")String sex,
               @RequestParam("enterpriseId")String enterpriseId,
@@ -80,11 +86,10 @@ public class CateringStaffController extends VueBaseController<CateringStaffServ
               @RequestParam(value = "certificateId",required = false)String certificateId,
               @RequestParam(value = "staffId",required = false)String staffId) {
         try {
-
             CateringStaff cs=new CateringStaff();
-
             cs.setEnterpriseId(Long.parseLong(enterpriseId));
             cs.setStaffName(staffName);
+            cs.setIdType(idType);
             cs.setIdCardNo(idCardNo);
             cs.setSex(sex);
             cs.setBirthDate(DateUtils.getDate(birthDate,"yyyy-MM-dd"));
@@ -105,17 +110,25 @@ public class CateringStaffController extends VueBaseController<CateringStaffServ
             csc.setValidDate(DateUtils.getDate(validDate,"yyyy-MM-dd"));
             csc.setIssuingDate(DateUtils.getDate(issuingDate,"yyyy-MM-dd"));
             csc.setIssuingUnit(issuingUnit);
-
             String uploadUrl = SysInitConfig.getInstance().get(SysInitConfig.CfgProp.UPLOADURL);
             String imageFolder = SysInitConfig.getInstance().get(SysInitConfig.CfgProp.IMAGEFOLDER);
-
-            if(StringUtils.isBlankString(staffId)){
-                cateringStaffService.add(cs,csc,imageFile, uploadUrl, imageFolder);
-            }
-            else{
+            SysResource resource = null;
+            if(StringUtils.isBlankString(staffId)){//新增
+                resource = new SysResource();
+                resource.setResourceName(imageFile.getOriginalFilename());
+                resource.setResourceContent(imageFile.getBytes());
+                resource.setResourceLength(imageFile.getSize());
+                cateringStaffService.add(cs,csc,resource, uploadUrl, imageFolder);
+            }else{//更新
                 cs.setStaffId(Long.parseLong(staffId));
                 csc.setStaffId(cs.getStaffId());
-                cateringStaffService.update(cs,csc,imageFile, uploadUrl, imageFolder);
+                if(imageFile!=null){
+                    resource = sysResourceService.findById(staffCertificateService.findById(csc.getCertificateId()).getCertificatePhoto());
+                    resource.setResourceName(imageFile.getOriginalFilename());
+                    resource.setResourceContent(imageFile.getBytes());
+                    resource.setResourceLength(imageFile.getSize());
+                }
+                cateringStaffService.update(cs,csc,resource, uploadUrl, imageFolder);
             }
             return new ObjectRestResponse<CateringStaff>().rel(true);
 
@@ -127,9 +140,6 @@ public class CateringStaffController extends VueBaseController<CateringStaffServ
             return resp;
         }
     }
-
-
-
 
     @Override
     public ObjectRestResponse<CateringStaff> get(@PathVariable Long id) {

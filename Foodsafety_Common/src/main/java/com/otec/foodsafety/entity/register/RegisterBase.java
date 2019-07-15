@@ -1,11 +1,11 @@
 package com.otec.foodsafety.entity.register;
 
-import java.io.Serializable;
-import java.util.Date;
-
 import org.apache.ibatis.annotation.myibatis.DataBase;
 import org.apache.ibatis.annotation.myibatis.Table;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import java.io.Serializable;
+import java.util.Date;
 
 @Table(dataBase = DataBase.MYSQL, tabName = "T_REGISTER_BASE", pkId = "registerId", seqName = "",notColumn = {""})
 public class RegisterBase implements Serializable {
@@ -27,6 +27,8 @@ private static final long serialVersionUID = 1L;
 	private String subjectClassification;
 	
 	private String corporateRepresentative;
+
+	private String idType;
 	
 	private String idCardNo;
 	
@@ -111,6 +113,14 @@ private static final long serialVersionUID = 1L;
 	 
 	public String getCorporateRepresentative() {
 		return this.corporateRepresentative;
+	}
+
+	public String getIdType() {
+		return idType;
+	}
+
+	public void setIdType(String idType) {
+		this.idType = idType;
 	}
 
 	public void setIdCardNo(String idCardNo) {

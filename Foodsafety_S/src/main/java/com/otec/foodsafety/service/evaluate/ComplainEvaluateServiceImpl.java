@@ -1,5 +1,6 @@
 package com.otec.foodsafety.service.evaluate;
 
+import com.otec.foodsafety.entity.system.SysResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -47,22 +48,18 @@ public class ComplainEvaluateServiceImpl extends BaseServiceImpl<ComplainEvaluat
 	}
 
 	@Override
-	public void chargeComplainEvaluate(String uploadUrl, String imageFolder, MultipartFile[] multipartFileArr,
+	public void chargeComplainEvaluate(String uploadUrl, String imageFolder, List<SysResource> resourceList,
 			Long userId, ComplainEvaluate complainEvaluate, String operType) throws Exception {
 
 		// 1.保存或更新图片资源。
 		List<String> resIdList = new ArrayList<String>();
-		if (multipartFileArr != null && multipartFileArr.length > 0) {
-			for (int i = 0; i < multipartFileArr.length; i++) {
-				MultipartFile file = multipartFileArr[i];
-				// 保存文件
-				Long resId = ImageUtil.ImageUpload(uploadUrl, imageFolder, file, sysResourceMapper);
-				System.out.println("---[testd]---" + resId);
+		if (resourceList.size() > 0) {
+			for (SysResource resource : resourceList) {
+				Long resId = ImageUtil.ImageUpload(uploadUrl, imageFolder, resource, sysResourceMapper);
 				resIdList.add(resId + "");
 			}
 		}
 		if (resIdList.size() > 0) {
-			System.out.println(StringUtils.join(resIdList, ","));
 			complainEvaluate.setImgPath(StringUtils.join(resIdList, ","));
 		}
 		// 2.新增审核记录表
