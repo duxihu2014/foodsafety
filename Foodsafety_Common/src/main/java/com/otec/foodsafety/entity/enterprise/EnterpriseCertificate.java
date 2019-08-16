@@ -10,7 +10,7 @@ import org.apache.ibatis.annotation.myibatis.Table;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-@Table(dataBase = DataBase.MYSQL, tabName = "T_ENTERPRISE_CERTIFICATE", pkId = "certificateId", seqName = "",notColumn = {"registerAddress","enterpriseName","resourcePath","changeStatus"})
+@Table(dataBase = DataBase.MYSQL, tabName = "T_ENTERPRISE_CERTIFICATE", pkId = "certificateId", seqName = "",notColumn = {"registerAddress","enterpriseName","resourcePath","changeStatus","verifyConclusion","changeId"})
 public class EnterpriseCertificate implements Serializable {
 
 private static final long serialVersionUID = 1L;
@@ -47,7 +47,27 @@ private static final long serialVersionUID = 1L;
 
 	private String registerAddress;  //企业的注册地址
 
-	public String getRegisterAddress() {
+	private String verifyConclusion;	 //退回原因
+
+    private Long changeId;            //变更Id
+
+    public Long getChangeId() {
+        return changeId;
+    }
+
+    public void setChangeId(Long changeId) {
+        this.changeId = changeId;
+    }
+
+    public String getVerifyConclusion() {
+        return verifyConclusion;
+    }
+
+    public void setVerifyConclusion(String verifyConclusion) {
+        this.verifyConclusion = verifyConclusion;
+    }
+
+    public String getRegisterAddress() {
 		return registerAddress;
 	}
 

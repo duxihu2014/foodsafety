@@ -238,6 +238,7 @@ public class DashboardController extends VueBaseController<RevisitResultService,
     @RequestMapping(value = "/getGridEnterpriseCount", method = RequestMethod.GET)
     @ResponseBody
     public ObjectRestResponse< List<Map<String,Object>>> getGridEnterpriseCount(@RequestParam Map<String, Object> param) {
+        param.put("gridStatus","1");        //启用的区域
         List<ResponsibilityGrid> list=responsibilityGridService.findEntitysByCondition(param);
         List<Map<String,Object>> result = new ArrayList<>();
         for(ResponsibilityGrid grid :list){
@@ -482,9 +483,9 @@ public class DashboardController extends VueBaseController<RevisitResultService,
         params.put("alermStartDate", DateUtils.getDateString(m,"yyyy-MM-dd"));
         params.put("eventType","2");
 
-        params.put("extendSql","and EVENT_ID in ('10001','10002')");
+        params.put("extendSql","and EVENT_ID in ('10001','10002') and PROCESSING_TIME IS NULL");        //温度未处理数量
         Integer count_wd = alarmService.countAlarmByCondition(params);
-        params.put("extendSql","and EVENT_ID in ('10003','10004')");
+        params.put("extendSql","and EVENT_ID in ('10003','10004') and PROCESSING_TIME IS NULL");        //湿度未处理数量
         Integer count_sd = alarmService.countAlarmByCondition(params);
         result.put("count_wd", count_wd);
         result.put("count_sd", count_sd);
