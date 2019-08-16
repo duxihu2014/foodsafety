@@ -71,7 +71,13 @@
 			LEFT JOIN T_ENTERPRISE_BASE t2 ON t1.ENTERPRISE_ID = t2.ENTERPRISE_ID
 			LEFT JOIN T_S_USER t3 ON t1.CHANGE_USER_ID = t3.USER_ID
 		WHERE
-		t1.VERIFY_STATUS = '1'
+-- 		t1.VERIFY_STATUS = '1'
+			<if test="@org.apache.ibatis.util.Ognl@isEmpty( verifyStatus )">
+				AND t1.VERIFY_STATUS = '1'
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( verifyStatus )">
+				AND t1.VERIFY_STATUS = #{verifyStatus}
+			</if>
 			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( areaId )">
 				AND t2.AREA_ID = #{areaId}
 			</if>

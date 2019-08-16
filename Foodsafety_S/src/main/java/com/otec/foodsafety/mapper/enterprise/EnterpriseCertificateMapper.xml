@@ -57,6 +57,7 @@
 		left join T_S_AREA a on t3.AREA_ID=a.AREA_ID
 		left join T_ENTERPRISE_SUPERVISION es on t1.ENTERPRISE_ID=es.ENTERPRISE_ID
 		left join T_RESPONSIBILITY_GRID rg on es.GRID_ID=rg.GRID_ID
+		left join T_ENTERPRISE_VERIFY t4 on t4.CHANGE_ID=t2.CHANGE_ID
 		<where>
 			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( enterpriseId )">
 				AND t1.ENTERPRISE_ID = #{enterpriseId}
@@ -102,8 +103,8 @@
 	<select id="getCertificatePage"  resultMap="result_ResultMap_EnterpriseCertificate" parameterType="map">
 		SELECT
 			t1.*,
-			t2.VERIFY_STATUS AS changeStatus,t3.ENTERPRISE_NAME enterpriseName,t3.REGISTER_ADDRESS registerAddress
-		FROM
+			t2.VERIFY_STATUS AS changeStatus,t3.ENTERPRISE_NAME enterpriseName,t3.REGISTER_ADDRESS registerAddress,t4.VERIFY_CONCLUSION verifyConclusion,t2.CHANGE_ID changeId
+        FROM
 		T_ENTERPRISE_CERTIFICATE t1
 		INNER JOIN T_ENTERPRISE_BASE eb ON t1.ENTERPRISE_ID = eb.ENTERPRISE_ID
 		LEFT JOIN
@@ -114,6 +115,7 @@
 		left join T_S_AREA a on t3.AREA_ID=a.AREA_ID
 		left join T_ENTERPRISE_SUPERVISION es on t1.ENTERPRISE_ID=es.ENTERPRISE_ID
 		left join T_RESPONSIBILITY_GRID rg on es.GRID_ID=rg.GRID_ID
+        left join T_ENTERPRISE_VERIFY t4 on t2.CHANGE_ID=t4.CHANGE_ID
 		<where>
 			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( enterpriseId )">
 				AND t1.ENTERPRISE_ID = #{enterpriseId}
