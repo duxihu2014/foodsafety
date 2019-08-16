@@ -14,30 +14,31 @@ import com.otec.foodsafety.entity.enterprise.EnterpriseVerify;
 @RemoteService
 public interface EnterpriseEquipmentService extends BaseService<EnterpriseEquipment, Long> {
 
-	EnterpriseEquipmentChange findByChangeId(Long id);
+    EnterpriseEquipmentChange findByChangeId(Long id);
 
-	void verifyEnterpriseCertificate(EnterpriseEquipment enterpriseEquipment, EnterpriseEquipmentChange eec,
+    void verifyEnterpriseCertificate(EnterpriseEquipment enterpriseEquipment, EnterpriseEquipmentChange eec,
                                      EnterpriseVerify enterpriseVerify);
 
-	/**
-	 * 得到页面列表分页数据
-	 */
-	GridDataModel getGridDataModelByCondition(PageObject po);
+    /**
+     * 得到页面列表分页数据
+     */
+    GridDataModel getGridDataModelByCondition(PageObject po);
 
-	EnterpriseEquipmentExt getEnterpriseEquipmentById(Long equipmentId);
+    EnterpriseEquipmentExt getEnterpriseEquipmentById(Long equipmentId);
 
-	/**
-	 * 添加
-	 */
+    /**
+     * 添加
+     */
 //	void addEnterpriseEquipment(String uploadUrl, String imageFolder, MultipartFile multipartFile, Long userId,
 //			String reason, EnterpriseEquipment enterpriseEquipment) throws Exception;
-	void addEnterpriseEquipment(Long userId, String reason, EnterpriseEquipment enterpriseEquipment) throws Exception;
+    void addEnterpriseEquipment(Long userId, String reason, EnterpriseEquipment enterpriseEquipment) throws Exception;
 
-	/**
-	 * 修改
-	 */
+    /**
+     * 修改
+     */
 //	void modifyEnterpriseEquipment(String uploadUrl, String imageFolder, MultipartFile multipartFile, Long userId,
 //			String reason, EnterpriseEquipment enterpriseEquipment, String operType) throws Exception;
-	void modifyEnterpriseEquipment(Long userId, String reason, EnterpriseEquipment enterpriseEquipment, String operType)
-			throws Exception;
+    void modifyEnterpriseEquipment(Long userId, String reason, EnterpriseEquipment enterpriseEquipment, String operType)
+            throws Exception;
+
 }

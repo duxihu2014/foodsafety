@@ -115,7 +115,14 @@
 
   <sql id="AllInfo_Where_Clause" >
 		<where>
-            EB.ENTERPRISE_STATUS=3
+--             EB.ENTERPRISE_STATUS=3
+			<if  test="@org.apache.ibatis.util.Ognl@isEmpty( enterpriseStatus )">
+				  AND EB.ENTERPRISE_STATUS = 3
+			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( enterpriseStatus )">
+				  AND EB.ENTERPRISE_STATUS = #{enterpriseStatus}
+			</if>
+
 			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( areaId )">
 				  AND RG.AREA_ID = #{areaId}
 			</if>

@@ -40,7 +40,7 @@ public class CateringStaffController extends VueBaseController<CateringStaffServ
     SysResourceService sysResourceService;
 
     @Override
-     public GridDataModel list(@RequestParam Map<String, String> params) {
+    public GridDataModel list(@RequestParam Map<String, String> params) {
 
          SysUser sysUser = sessionFilter.getJWTUser(request);
         if ("2".equals(sysUser.getUserType()) || "3".equals(sysUser.getUserType())){
@@ -75,14 +75,14 @@ public class CateringStaffController extends VueBaseController<CateringStaffServ
               @RequestParam(value = "department",required = false)String department,
               @RequestParam(value = "employeeNumber")String employeeNumber,
               @RequestParam(value = "workType")String workType,
-              @RequestParam(value = "employmentDate")String employmentDate,
+              @RequestParam(value = "employmentDate",required = false,defaultValue = "")String employmentDate,
               @RequestParam(value = "contactNumber",required = false)String contactNumber,
               @RequestParam(value = "staffStatus")String staffStatus,
-              @RequestParam(value = "certificateNumber")String certificateNumber,
-              @RequestParam(value = "examinationDate")String examinationDate,
-              @RequestParam(value = "validDate")String validDate,
+              @RequestParam(value = "certificaetNumber",required = false)String certificateNumber,
+              @RequestParam(value = "examinationDate",required = false,defaultValue = "")String examinationDate,
+              @RequestParam(value = "validDate",required = false,defaultValue = "")String validDate,
               @RequestParam(value = "issuingDate")String issuingDate,
-              @RequestParam(value = "issuingUnit")String issuingUnit,
+              @RequestParam(value = "issuingUnit",required = false)String issuingUnit,
               @RequestParam(value = "certificateId",required = false)String certificateId,
               @RequestParam(value = "staffId",required = false)String staffId) {
         try {
@@ -97,7 +97,9 @@ public class CateringStaffController extends VueBaseController<CateringStaffServ
             cs.setMajor(major);
             cs.setDepartment(department);
             cs.setEmployeeNumber(employeeNumber);
-            cs.setEmploymentDate(DateUtils.getDate(employmentDate,"yyyy-MM-dd"));
+            if(!StringUtils.isEmpty(employmentDate)){
+                cs.setEmploymentDate(DateUtils.getDate(employmentDate,"yyyy-MM-dd"));
+            }
             cs.setWorkType(workType);
             cs.setContactNumber(contactNumber);
             cs.setHomeAddress(homeAddress);
@@ -106,8 +108,12 @@ public class CateringStaffController extends VueBaseController<CateringStaffServ
             if(!StringUtils.isBlankString(certificateId))
                 csc.setCertificateId(Long.parseLong(certificateId));
             csc.setCertificateNumber(certificateNumber);
-            csc.setExaminationDate(DateUtils.getDate(examinationDate,"yyyy-MM-dd"));
-            csc.setValidDate(DateUtils.getDate(validDate,"yyyy-MM-dd"));
+            if(!StringUtils.isEmpty(examinationDate)){
+                csc.setExaminationDate(DateUtils.getDate(examinationDate,"yyyy-MM-dd"));
+            }
+            if(!StringUtils.isEmpty(validDate)) {
+                csc.setValidDate(DateUtils.getDate(validDate, "yyyy-MM-dd"));
+            }
             csc.setIssuingDate(DateUtils.getDate(issuingDate,"yyyy-MM-dd"));
             csc.setIssuingUnit(issuingUnit);
             String uploadUrl = SysInitConfig.getInstance().get(SysInitConfig.CfgProp.UPLOADURL);
