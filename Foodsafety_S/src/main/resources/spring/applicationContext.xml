@@ -19,15 +19,15 @@
 								expression="org.springframework.remoting.service.annotation.RemoteService" />
 	</context:component-scan>
 
-	<!-- java:comp/env/jdbc/otecDB java:/otecDB-->
+	<!-- java:comp/env/jdbc/otecDB java:/otecDB
 	<jee:jndi-lookup id="dataSource" jndi-name="java:/otecDB" />
-
-	<!--<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"
+-->
+	<!----><bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"
        p:driverClassName="${database.driverClassName}"
        p:url="${database.url}"
        p:username="${database.username}"
        p:password="${database.password}" />
--->
+
 
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource" />

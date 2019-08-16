@@ -61,6 +61,9 @@
 			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( endDate )">
 				AND  <![CDATA[CREATE_TIME <= DATE_FORMAT(#{endDate},'%Y-%m-%d 23:23:59')    ]]>
 			</if>
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( monthDate )">
+				AND  <![CDATA[#{monthDate} = DATE_FORMAT(CREATE_TIME,'%Y-%m')    ]]>
+			</if>
 			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( alermStartDate )">
 				AND   <![CDATA[ALARM_TIME >= DATE_FORMAT(#{alermStartDate},'%Y-%m-%d %H:%i:%s')    ]]>
 			</if>

@@ -46,6 +46,16 @@
                 <profile.active>prod</profile.active>
             </properties>
         </profile>
+
+        <!-- mvn clean package -Puat -->
+        <profile>
+            <id>uat</id>
+            <properties>
+                <profile.active>uat</profile.active>
+            </properties>
+        </profile>
+
+
     </profiles>
 
     <repositories>

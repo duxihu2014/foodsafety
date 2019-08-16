@@ -458,6 +458,15 @@ public class DashboardController extends VueBaseController<RevisitResultService,
         Map result = new HashMap();
         result.put("treated", list1);
         result.put("untreated", list2);
+
+
+//        for(Map<String, Object> datamap:list2){
+//            System.out.println(datamap.get("eventId"));
+//            System.out.println(datamap.get("count"));
+//
+//            datamap.put("companeyN","aaa,bbb");
+//        }
+
         if (result != null && !result.isEmpty())
             return new ObjectRestResponse<Map<String, Object>>().rel(true).data(result);
         else
