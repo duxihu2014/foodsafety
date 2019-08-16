@@ -4,8 +4,8 @@
       <legend class="legend">查询条件</legend>
       <div class="field-box">
         <el-form :inline="true" :model="listQuery">
-          <el-form-item label="设备型号" prop="equModel" class="filter-item">
-            <el-input @keyup.enter.native="handleFilter" style="width: 200px;" placeholder="设备型号" v-model="listQuery.equModelLike"> </el-input>
+          <el-form-item label="设备名称" prop="equModel" class="filter-item">
+            <el-input @keyup.enter.native="handleFilter" style="width: 200px;" placeholder="设备型号" v-model="listQuery.name"> </el-input>
           </el-form-item>
           <el-form-item label="状态" prop="status" class="filter-item">
             <el-select v-model="status" placeholder="请选择状态" clearable>
@@ -29,18 +29,18 @@
     <el-table :key='tableKey' :data="list" v-loading.body="listLoading" border highlight-current-row style="width: 100%" @selection-change="getSelection" :height="height">
       <el-table-column type="selection" width="55">
       </el-table-column>
-      <el-table-column align="center" label="编号" width="100" prop="equModelId">
+      <el-table-column align="center" label="编号" width="100" prop="id">
       </el-table-column>
-      <el-table-column width="200px" align="center" label="设备型号" prop="equModel">
+      <el-table-column width="200px" align="center" label="推流唯一标识" prop="videoInfoId">
       </el-table-column>
-      <el-table-column width="200px" align="center" label="设备型号简称" prop="modelNo">
+      <el-table-column width="200px" align="center" label="设备ID" prop="deviceId">
       </el-table-column>
-      <el-table-column width="210px" align="center" label="其他参数" prop="otherParam">
+      <el-table-column width="210px" align="center" label="设备名称" prop="name">
       </el-table-column>
-      <el-table-column width="150px" align="center" label="厂商名称" prop="venderId" :formatter="verderFormatter">
+      <el-table-column width="210px" align="center" label="投放地址" prop="deliveryAddress">
       </el-table-column>
-      <el-table-column width="110px" align="center" label="状态" :formatter="statusFormatter" prop="status">
-      </el-table-column>
+      <!-- <el-table-column width="110px" align="center" label="状态" :formatter="statusFormatter" prop="status"> -->
+      <!-- </el-table-column> -->
       <el-table-column width="180px" align="center" label="创建时间" prop="createTime">
       </el-table-column>
       <el-table-column align="center" fixed="right" label="操作" width="150" v-if="needFixedRight">>
@@ -78,20 +78,17 @@
       <el-form :model="form" :rules="rules" ref="form" label-width="120px">
         <el-tabs>
           <el-tab-pane label="基本信息">
-            <el-form-item label="设备型号:" prop="equModel">
-              <el-input v-model="form.equModel" :disabled="isEdit" placeholder="请输入设备型号"></el-input>
+            <el-form-item label="推流唯一标识:" prop="videoInfoId">
+              <el-input v-model="form.videoInfoId" :disabled="isEdit||isDisable" placeholder="请输入推流唯一标识"></el-input>
             </el-form-item>
-            <el-form-item label="设备型号简称:" prop="modelNo">
-              <el-input v-model="form.modelNo" :disabled="isEdit" placeholder="请输入设备型号简称"></el-input>
+            <el-form-item label="设备ID:" prop="deviceId">
+              <el-input v-model="form.deviceId" :disabled="isEdit" placeholder="请输入设备ID"></el-input>
             </el-form-item>
-            <el-form-item label="其他参数:" prop="otherParam">
-              <el-input v-model="form.otherParam" :disabled="isEdit" placeholder="请输入其他参数"></el-input>
+            <el-form-item label="设备名称:" prop="name">
+              <el-input v-model="form.name" :disabled="isEdit" placeholder="请输入设备名称"></el-input>
             </el-form-item>
-            <el-form-item label="厂商名称:" prop="venderId">
-              <el-select v-model="selected" :disabled="isEdit" placeholder="请选择">
-                <el-option v-for="item in venderMap" :key="item.value" :label="item.text" :value="item.value">
-                </el-option>
-              </el-select>
+            <el-form-item label="投放地址:" prop="deliveryAddress">
+              <el-input v-model="form.deliveryAddress" :disabled="isEdit" placeholder="请输入投放地址"></el-input>
             </el-form-item>
             <el-form-item label="创建时间:" prop="createTime" v-if="isCreate">
               <el-input v-model="form.createTime" disabled></el-input>
@@ -111,6 +108,7 @@
 <script>
 import {
   page,
+  beforeGetEquipmentModel,
   getEquipmentModel,
   putEquipmentModel,
   addEquipmentModel,
@@ -125,15 +123,15 @@ import { loadGridHeight } from 'api/screen';
 export default {
   name: 'pushingDevice',
   data() {
-    const checkEquModel = (rule, value, callback) => {
-      isExistEquModel(value + ',' + this.form.equModelId).then(response => {
-        if (response.data) {
-          return callback(new Error('设备型号已经存在'));
-        } else {
-          callback();
-        }
-      });
-    };
+    // const checkEquModel = (rule, value, callback) => {
+    //   isExistEquModel(value + ',' + this.form.equModelId).then(response => {
+    //     if (response.data) {
+    //       return callback(new Error('设备型号已经存在'));
+    //     } else {
+    //       callback();
+    //     }
+    //   });
+    // };
     return {
       height:undefined,
       list: null,
@@ -143,7 +141,7 @@ export default {
       listQuery: {
         page: 1,
         limit: 20,
-        equModelLike: undefined,
+        name: undefined,
         status: ''
       },
       userManager_btn_edit: true,
@@ -159,39 +157,30 @@ export default {
         view: '查看'
       },
       form: {
-        equModel: undefined,
-        otherParam: undefined,
-        venderId: undefined
+        deviceId: undefined,
+        name: undefined,
+        deliveryAddress: undefined,
+        videoInfoId:undefined  
       },
       rules: {
-        equModel: [{
-            max: 32,
-            message: '长度不能超过32个字符',
-            trigger: 'blur'
-          },
-          {
-            required: true,
-            message: '请输入设备型号',
-            trigger: 'blur'
-          },
-          {
-            validator: checkEquModel,
-            trigger: 'blur'
-          }
-        ],
-        otherParam: [{
+        videoInfoId: [{
           max: 32,
           message: '长度不能超过32个字符',
           trigger: 'blur'
         }],
-        modelNo: [{
-            required: true,
-            message: '请输入设备型号简称',
-            trigger: 'blur'
-          },
-          {
-          max: 16,
-          message: '长度不能超过16个字符',
+        deliveryAddress: [{
+          max: 32,
+          message: '长度不能超过32个字符',
+          trigger: 'blur'
+        }],
+        name: [{
+          max: 32,
+          message: '长度不能超过32个字符',
+          trigger: 'blur'
+        }],
+        deviceId: [{
+          max: 32,
+          message: '长度不能超过32个字符',
           trigger: 'blur'
         }],
       },
@@ -200,11 +189,12 @@ export default {
       isEdit: true,
       isCreate: true,
       delFlag: true,
-      recoverFlag: false
+      recoverFlag: false,
+      isDisable:false
     }
   },
   created() {
-    this.getVenderMap();
+    // this.getVenderMap();
     this.getList();
   },
   computed: {
@@ -251,14 +241,13 @@ export default {
         }
       }
       page(this.listQuery).then(response => {
-        console.log(254,JSON.stringify(response.rows));
         this.list = response.rows;
         this.total = response.total;
         this.listLoading = false;
       })
     },
     resetQuery() {
-      this.listQuery = { equModelLike: '' };
+      this.listQuery = { name: '' };
       this.status = '';
     },
     statusFormatter(row, column, cellValue) {
@@ -269,26 +258,27 @@ export default {
     },
     handleView(row) {
       this.resetForm();
-      getEquipmentModel(row.equModelId).then(response => {
+      getEquipmentModel(row.id).then(response => {
         this.form = response.data;
         this.equModel_update = false;
         this.dialogFormVisible = true;
         this.dialogStatus = 'view';
         this.isEdit = true;
         this.isCreate = true;
-        this.selected = String(this.form.venderId);
+        this.selected = String(this.form.id);
       });
     },
     handleUpdate(row) {
-      getEquipmentModel(row.equModelId).then(response => {
-        this.form = response.data;
-        this.equModel_update = true;
-        this.dialogFormVisible = true;
-        this.dialogStatus = 'update';
-        this.isEdit = false;
-        this.isCreate = true;
-        this.selected = String(this.form.venderId);
-      });
+        getEquipmentModel(row.id).then(response => {
+            this.form = response.data;
+            this.equModel_update = true;
+            this.dialogFormVisible = true;
+            this.dialogStatus = 'update';
+            this.isEdit = false;
+            this.isCreate = true;
+            this.selected = String(this.form.id);
+            this.isDisable=true;
+        });
     },
     handleCreate() {
       this.resetForm();
@@ -297,6 +287,7 @@ export default {
       this.dialogStatus = 'create';
       this.isEdit = false;
       this.isCreate = false;
+      this.isDisable=true;
     },
     handleDelete() {
       if (!this.equModelSelection.length) {
@@ -314,7 +305,7 @@ export default {
       }).then(() => {
         const idArr = [];
         this.equModelSelection.forEach(equipmentModel => {
-          idArr.push(equipmentModel.equModelId);
+          idArr.push(equipmentModel.id);
         });
         delEquipmentModel(idArr.join(',')).then(() => {
           this.$notify({
@@ -342,7 +333,7 @@ export default {
       }).then(() => {
         const idArr = [];
         this.equModelSelection.forEach(equipmentModel => {
-          idArr.push(equipmentModel.equModelId);
+          idArr.push(equipmentModel.id);
         });
         recoverEquipmentModel(idArr.join(',')).then(() => {
           this.$notify({
@@ -359,44 +350,60 @@ export default {
       this.equModelSelection = selection;
     },
     create(formName) {
-      const set = this.$refs;
-      set[formName].validate(valid => {
-        if (valid) {
-          this.form.venderId = this.selected;
-          addEquipmentModel(this.form).then(() => {
-            this.dialogFormVisible = false;
-            this.getList();
-            this.$notify({
-              title: '成功',
-              message: '创建成功',
-              type: 'success',
-              duration: 2000
-            });
-          })
-        } else {
-          return false;
-        }
+      let option={
+          id:'',
+          deviceId:this.form.deviceId,
+          name:this.form.name
+      }
+      beforeGetEquipmentModel(option).then(response=>{
+        const set = this.$refs;
+        this.form.videoInfoId = response.data.result.id;
+        set[formName].validate(valid => {
+          if (valid&&response.data.error.code===Number(1000)) {
+            this.form.id = this.selected;
+            addEquipmentModel(this.form).then(() => {
+              this.dialogFormVisible = false;
+              this.getList();
+              this.$notify({
+                title: '成功',
+                message: '创建成功',
+                type: 'success',
+                duration: 2000
+              });
+            })
+          } else {
+            return false;
+          }
+        });
       });
     },
     update(formName) {
-      const set = this.$refs;
-      set[formName].validate(valid => {
-        if (valid) {
-          this.form.venderId = this.selected;
-          putEquipmentModel(this.form.equModelId, this.form).then(() => {
-            this.dialogFormVisible = false;
-            this.getList();
-            this.$notify({
-              title: '成功',
-              message: '更新成功',
-              type: 'success',
-              duration: 2000
+      let option={
+          id:this.form.videoInfoId,
+          deviceId:this.form.deviceId,
+          name:this.form.name
+      }
+      beforeGetEquipmentModel(option).then(response=>{
+        const set = this.$refs;
+        set[formName].validate(valid => {
+          if (valid&&response.data.error.code===Number(1000)) {  //如果数据不为空且第一次请求成功
+            this.form.id = this.selected;
+            putEquipmentModel(this.form.id, this.form).then(() => {
+              this.dialogFormVisible = false;
+              this.getList();
+              this.$notify({
+                title: '成功',
+                message: '更新成功',
+                type: 'success',
+                duration: 2000
+              });
             });
-          });
-        } else {
-          return false;
-        }
+          } else {
+            return false;
+          }
+        });
       });
+
     },
     cancel(formName) {
       this.dialogFormVisible = false;

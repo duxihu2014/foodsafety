@@ -45,6 +45,7 @@
                <a :href="playUrl" id="playHref" style="display: none"  class="sel_btn">
             播放
           </a>
+       
           <a href="javascript:void(0)" @blur="cancelTimer()" @click="playVideo(scope.row)"   class="sel_btn" style="margin-right: 10px">播放</a>
               <el-button v-if="userManager_btn_edit" size="small" type="success" @click="handleUpdate(scope.row)">编辑
               </el-button>
@@ -105,14 +106,17 @@
         <el-form-item label="管理URL:" prop="namagerUrl">
           <el-input v-model="equipmentForm.namagerUrl" :disabled="isEdit" placeholder="请输入管理URL"></el-input>
         </el-form-item>
-
+        <el-form-item label="推流设备编号:" prop="equipmentPushId">
+          <el-select v-model="equipmentForm.equipmentPushId" placeholder="请选择" clearable>
+            <el-option v-for="item in pushDeviceOptions" :key="item.value" :label="item.text" :value="item.value"> </el-option>
+          </el-select>
+        </el-form-item>
         <!--<el-form-item label="设备型号:" prop="equModelId" >
                 <el-input v-model="equipmentForm.equModelId" :disabled="isEdit" placeholder="请输入管理员电话"></el-input>
               </el-form-item>
               <el-form-item label="设备型号:" prop="equModelId" >
                 <el-input v-model="equipmentForm.equModelId" :disabled="isEdit" placeholder="请输入管理员电话"></el-input>
               </el-form-item>-->
-
       </el-form>
       <div slot="footer" class="dialog-footer" v-if="enterprise_update">
         <el-button @click="cancel('equipmentForm')">取 消</el-button>
@@ -127,6 +131,15 @@
         </span>
       </div>
     </el-dialog>
+    <!-- vidio -->
+    <div class="videobg" v-if="isVideoShow">
+      <div class="videobox">
+        <div class="iconCose">
+          <div class="el-icon-circle-close  iconStyle" @click="handleCloseVideo()"><span>关闭</span></div>
+        </div>
+      <videoStream  :vurl="videoObj"  ></videoStream>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -141,14 +154,17 @@ import {
   play
 } from "api/admin/equipment/index";
 import { getModelMap } from "api/admin/equipmentModel/index";
+import { getPushModelMap } from "api/admin/equipmentModel/index"; 
 import { getAudioMap } from "api/admin/equipment/audio";
 import { getAllUserMap } from "api/admin/user/index";
 import { spacelValidator } from "utils/validate";
 import { parseValueToText, parseTime } from "utils/index";
-
+import videoStream from "../videoStream";
 export default {
   name: "",
-  components: {},
+  components: {
+    videoStream,
+  },
   data() {
     const mobileValidator = (rule, value, callback) => {
       const mymobile = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/;
@@ -189,6 +205,7 @@ export default {
       clearVisible: true,
       userSelection: [],
       modelOptions: [],
+      pushDeviceOptions: [],
       audioOptions: [],
       unitId: "",
       listQuery: {
@@ -231,7 +248,8 @@ export default {
         enterpriseId: undefined,
         enterpriseGroupId: undefined,
         specialStatus: '1',
-        audioId: undefined
+        audioId: undefined,
+        equipmentPushId:undefined
       },
       specialStatusOptions: [{
         value: '1',
@@ -275,7 +293,10 @@ export default {
       playUrl: "",
       dialogDownloadVisible: false,
       downloadUrl: process.env.SERVERIMAGEURL + "/vlcplay.rar",
-      downloadTimer: null
+      downloadTimer: null,
+      isVideoShow:false,
+      videoObj:{},
+      videoId:0,
     };
   },
   props: ["paramCompId", "paramGroupId"],
@@ -306,6 +327,7 @@ export default {
       this.getUserMap(null);
       this.initModelOptions();
       this.initAudioOptions();
+      this.initPushDeviceOptions();
     },
     getUserMap(param) {
       getAllUserMap(param)
@@ -321,6 +343,11 @@ export default {
     initModelOptions() {
       getModelMap().then(response => {
         this.modelOptions = response.data;
+      });
+    },
+    initPushDeviceOptions() {
+      getPushModelMap().then(response => {
+        this.pushDeviceOptions = response.data;
       });
     },
     initAudioOptions() {
@@ -396,7 +423,6 @@ export default {
       if (this.equipmentForm.audioId) {
         this.equipmentForm.audioId = this.equipmentForm.audioId + "";
       }
-      // console.log(this.equipmentForm);
       this.enterprise_update = true;
       this.dialogFormVisible = true;
       this.isEdit = false;
@@ -456,7 +482,6 @@ export default {
     },
     update(formName) {
       const set = this.$refs;
-
       set[formName].validate(valid => {
         if (valid) {
           putEquip(this.equipmentForm.equipmentId, this.equipmentForm).then(
@@ -497,6 +522,9 @@ export default {
       this.dialogVideoVisible = false;
       this.videoReset = false;
     },
+    handleCloseVideo(){
+      this.isVideoShow=false
+    },
     resetQuery() {
       this.listQuery = {
         equipmentNameLike: "",
@@ -520,7 +548,8 @@ export default {
         enterpriseId: undefined,
         enterpriseGroupId: undefined,
         specialStatus: '1',
-        audioId: undefined
+        audioId: undefined,
+        equipmentPushId:undefined
       }),(this.oldEquipmentNo = undefined),
         (this.selectAreaOptions = []);
     },
@@ -554,15 +583,23 @@ export default {
       // console.log("弹出下载窗口");
     },
     playVideo(row) {
+      this.isVideoShow=false;
       play(row.equipmentId).then(response => {
         if (response.data.result == "success") {
           // this.playUrl ="VLCPLAY://rtsp://admin:Otec_123@192.168.1.192:1554/cam/realmonitor?channel=1^&subtype=0";
-          this.playUrl = "VLCPLAY://" + response.data.url;
-          document.getElementById("playHref").href = this.playUrl;
-          document.getElementById("playHref").click();
-          if (!this.downloadTimer) {
-            this.downloadTimer = setTimeout(this.showDownload, 1000);
+          this.videoId++
+          this.videoObj={
+              vid:this.videoId,
+              isShow:true,
+              url:response.data.url
           }
+          this.isVideoShow=true 
+          // this.playUrl = "VLCPLAY://" + response.data.url;
+          // document.getElementById("playHref").href = this.playUrl;
+          // document.getElementById("playHref").click();
+          // if (!this.downloadTimer) {
+          //   this.downloadTimer = setTimeout(this.showDownload, 1000);
+          // }
         } else {
           this.$notify({
             title: "提示",
@@ -573,7 +610,11 @@ export default {
         }
       });
     }
-  } //end methods
+  }, //end methods
+  beforeDestroy() {
+    this.videoId=0;
+  },
+
 };
 </script>
 <style scoped>
@@ -604,5 +645,37 @@ export default {
   text-decoration: none;
   font-size: 12px;
   outline: none;
+}
+.videobg{
+    /* position: fixed; */
+    /* width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background:rgba(0,0,0,0);
+    z-index: 100; */
+}
+.videobox{
+    position: fixed;
+    top: 14%;
+    left: 10%;
+    /* margin-top: -300px;
+    margin-left: -300px; */
+    z-index: 100;
+}
+.iconCose{
+  width: 100%;
+  box-sizing: border-box;
+  background:#409EFF;
+  color:#fff;
+}
+.iconStyle{
+  font-size:23px;
+  padding: 3px 8px;
+  cursor:pointer;
+}
+.iconStyle>span{
+  font-size: 18px;
+  vertical-align: middle;
 }
 </style>
