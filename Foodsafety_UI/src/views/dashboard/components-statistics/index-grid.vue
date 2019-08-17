@@ -24,7 +24,7 @@
       },
       methods: {
           init(){
-            getGridEnterpriseCount({areaId:this.user.areaId}).then(response => {
+            getGridEnterpriseCount({areaId:this.user.areaId,gridStatus:1}).then(response => {
               this.gridTotal=response.data;
               response.data.forEach(item=>{
                 this.gridName.push(item.name)

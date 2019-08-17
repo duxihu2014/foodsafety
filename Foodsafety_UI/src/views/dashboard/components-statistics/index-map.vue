@@ -79,7 +79,7 @@
             this.enterpriseInfo = response.data;
             createMarkerCluster(this.map, 1, this.enterpriseInfo, this.markerEvents);
           })
-          getGridsInfo({areaId:this.user.areaId}).then(response=>{
+          getGridsInfo({areaId:this.user.areaId,gridStatus:1}).then(response=>{
             this.girdInfo=response.data;
           })
         },
