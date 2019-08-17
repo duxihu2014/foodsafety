@@ -249,6 +249,11 @@
         default: undefined
       }
     },
+    watch:{
+      total(val){
+        this.$emit('setCount',val,1);
+      }
+    },
     data() {
       return {
         height: undefined,

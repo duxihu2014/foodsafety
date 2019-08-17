@@ -17,7 +17,7 @@ module.exports = {
   CLIENT_UI: '/Foodsafety/',
   BASE_API: '"http://106.75.119.205:8089/Foodsafety_C"',
   SERVERIMAGEURL:'"http://58.49.30.102:8282"',
-  CMSIMAGEURL:'"http://localhost:19380/Foodsafety"',
+  CMSIMAGEURL:'"http://106.75.119.205:8089/Foodsafety"',
   // FACEURl:'"http://192.168.1.82:8989/Cloud_service/FaceService"',
   CURRENT_CITY:'"松江区"',
   CENTER_POSITION: [121.227640,31.032480],
