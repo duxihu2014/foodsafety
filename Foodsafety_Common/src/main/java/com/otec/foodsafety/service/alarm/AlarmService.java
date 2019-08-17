@@ -1,15 +1,14 @@
 package com.otec.foodsafety.service.alarm;
 
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.remoting.service.annotation.RemoteService;
-
 import com.cykj.grcloud.entity.page.GridDataModel;
 import com.cykj.grcloud.entity.page.PageObject;
 import com.cykj.grcloud.service.base.BaseService;
 import com.otec.foodsafety.entity.alarm.Alarm;
 import com.otec.foodsafety.entity.alarm.AlarmExt;
+import org.springframework.remoting.service.annotation.RemoteService;
+
+import java.util.List;
+import java.util.Map;
 
 @RemoteService
 public interface AlarmService extends BaseService<Alarm,Long>{
@@ -40,4 +39,6 @@ public interface AlarmService extends BaseService<Alarm,Long>{
     List<Map<String,Object>> getVideoTrend(Map<String, Object> params);
 
     List<Map<String,Object>> getHealthWarning(Long enterpriseId);
+
+	List<String> getEnterpriseName(String eventId);
 }

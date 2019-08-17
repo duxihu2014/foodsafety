@@ -200,4 +200,11 @@ public  class EnterpriseBaseServiceImpl extends BaseServiceImpl<EnterpriseBase, 
     public List<Map<String, Object>> getEnterpriseCountBySupervise(Long areaId) {
         return enterpriseBaseMapper.getEnterpriseCountBySupervise(areaId);
     }
+
+    @Override
+    public List<String> getMyEnterpriseName(Map<String, Object> params) {
+        return enterpriseBaseMapper.getMyEnterpriseName(params);
+    }
+
+
 }

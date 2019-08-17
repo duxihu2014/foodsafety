@@ -208,4 +208,9 @@
 		(select @i:= 1) t2
 		) tt GROUP BY tt.date
 	</select>
+
+	<select id="getEnterpriseNameByEventId" parameterType="java.lang.String" resultType="java.lang.String">
+	select DISTINCT ENTERPRISE_NAME from V_ALARM   where   EVENT_ID = #{eventId}
+	</select>
+
 </mapper>

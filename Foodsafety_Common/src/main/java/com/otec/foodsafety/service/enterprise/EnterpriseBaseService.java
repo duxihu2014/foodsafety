@@ -81,6 +81,8 @@ public interface EnterpriseBaseService extends BaseService<EnterpriseBase,Long> 
   List<Map<String,Object>> getSubjectClassificationByGrid(Long gridId);
   List<Map<String,Object>> getEnterpriseCountBySubject(Long areaId);
   List<Map<String,Object>> getEnterpriseCountBySupervise(Long areaId);
+
+  List<String> getMyEnterpriseName(Map<String,Object> map);
 }
 
 

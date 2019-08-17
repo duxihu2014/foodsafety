@@ -234,4 +234,12 @@
 		GROUP BY
 		t1.SUPERVISE_CLASSIFICATION
 	</select>
+
+	<select id="getMyEnterpriseName" parameterType="java.util.Map" resultType="java.lang.String">
+	select ENTERPRISE_Name from T_ENTERPRISE_BASE where
+	SUPERVISE_CLASSIFICATION=#{superviseClassification}  and ENTERPRISE_STATUS = 3
+		AND AREA_ID =#{areaId}
+	</select>
+
+
 </mapper>
