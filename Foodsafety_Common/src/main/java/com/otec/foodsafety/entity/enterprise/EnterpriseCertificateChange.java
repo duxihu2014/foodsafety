@@ -13,7 +13,7 @@ public class EnterpriseCertificateChange implements Serializable {
 
 private static final long serialVersionUID = 1L;
 	
-	private long changeId;
+	private Long changeId;
 	
 	private Long certificateId;
 	
@@ -41,7 +41,7 @@ private static final long serialVersionUID = 1L;
 
 	private String changeType;
 	
-	public void setChangeId(long changeId) {
+	public void setChangeId(Long changeId) {
 		this.changeId = changeId;
 	}
 	 
