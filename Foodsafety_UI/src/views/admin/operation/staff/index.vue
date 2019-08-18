@@ -331,16 +331,16 @@
               sex:[{required: true, message: "请选择性别", trigger: "blur"}],
               birthDate:[{required: true, message: "请选择出生日期", trigger: "blur"}],
               employeeNumber:[{required: true, message: "请输入工号", trigger: "blur"}],
-              employmentDate:[{required: true, message: "请输入入职日期", trigger: "blur"}],
+              employmentDate:[{required: false, message: "请输入入职日期", trigger: "blur"}],
               workType:[{required: true, message: "请选择工种", trigger: "change"}],
               staffStatus:[{required: true, message: "请选择员工状态", trigger: "change"}],
               contactNumber: [{validator: mobileValidator, trigger: "blur" }],
-              certificateNumber: [{required: true, message: "请输入健康证号", trigger: "blur"}],
-              examinationDate: [{required: true, message: "请输入体检时间", trigger: "blur"}],
-              validDate: [{required: true, message: "请输入有效截至日期", trigger: "blur"}],
+              certificateNumber: [{required: false, message: "请输入健康证号", trigger: "blur"}],
+              examinationDate: [{required: false, message: "请输入体检时间", trigger: "blur"}],
+              validDate: [{required: false, message: "请输入有效截至日期", trigger: "blur"}],
               issuingDate: [{required: true, message: "请输入发证日期", trigger: "blur"}],
               issuingUnit: [{required: true, message: "请输入发证单位", trigger: "blur"}],
-              imageFile: [{ required: true,validator: fileValidator,message: "请选择健康证照片", trigger: "blur"} ]
+              imageFile: [{ required: false,validator: fileValidator,message: "请选择健康证照片", trigger: "blur"} ]
             },
             dialogFormVisible: false,
             viewReadOnly:false, //控制查看时的按钮显示

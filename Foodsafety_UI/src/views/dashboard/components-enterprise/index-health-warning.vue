@@ -45,7 +45,7 @@
               text: '健康证预警',
               x:'center'
             },
-            backgroundColor: '#102133',
+            backgroundColor: '',
             grid: {
               x: '10%',
               y: '20%',
@@ -57,27 +57,71 @@
                 type: 'shadow'
               }
             },
+            legend: {
+              bottom: "bottom",
+              icon:"rect",
+              left: 'center',
+              textStyle:{
+                  fontSize: 11,
+                  color:"#fff",
+              },
+              data: ['健康证预警数量','餐饮服务许可证']
+            },
             xAxis : [
               {
                 type : 'category',
+                axisLabel: {
+                  color:'#3AF6F9',
+                },
+                axisLine: {
+                  lineStyle: {
+                      color:'#103D79'
+                  }
+                },
+                axisTick:{       
+                  show:false
+                },
                 data : this.dateArr,
-                axisTick: {
-                  alignWithLabel: true
-                }
               }
             ],
-            yAxis : [
-              {
+            yAxis : [{
                 type : 'value',
+                axisLabel: {
+                  color:'#3AF6F9',
+                },
+                axisLine: {
+                  lineStyle: {
+                      color:'#103D79'
+                  }
+                },
+                splitLine: {
+                    show: true,
+                    lineStyle:{
+                      color: '#0D2756',
+                      type:"solid"
+                    }
+                },
+                axisTick:{       
+                  show:false
+                },
                 minInterval: 1
               },
             ],
-            series: [ {
+            series: [
+               {
                 name:'健康证预警数量',
                 type:'bar',
-                barWidth: '20px',
-                data: this.scArray
-              }
+                barWidth: '30px',
+                barGap: "30%",
+                color: new this.echarts.graphic.LinearGradient(  0, 0, 0, 1,
+                [
+                    {offset: 0, color: '#f2e300'},
+                    {offset: 1, color: '#AC7C00'}
+                ]),
+                data:[20,50]
+                // data: this.scArray
+              },
+     
             ]
           }
           this.lineEChart.setOption(option);

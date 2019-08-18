@@ -50,7 +50,7 @@
             x: 'center',
             text: 'IOT报警趋势图'
           },
-          backgroundColor: '#102133',
+          backgroundColor: '',
           grid: {
             x: '10%',
             y: '20%',
@@ -68,13 +68,43 @@
           xAxis : [
             {
               type : 'category',
+              axisLabel: {
+                color:'#3AF6F9',
+              },
+              axisLine: {
+                  lineStyle: {
+                      color:'#103D79'
+                  }
+              },
+              axisTick:{       
+                show:false
+              },
               boundaryGap : false,
+              // data : ['邮件营销','联盟广告','视频广告','直接访问','搜索引擎']
               data : this.dateArr
             }
           ],
           yAxis : [
             {
-              type : 'value'
+              type : 'value',
+              axisLabel: {
+                color:'#3AF6F9',
+              },
+              axisLine: {
+                  lineStyle: {
+                      color:'#103D79'
+                  }
+              },
+              splitLine: {
+                  show: true,
+                  lineStyle:{
+                    color: '#0D2756',
+                    type:"solid"
+                  }
+              },
+              axisTick:{       
+                show:false
+              },
             }
           ],
           legend: {
@@ -90,16 +120,25 @@
             {
               name:'温度报警数',
               type:'line',
-              areaStyle: {},
+              color:'#E0B10B',
+              areaStyle: {
+                color:'#E0B10B ',
+                opacity:1 
+              },
               data:this.wdData
             },
             {
               name:'湿度报警数',
               type:'line',
-              areaStyle: {},
+              color:'#00FCFD',
+              areaStyle: {
+                color:'#00FCFD ',
+                opacity:1 ,
+              },
               data:this.sdData
             }
           ]
+          // color:["#FFD33E"]
         };
         this.lineEChart.setOption(option);
       },

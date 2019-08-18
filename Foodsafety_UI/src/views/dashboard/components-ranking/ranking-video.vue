@@ -70,7 +70,7 @@
               color: '#fff',
             },
             selectedMode:false,
-            data: ['总数量', '未戴安全帽', '未戴口罩','未穿工作装','抽烟']
+            data: ['总数量', '未戴防护帽', '未戴口罩','未穿工作装','抽烟']
           },
           grid: {
             top: '20%',
@@ -132,7 +132,7 @@
               data: this.totalAll
             },
             {
-              name: '未戴安全帽',
+              name: '未戴防护帽',
               type: 'bar',
               stack: '总量',
               label: {

@@ -272,12 +272,15 @@ export function deepClone(source) {
 /** 解析数组，根据ID,得到id对应的text文本描述 */
 export function parseValueToText(value, arr) {
   value = value + '';
-  for (let i = 0; i < arr.length; i++) {
-    const obj = arr[i];
-    if (obj.value === value) {
-      return obj.text;
+  if(arr instanceof Array){
+    for (let i = 0; i < arr.length; i++) {
+      const obj = arr[i];
+      if (obj.value === value) {
+        return obj.text;
+      }
     }
   }
+
 }
 
 export function convertDateFromString(dateString) {

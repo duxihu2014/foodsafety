@@ -16,6 +16,26 @@
               <el-option label="已处理" value="2"> </el-option>
             </el-select>
           </el-form-item>
+
+          <el-form-item label="报警类型" class="filter-item">
+            <el-select  v-model="listQuery.enterpriseStatus" placeholder="请选择" clearable filterabler>
+              <!-- <el-option v-for="(item, index) in testData" :key="item.value" :label="item.text" :value="item.value"></el-option> -->
+              <el-option v-for="(item, index) in enterpriseStatusData" :key="item.value" :label="item.text" :value="item.value"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="日期" class="filter-item">
+             <el-date-picker
+              v-model="listQuery.selectDate"
+              type="daterange"
+              align="right"
+              unlink-panels
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              :picker-options="pickerOptions">
+            </el-date-picker>
+          </el-form-item>
+
           <el-form-item class="filter-item">
             <el-button type="primary" v-waves @click="handleFilter">搜索</el-button>
             <el-button v-waves @click="resetQuery()">重置</el-button>
@@ -49,7 +69,8 @@
       <el-table-column width="200px" align="center" label="处理时间" prop="processingTime"></el-table-column>
       <el-table-column align="center" fixed="right" label="操作" width="200" v-if="needFixedRight">
         <template slot-scope="scope">
-          <el-button size="mini" type="primary" @click="handleView(scope.row)">详情</el-button>
+          <!-- <el-button  v-if="listQuery.eventType == 1" size="mini" type="primary" @click="handleView(scope.row)">详情</el-button> -->
+          <el-button  size="mini" type="primary" @click="handleView(scope.row)">详情</el-button>
           <el-button v-if="scope.row.status==1" size="mini" type="primary" @click="processingView(scope.row)">处理</el-button>
         </template>
       </el-table-column>
@@ -88,7 +109,7 @@
             :autosize="{ minRows: 2, maxRows: 4}"
             placeholder="请输入处理结果"
             v-model="processingForm.processingResult">
-            getAlertObj     </el-input>
+          </el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer" >
@@ -130,7 +151,9 @@ export default {
         alermEndDate: undefined,
         eventType: "1", ////1:摄像头 2:传感器
         page: 1,
-        limit: 20
+        limit: 20,
+        enterpriseStatus:[],
+        selectDate:""
       },
       dialogFormVisible: false,
       alarmEvent: {
@@ -158,7 +181,42 @@ export default {
         processingResult:[{required: true, message: "请输入处理结果", trigger: "blur"}]
       },
       processingForm:{processingResult:undefined},
-      processingDialogFormVisible:false
+      processingDialogFormVisible:false,
+      pickerOptions: {
+          shortcuts: [{
+            text: '最近一周',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近一个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近三个月',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
+              picker.$emit('pick', [start, end]);
+            }
+          }, {
+            text: '最近一年',
+            onClick(picker) {
+              const end = new Date();
+              const start = new Date();
+              start.setTime(start.getTime() - 3600 * 1000 * 24 * 365);
+              picker.$emit('pick', [start, end]);
+            }
+          }]
+        },
     };
   },
   created() {
@@ -167,7 +225,14 @@ export default {
     this.getList();
   },
   computed: {
-    ...mapGetters(["staticData", "user"])
+    ...mapGetters(["staticData", "user"]),
+    enterpriseStatusData(){
+      if(this.equType =='2'){
+        return this.staticData["IOT报警类型"];
+      }else{
+        return this.staticData["摄像头报警类型"];
+      }
+    },
   },
   mounted() {
     //首次整个视图都渲染完毕后执行
@@ -210,6 +275,7 @@ export default {
 
     //tab转换查询
     handleClick() {
+       this.listQuery.enterpriseStatus=[];
       if (this.tabPosition == "first") {
         this.listQuery.eventType = "1";
         this.equType = "1";
@@ -229,9 +295,9 @@ export default {
       this.listLoading = true;
       this.listQuery.enterpriseId = this.user.enterpriseId;
       alertPage(this.listQuery).then(response => {
+        // console.log(232,response);
         this.list = response.rows;
         this.total = response.total;
-
         this.listLoading = false;
       });
     },
@@ -252,21 +318,68 @@ export default {
       this.getList();
     },
     handleView(row) {
-      this.dialogFormVisible = true;
+      console.log(256,row);
+      
+      this.dialogFormVisible = true;  
       getAlertObj(row.id).then(response => {
-        let alarmData = response.dara;
-        this.alarmEvent.id = alarmData.id;
-        this.alarmEvent.indexCode = alarmData.indexCode;
-        this.alarmEvent.alarmSource = alarmData.alarmSource;
-        this.alarmEvent.eventId = alarmData.eventId;
-        this.alarmEvent.alarmType = parseValueToText(
-          alarmData.eventId,
-          this.staticData["报警类型"]
-        ); //报警类型
-        this.alarmEvent.content = alarmData.content;
-        this.alarmEvent.equName = alarmData.equName;
-        this.alarmEvent.enterpriseName = alarmData.enterpriseName;
-        this.alarmEvent.alarmTime = alarmData.alarmTime;
+        // console.log("3333333333333333",response.data);
+        // let alarmData = response.data;
+        // this.alarmEvent.id = alarmData.id;
+        // this.alarmEvent.indexCode = alarmData.indexCode;
+        // this.alarmEvent.alarmSource = alarmData.alarmSource;
+        // this.alarmEvent.eventId = alarmData.eventId;
+        // if(this.listQuery.eventType==1){
+        //   this.alarmEvent.alarmType = parseValueToText(
+        //             alarmData.eventId,
+        //             this.staticData["摄像头报警类型"]
+        //           ); //报警类型
+        // }else{
+        //    this.alarmEvent.alarmType = parseValueToText(
+        //             alarmData.eventId,
+        //             this.staticData["IOT报警类型"]
+        //           ); //报警类型
+        // }
+        
+        // this.alarmEvent.content = alarmData.content;
+        // this.alarmEvent.equName = alarmData.equName;
+        // this.alarmEvent.enterpriseName = alarmData.enterpriseName;
+        // this.alarmEvent.alarmTime = alarmData.alarmTime;
+        // if (
+        //   this.alarmEvent.eventId == "10001" ||
+        //   this.alarmEvent.eventId == "10002"
+        // ) {
+        //   this.alarmEvent.sensorAlarmType = "wd";
+        // } else {
+        //   this.alarmEvent.sensorAlarmType = "sd";
+        // }
+        // if (this.tabPosition == "first") {
+        //   this.alarmEvent.imgUrl = alarmData.imgUrl;
+        //   this.alarmEvent.videoUrl = alarmData.videoUrl;
+        // }
+        // this.$nextTick(() => {
+        //   this.$refs["alarmDiv"].initAlarm(this.alarmEvent);
+        // });
+
+
+        this.alarmEvent.id = row.id;
+        this.alarmEvent.indexCode = row.indexCode;
+        this.alarmEvent.alarmSource = row.alarmSource;
+        this.alarmEvent.eventId = row.eventId;
+         if(this.listQuery.eventType==1){
+          this.alarmEvent.alarmType = parseValueToText(
+                    row.eventId,
+                    this.staticData["摄像头报警类型"]
+                  ); //报警类型
+        }else{
+           this.alarmEvent.alarmType = parseValueToText(
+                    row.eventId,
+                    this.staticData["IOT报警类型"]
+                  ); //报警类型
+        }
+        this.alarmEvent.content = row.content;
+        this.alarmEvent.equName = row.equName;
+        this.alarmEvent.enterpriseName = row.enterpriseName;
+        this.alarmEvent.alarmTime = row.alarmTime;
         if (
           this.alarmEvent.eventId == "10001" ||
           this.alarmEvent.eventId == "10002"
@@ -276,8 +389,8 @@ export default {
           this.alarmEvent.sensorAlarmType = "sd";
         }
         if (this.tabPosition == "first") {
-          this.alarmEvent.imgUrl = alarmData.imgUrl;
-          this.alarmEvent.videoUrl = alarmData.videoUrl;
+          this.alarmEvent.imgUrl = "http://foodsafety.91catv.com:8081/Foodsafety/"+row.imgUrl;
+          this.alarmEvent.videoUrl = row.videoUrl;
         }
         this.$nextTick(() => {
           this.$refs["alarmDiv"].initAlarm(this.alarmEvent);
@@ -289,6 +402,8 @@ export default {
       this.cameraDialogVisible = true;
     },
     resetQuery() {
+      this.listQuery.selectDate='';
+      this.listQuery.enterpriseStatus = '';
       this.listQuery.indexCodeLike = undefined;
       this.listQuery.enterpriseId = undefined;
       this.listQuery.areaId = undefined;
@@ -306,7 +421,15 @@ export default {
     // },
     //事件类型
     alertTypeFormatter(row, column, cellValue) {
-      return parseValueToText(cellValue, this.staticData["报警类型"]);
+      // return parseValueToText(cellValue, this.staticData["IOT报警类型"]);
+      // console.log(this.staticData["报警类型"]);
+      // console.log(313,this.staticData)
+      if(this.listQuery.eventType==1){
+        return parseValueToText(cellValue, this.staticData["摄像头报警类型"]);
+      }else{
+        return parseValueToText(cellValue, this.staticData["IOT报警类型"]);
+      }
+      
     },
     //事件来源
     eventSourceFormatter(row, column, cellValue) {

@@ -1,5 +1,5 @@
 <template>
-  <div style="height: 100%;background-color: #102133;">
+  <div style="height: 100%;">
     <!--<el-row>
       <el-col :span="18"><div ref="wdcharts" class="chart-size" ></div></el-col>
       <el-col :span="6"><div ref="wdcharts_pie" class="chart-size" ></div></el-col>
@@ -10,7 +10,7 @@
     </el-row>-->
     <el-row>
       <el-col :span="7">
-        <div ref="wdcharts_pie" class="chart-size" ></div>
+        <div ref="wdcharts_pie" class="chart-size"></div>
       </el-col>
       <el-col :span="7">
         <div ref="sdcharts_pie" class="chart-size" ></div>
@@ -21,7 +21,7 @@
           <ul class="enterprise-ul">
             <template v-for="(item, index) in sensorList">
               <li @click="selectClick(item,index)" style="cursor: pointer;" >
-                <span><i class="fa fa-podcast"></i>&nbsp{{item.sensorName}}</span>
+                <span><i class="fa fa-podcast"></i>&nbsp;{{item.sensorName}}</span>
                 <span>{{item.enterpriseGroupName}}</span>
               </li>
             </template>
@@ -82,8 +82,23 @@
     },
     methods: {
       queryReport(){
+        console.log(2222);
         page({page: 1, limit: 20, status: "1"}).then(response => {
-          this.sensorList = response.rows;
+          console.log(87,response);
+          this.sensorList = [
+            {sensorName:'nvjhf',enterpriseGroupName:84936666498},
+            {sensorName:'nvjhf',enterpriseGroupName:84936666498},
+            {sensorName:'nvjhf',enterpriseGroupName:84936666498},
+            {sensorName:'nvjhf',enterpriseGroupName:84936666498},
+            {sensorName:'nvjhf',enterpriseGroupName:84936666498},
+            {sensorName:'nvjhf',enterpriseGroupName:84936666498},
+            {sensorName:'nvjhf',enterpriseGroupName:84936666498},
+            {sensorName:'nvjhf',enterpriseGroupName:84936666498},
+            {sensorName:'nvjhf',enterpriseGroupName:84936666498},
+            {sensorName:'nvjhf',enterpriseGroupName:84936666498},
+            {sensorName:'nvjhf',enterpriseGroupName:84936666498},
+            {sensorName:'sssssnvjhf',enterpriseGroupName:8493498},{sensorName:'nvjdsdsdhf',enterpriseGroupName:8493498}];
+          // this.sensorList = response.rows;
           if (this.sensorList.length > 0) {
             this.sensorNo = this.sensorList[0].sensorNo;
             this.$nextTick(function() {
@@ -92,6 +107,9 @@
             this.getReport();
           }
         });
+
+          this.getReport();
+
       },
       getReport(){
         report({sensorNo: this.sensorNo}).then(response => {
@@ -109,8 +127,12 @@
           // this.initCharts("wdcharts", this.xdata, this.ydata, "实时温度监控", this.wd_max, this.wd_min, (this.wd_max_value+10)-this.wd_max_value%10);
           // this.initCharts("sdcharts", this.xdata, this.ydata_sd, "实时湿度监控", this.sd_max, this.sd_min, 100);
           getCurrentMonitor({sensorNo: this.sensorNo}).then(response => {
+            console.log(112,response);
+            
             this.wd_value = response.humidity;
             this.sd_value = response.dampness;
+            // this.initPieCharts_wd(this.refs.wdcharts_pie,500,600,'heloo', this.wd_max,this.wd_min,900);
+            // this.initPieCharts_sd(this.refs.sdcharts_pie,this.sd_min, this.sd_max);
             this.initPieCharts_wd("wdcharts_pie",this.wd_min, this.wd_max);
             this.initPieCharts_sd("sdcharts_pie",this.sd_min, this.sd_max);
           });
@@ -128,7 +150,7 @@
             x: 'center',
             text: title
           },
-          backgroundColor: '#102133',
+          backgroundColor: '',
           tooltip: {
             trigger: 'axis'
           },
@@ -186,12 +208,14 @@
         this.pieEChart_sd.resize();
       },
       initPieCharts_wd(ref, vmin, vmax) {
+        // console.log(ref,vmin,vmax);
         this.pieEChart_wd = this.echarts.init(this.$refs[ref], 'dark');
         this.pieEChart_wd_option = {
-          backgroundColor: '#102133',
+          backgroundColor: '',
           tooltip : {
             formatter: "{a} <br/>{b} : {c}℃"
           },
+          color:"#EDF200",
           series: [
             {
               name: '实时温度',
@@ -203,25 +227,22 @@
               radius: '80%',
               axisLine: {            // 坐标轴线
                 lineStyle: {       // 属性lineStyle控制线条样式
-                  color:[[vmin/110, '#91c7ae'], [vmax/110, '#00cc33'], [1, '#c23531']],
-                  width: 3
+                  color:[[vmin/110, '#32B8D6'], [vmax/110, '#32B8D6'], [1, '#32B8D6']],
+                  width: 0
                 }
               },
               axisTick: {            // 坐标轴小标记
                 length :8,        // 属性length控制线长
                 lineStyle: {       // 属性lineStyle控制线条样式
-                  color: 'auto',
-                  shadowColor : '#fff', //默认透明
-                  shadowBlur: 10
+                  color: '#32B8D6',
+                  width:2,
                 }
               },
               splitLine: {           // 分隔线
-                length :16,         // 属性length控制线长
+                length :10,         // 属性length控制线长
                 lineStyle: {       // 属性lineStyle（详见lineStyle）控制线条样式
-                  width:3,
-                  color: '#fff',
-                  shadowColor : '#fff', //默认透明
-                  shadowBlur: 10
+                  width:0,
+                  color: '#32B8D6',
                 }
               },
               pointer: {           // 分隔线
@@ -234,16 +255,59 @@
                 textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
                   fontSize: 15,
                   fontWeight:"bold",
-                  color: '#91c7ae',
+                  color: '#EDF200',
                 }
               },
               detail: {
                 formatter:'{value}℃',
                 fontSize: 24,
                 offsetCenter: [0, '90%'],
+                color: '#EDF200',
               },
+              // data: [{value: 80, name: '温度℃'}]
               data: [{value: this.wd_value, name: '温度℃'}]
-            }
+            },
+            {
+                name: 'Line 1',
+                type: 'pie',
+                startAngle:225, //起始角度
+                radius: ['85%', '88%'],
+                itemStyle: {
+                  normal: {
+                    label: {
+                      show: false
+                    },
+                    labelLine: {
+                      show: false
+                    }
+                  }
+                },
+                hoverAnimation: false,//是否开启放大效果
+                data:[
+                  { name: '01',
+                    value: 60,
+                    startAngle:25, //起始角度
+                    itemStyle: {
+                      normal: {
+                       color: new this.echarts.graphic.LinearGradient(0.2, 0, 1, 0.1, [
+                         {offset: 0, color: '#08fd79'},
+                            {offset: 0.3, color: '#f2ee00'},
+                            {offset: 0.7, color: '#f2ee00'},
+                            {offset: 1, color: '#f92e00'},
+                        ])
+                      }
+                    }
+                  },
+                  {name: '02', 
+                  value: 20,
+                    itemStyle: {
+                      normal: {
+                       color: 'rgba(0,0,0,0)'
+                      }
+                    }
+                  }
+                ]
+              },
           ]
         };
         this.pieEChart_wd.setOption(this.pieEChart_wd_option);
@@ -252,7 +316,7 @@
       initPieCharts_sd(ref, vmin, vmax) {
         this.pieEChart_sd = this.echarts.init(this.$refs[ref], 'dark');
         this.pieEChart_sd_option = {
-          backgroundColor: '#102133',
+          backgroundColor: '',
           tooltip : {
             formatter: "{a} <br/>{b} : {c}%"
           },
@@ -266,25 +330,23 @@
               radius: '80%',
               axisLine: {            // 坐标轴线
                 lineStyle: {       // 属性lineStyle控制线条样式
-                  color:[[vmin/100, '#91c7ae'], [vmax/100, '#00cc33'], [1, '#c23531']],
-                  width: 3
+                  color:[[vmin/110, '#32B8D6'], [vmax/110, '#32B8D6'], [1, '#32B8D6']],
+                  // color:[[vmin/100, '#91c7ae'], [vmax/100, '#00cc33'], [1, '#c23531']],
+                  width: 0
                 }
               },
               axisTick: {            // 坐标轴小标记
                 length :8,        // 属性length控制线长
                 lineStyle: {       // 属性lineStyle控制线条样式
-                  color: 'auto',
-                  shadowColor : '#fff', //默认透明
-                  shadowBlur: 10
+                  color: '#32B8D6',
+                  shadowBlur: 2
                 }
               },
               splitLine: {           // 分隔线
                 length :16,         // 属性length控制线长
                 lineStyle: {       // 属性lineStyle（详见lineStyle）控制线条样式
-                  width:3,
-                  color: '#fff',
-                  shadowColor : '#fff', //默认透明
-                  shadowBlur: 10
+                  width:0,
+                  color: '#32B8D6',
                 }
               },
               pointer: {           // 分隔线
@@ -297,16 +359,60 @@
                 textStyle: {       // 其余属性默认使用全局文本样式，详见TEXTSTYLE
                   fontSize: 15,
                   fontWeight:"bold",
-                  color: '#91c7ae',
+                  color: '#EDF200',
                 }
               },
               detail: {
                 formatter:'{value}%',
                 fontSize: 24,
                 offsetCenter: [0, '90%'],
+                color: '#EDF200',
               },
+              
+              // data: [{value: 522, name: '湿度%'}]
               data: [{value: this.sd_value, name: '湿度%'}]
-            }
+            },
+            {
+                name: 'Line 1',
+                type: 'pie',
+                startAngle:225, //起始角度
+                radius: ['85%', '88%'],
+                itemStyle: {
+                  normal: {
+                    label: {
+                      show: false
+                    },
+                    labelLine: {
+                      show: false
+                    }
+                  }
+                },
+                hoverAnimation: false,//是否开启放大效果
+                data:[
+                  { name: '01',
+                    value: 60,
+                    startAngle:25, //起始角度
+                    itemStyle: {
+                      normal: {
+                       color: new this.echarts.graphic.LinearGradient(0.2, 0, 1, 0.1, [
+                         {offset: 0, color: '#08fd79'},
+                            {offset: 0.3, color: '#f2ee00'},
+                            {offset: 0.7, color: '#f2ee00'},
+                            {offset: 1, color: '#f92e00'},
+                        ])
+                      }
+                    }
+                  },
+                  {name: '02', 
+                  value: 20,
+                    itemStyle: {
+                      normal: {
+                       color: 'rgba(0,0,0,0)'
+                      }
+                    }
+                  }
+                ]
+              },
           ]
         };
         this.pieEChart_sd.setOption(this.pieEChart_sd_option);
@@ -362,7 +468,7 @@
   .ul-container{
     height: 100%;
     color: white;
-    background-color: #102133;
+    /* background-color: #102133; */
   }
   /*列表标题样式*/
   .ul-container-title{

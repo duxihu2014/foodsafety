@@ -368,6 +368,9 @@ export function createMarkerCluster(map, tag, enterpriseInfo, markerEvents) {
       //console.log(e);
       if (markerEvents.mouseout)
         markerEvents.mouseout(e);
+    }).on('mouseover',function(e){
+      if (markerEvents.mouseover)
+        markerEvents.mouseover(e);
     }).setExtData(item.enterpriseInfo);
   });
 

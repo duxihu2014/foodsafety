@@ -12,6 +12,12 @@
                   <el-option v-for="item in  changeTypeOptions" :key="item.value" :label="item.text" :value="item.value"> </el-option>
                 </el-select>
               </el-form-item>
+            <el-form-item label="变更审核状态" prop="verifyStatus" class="filter-item">
+              <el-select  placeholder="请选择" v-model.trim="listQuery.verifyStatus">
+                <el-option v-for="item in  verifyStatusOptions" :key="item.value" :label="item.text" :value="item.value"> </el-option>
+              </el-select>
+            </el-form-item>
+
             <el-form-item class="filter-item">
               <el-button type="primary" v-waves  @click="handleFilter">搜索</el-button>
               <el-button  v-waves  @click="resetQuery()">重置</el-button>
@@ -29,12 +35,14 @@
         <el-table-column align="center" label="变更人员" width="100" prop="changeUserName" ></el-table-column>
         <el-table-column align="center" fixed="right" label="操作" width="100" v-if="needFixedRight">
           <template slot-scope="scope">
-            <el-button size="mini" type="primary" @click="handelAudit(scope.row)">审核</el-button>
+            <el-button v-if="scope.row.verifyStatus == 1" size="mini" type="primary" @click="handelAudit(scope.row)">审核</el-button>
+            <el-button v-else size="mini" :disabled="true">审核</el-button>
           </template>
         </el-table-column>
         <el-table-column align="center" label="操作" width="100" v-else>
           <template slot-scope="scope">
-            <el-button size="mini" type="primary" @click="handelAudit(scope.row)">审核</el-button>
+            <el-button v-if="scope.row.verifyStatus == 1" size="mini" type="primary" @click="handelAudit(scope.row)">审核</el-button>
+            <el-button v-else size="mini" :disabled="true">审核</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -217,6 +225,9 @@
           materialTypeOptions(){
             return this.staticData["原料类型"]
           },
+          verifyStatusOptions(){
+            return this.staticData["变更审核状态"]
+          },
         },
         created(){
           this.getList();
@@ -260,6 +271,7 @@
             this.getList();
           },
           resetQuery() {
+            this.listQuery.verifyStatus="1";
             this.listQuery.enterpriseNameLike= "";
             this.listQuery.changeType=undefined;
           },
