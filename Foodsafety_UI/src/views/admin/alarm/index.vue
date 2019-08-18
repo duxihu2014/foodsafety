@@ -18,14 +18,14 @@
           </el-form-item>
 
           <el-form-item label="报警类型" class="filter-item">
-            <el-select  v-model="listQuery.enterpriseStatus" placeholder="请选择" clearable filterabler>
+            <el-select  v-model="listQuery.eventId" placeholder="请选择" clearable filterabler>
               <!-- <el-option v-for="(item, index) in testData" :key="item.value" :label="item.text" :value="item.value"></el-option> -->
               <el-option v-for="(item, index) in enterpriseStatusData" :key="item.value" :label="item.text" :value="item.value"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="日期" class="filter-item">
              <el-date-picker
-              v-model="listQuery.selectDate"
+              v-model="listQuery.startDate"
               type="daterange"
               align="right"
               unlink-panels

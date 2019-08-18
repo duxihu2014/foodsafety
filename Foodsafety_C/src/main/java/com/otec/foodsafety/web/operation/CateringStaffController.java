@@ -78,7 +78,7 @@ public class CateringStaffController extends VueBaseController<CateringStaffServ
               @RequestParam(value = "employmentDate",required = false,defaultValue = "")String employmentDate,
               @RequestParam(value = "contactNumber",required = false)String contactNumber,
               @RequestParam(value = "staffStatus")String staffStatus,
-              @RequestParam(value = "certificaetNumber",required = false)String certificateNumber,
+              @RequestParam(value = "certificateNumber",required = false)String certificateNumber,
               @RequestParam(value = "examinationDate",required = false,defaultValue = "")String examinationDate,
               @RequestParam(value = "validDate",required = false,defaultValue = "")String validDate,
               @RequestParam(value = "issuingDate")String issuingDate,
