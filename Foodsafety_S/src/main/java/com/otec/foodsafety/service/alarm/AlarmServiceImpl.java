@@ -1,7 +1,12 @@
 package com.otec.foodsafety.service.alarm;
 
+import com.cykj.grcloud.entity.page.GridDataModel;
+import com.cykj.grcloud.entity.page.PageObject;
+import com.cykj.grcloud.service.impl.base.BaseServiceImpl;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.otec.foodsafety.entity.alarm.Alarm;
+import com.otec.foodsafety.entity.alarm.AlarmExt;
 import com.otec.foodsafety.entity.enterprise.EnterpriseBase;
 import com.otec.foodsafety.mapper.alarm.AlarmMapper;
 import com.otec.foodsafety.mapper.util.PushService;
@@ -15,17 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.ibatis.session.RowBounds;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.cykj.grcloud.entity.page.GridDataModel;
-import com.cykj.grcloud.entity.page.PageObject;
-import com.cykj.grcloud.service.impl.base.BaseServiceImpl;
-
-import com.otec.foodsafety.entity.alarm.Alarm;
-import com.otec.foodsafety.entity.alarm.AlarmExt;
-import com.otec.foodsafety.mapper.alarm.AlarmMapper;
 
 @Service
 @Transactional
@@ -150,4 +144,12 @@ public class AlarmServiceImpl extends BaseServiceImpl<Alarm, Long> implements Al
 		return mapper.getVideoTrend(params);
 
 	}
+
+
+	@Override
+	public List<String> getEnterpriseName(String eventId) {
+		return mapper.getEnterpriseNameByEventId(eventId);
+	}
+
+
 }
