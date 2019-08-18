@@ -2,7 +2,7 @@
 <foodsafety-config>
 	<path>
 		<remoteServerUrl>http://106.75.119.205:8089/Foodsafety_S/remoting/</remoteServerUrl>
-		<imageServerUrl>http://106.75.119.205</imageServerUrl>
+		<imageServerUrl>http://106.75.119.205:80</imageServerUrl>
 	</path>
 	<webservice>
 		<httpClientPolicy>
