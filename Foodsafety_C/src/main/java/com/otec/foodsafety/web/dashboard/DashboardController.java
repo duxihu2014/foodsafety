@@ -273,6 +273,7 @@ public class DashboardController extends VueBaseController<RevisitResultService,
                     mylist.add(enterpriseBase.getEnterpriseName());
                 }
             }
+            map.put("companyName",mylist);
             map.put("name",grid.getGridName());
             map.put("value",count);
             result.add(map);
