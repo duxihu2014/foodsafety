@@ -248,7 +248,7 @@ export default {
     },
     //审核查看
     handleView(row) {
-      console.log(265,row);
+      // console.log(265,row);
       
       this.dialogVisible = true;
       this.enterpriseId = row.enterpriseId;

@@ -214,7 +214,7 @@ export default {
     getCount() {
       if (this.role.isEnterpriseRole) {
         getEnterpriseCount({ alermStartTime: this.lookAlarm_time }).then(response => {
-          console.log(217,response)
+          // console.log(217,response)
           this.count_cert = response.count_cert;
           this.count_onsite = response.count_onsite;
           this.count_alarm = response.count_alarm;
@@ -227,7 +227,7 @@ export default {
         });
       } else if (this.role.isSuperviseRole) {
         getSuperviseCount({ alermStartTime: this.lookAlarm_time }).then(response => {
-          console.log(230,response)
+          // console.log(230,response)
 
           this.count_register = response.count_register;
           this.count_verify = response.count_verify;

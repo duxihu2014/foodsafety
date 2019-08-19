@@ -36,7 +36,7 @@
         this.lsData=[];
         this.msrData=[];
         getVideoTrend({areaId:this.user.areaId}).then(response => {
-          console.log(response,1111111111111111)
+          // console.log(response,1111111111111111)
           response.forEach(item=>{
             this.dateArr.push(this.getDate(item.date));
             this.aqmData.push(item.aqmCount);

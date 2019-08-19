@@ -463,7 +463,7 @@
           });
         },
         getList(){
-          console.log(this.user.areaId)
+          // console.log(this.user.areaId)
             getRegisterEnterprisePage(this.listQuery).then(response => {
               this.list = response.rows;
               this.total = response.total;

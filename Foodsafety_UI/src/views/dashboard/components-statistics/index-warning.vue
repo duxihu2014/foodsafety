@@ -27,7 +27,7 @@
       methods: {
         init(){
           getWarning({areaId:this.user.areaId}).then(data => {
-            console.log(30,data)
+            // console.log(30,data)
             // debugger
             data.forEach(item => {
               this.dateArr.push(item.validDate);

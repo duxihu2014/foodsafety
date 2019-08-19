@@ -593,6 +593,7 @@ export default {
               isShow:true,
               url:response.data.url
           }
+          // console.log(598,this.videoObj)
           this.isVideoShow=true 
           // this.playUrl = "VLCPLAY://" + response.data.url;
           // document.getElementById("playHref").href = this.playUrl;

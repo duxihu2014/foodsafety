@@ -251,7 +251,7 @@
     },
     watch:{
       total(val,old){
-        console.log(254,val,old)
+        // console.log(254,val,old)
         this.$emit('setCount',val,1);
       }
     },

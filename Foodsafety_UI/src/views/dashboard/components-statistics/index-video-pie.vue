@@ -21,7 +21,7 @@
       methods: {
         init() {
           getAlarmCount({}).then(response => {
-            console.log(24,response)
+            // console.log(24,response)
         // Object
             //   data:
             //   treated: [{…}]

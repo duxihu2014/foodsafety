@@ -286,7 +286,7 @@
             let url = `/api/admin/alert/list?page=1&limit=20&enterpriseId=${this.user['enterpriseId']}`;
             _self.timeId = window.setInterval(function(){
               fetch({url, method: 'get',}).then(data => {
-                console.log(1111)
+                // console.log(1111)
                 _self.alarmData = data.rows[0];
                 _self.alarmTime = data.rows[0].alarmTime;
                 _self.dateDiff(_self.alarmTime);

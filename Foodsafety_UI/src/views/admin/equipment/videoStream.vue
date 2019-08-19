@@ -32,6 +32,7 @@ export default {
       if(this.$props.vurl.isShow){
         this.myPlayer = videojs(this.videoid+this.$props.vurl.vid);
         this.myPlayer.play();
+        // console.log(3555,this.$props.vurl)
       }
       })
     }
