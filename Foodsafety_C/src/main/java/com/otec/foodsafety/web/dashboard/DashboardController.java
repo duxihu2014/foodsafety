@@ -603,8 +603,11 @@ public class DashboardController extends VueBaseController<RevisitResultService,
     @RequestMapping(value="/getRecordMorningCheck",method = RequestMethod.GET)
     @ResponseBody
     public ObjectRestResponse<RecordMorningCheck> getRecordMorningCheck(@RequestParam Map<String, Object> params) {
+        RecordMorningCheck recordMorningCheck = null;
         List<RecordMorningCheck> list = recordMorningCheckService.findEntitysByCondition(params);
-        RecordMorningCheck recordMorningCheck = list.get(list.size()-1);
+        if(list!=null&&list.size()>0){
+             recordMorningCheck = list.get(list.size()-1);
+        }
         return new ObjectRestResponse<RecordMorningCheck>().rel(true).data(recordMorningCheck);
     }
 

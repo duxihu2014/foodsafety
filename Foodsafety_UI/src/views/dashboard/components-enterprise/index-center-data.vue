@@ -274,10 +274,9 @@
             })
             //3.获取晨检情况
             getRecordMorningCheck({"enterpriseId":this.user.enterpriseId}).then((response)=> {
-              console.log(245,response);
              if(response.data.checkResult==1){
                this.morningCheckResult=true;
-             }else{
+             }else if(response.data.checkResult==0){
                this.morningCheckResult=false;
              }
             })
