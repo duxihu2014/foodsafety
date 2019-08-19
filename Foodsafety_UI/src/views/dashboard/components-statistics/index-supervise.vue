@@ -125,10 +125,11 @@
               }
             },
             legend: {
-              orient: 'vertical',
+              // orient: 'vertical',
               bottom: "bottom",
               left: 'center',
               icon:"rect",
+              type:"scroll",
               textStyle:{
                 fontSize: 11,
                 color:"#fff",

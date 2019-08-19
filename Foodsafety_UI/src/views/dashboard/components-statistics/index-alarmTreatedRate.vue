@@ -58,6 +58,7 @@
             legend: {
               top: 20,
               icon:"rect",
+              type:"scroll",
               textStyle: {
                 fontSize: 11,
                 color: '#fff',

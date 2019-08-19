@@ -80,6 +80,7 @@
             legend: {
               bottom: "bottom",
               left: 'center',
+              type:"scroll",
               textStyle:{
                 fontSize: 11,
                 color:"#fff",

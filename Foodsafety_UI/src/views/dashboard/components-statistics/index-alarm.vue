@@ -36,6 +36,7 @@
         this.lsData=[];
         this.msrData=[];
         getVideoTrend({areaId:this.user.areaId}).then(response => {
+          console.log(response,1111111111111111)
           response.forEach(item=>{
             this.dateArr.push(this.getDate(item.date));
             this.aqmData.push(item.aqmCount);
@@ -79,13 +80,43 @@
             {
               type : 'category',
               boundaryGap : false,
+              axisLabel: {
+                  color:'#3AF6F9',
+                },
+                axisTick:{       
+                  show:false
+                },
+                axisLine: {
+                  lineStyle: {
+                      color:'#103D79'
+                  }
+                },
               data : this.dateArr
             }
           ],
           yAxis : [
             {
-              type : 'value'
+              type : 'value',
+              axisLabel: {
+                    color:'#3AF6F9',
+                },
+                axisLine: {
+                  lineStyle: {
+                      color:'#103D79'
+                    }
+                  },
+                  splitLine: {
+                      show: true,
+                      lineStyle:{
+                        color: ['#0D2756'],
+                        type:"solid"
+                      }
+                  },
+                  axisTick:{       
+                      show:false
+                  }
             }
+            
           ],
           legend: {
             bottom: "bottom",
@@ -101,36 +132,42 @@
             {
               name:'未戴安全帽',
               type:'line',
+              color:"#1AB500",
               areaStyle: {},
               data:this.aqmData
             },
             {
               name:'未戴口罩',
               type:'line',
+              color:'#00bfff',
               areaStyle: {},
               data:this.kzData
             },
             {
               name:'未穿工作装',
               type:'line',
+              color:'#2a4cd8',
               areaStyle: {},
               data:this.gzfData
             },
             {
               name:'抽烟',
               type:'line',
+              color:'#d9b200',
               areaStyle: {normal: {}},
               data:this.cyData
             },
             {
               name:'老鼠出没',
               type:'line',
+              color:'#7e00ff',
               areaStyle: {normal: {}},
               data:this.lsData
             },
             {
               name:'陌生人进入',
               type:'line',
+              color:'#1ab500',
               areaStyle: {normal: {}},
               data:this.msrData
             }

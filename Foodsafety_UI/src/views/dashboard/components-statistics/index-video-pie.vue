@@ -107,6 +107,7 @@
             legend: {
               bottom: "bottom",
               left: 'center',
+               type:"scroll",
               icon:"rect",
               textStyle:{
                 fontSize: 11,
