@@ -25,7 +25,7 @@
           </el-form-item>
           <el-form-item label="日期" class="filter-item">
              <el-date-picker
-              v-model="listQuery.selectDate"
+              v-model="listQuery.startDate"
               type="daterange"
               align="right"
               unlink-panels
