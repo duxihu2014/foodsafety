@@ -25,7 +25,7 @@
       methods: {
           init(){
             getGridEnterpriseCount({areaId:this.user.areaId,gridStatus:1}).then(response => {
-              console.log(28,response);
+              // console.log(28,response);
               this.gridTotal=response.data;
               // console.log(29,this.gridTotal);
               let totalCount=500;   //需要计算总数  返回真数据后 在下面的foreach中累加 item.value值

@@ -63,7 +63,7 @@
                 color: '#fff',
               },
               selectedMode:false,
-              data: ['已处理', '未处理']
+              data: ['已处理', '总数']
             },
             tooltip : {
               trigger: 'axis',
@@ -130,7 +130,7 @@
             }],
 
             series: [{
-              name: "未处理",
+              name: "总数",
               type: 'bar',
               xAxisIndex:1,
               itemStyle:{

@@ -208,6 +208,11 @@
           default: undefined
         }
       },
+      watch:{
+        total(val){
+          this.$emit('setCount',val,5);
+        }
+      },
         data(){
             return {
               tabPosition:'0',

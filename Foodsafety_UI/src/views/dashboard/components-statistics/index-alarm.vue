@@ -32,7 +32,7 @@
           this.gzfData=[];
           this.cyData=[];
           getVideoTrend({areaId:this.user.areaId}).then(response => {
-            console.log(35,response)
+            console.log(355555,response)
                   // aqmCount: 0
                   // cyCount: 0
                   // date: "2019-08-12"
@@ -123,7 +123,7 @@
                 fontSize: 11,
                 color:"#fff",
               },
-              data: ['未戴防护帽','未戴口罩','未穿工作装','抽烟']
+              data: ['未戴防护帽','未戴口罩','未穿工作装','抽烟','陌生人进入']
             },
             series : [
               {
@@ -179,7 +179,15 @@
                 areaStyle: {normal: {}},
                 // data:[120, 132, 101, 134, 90, 230, 210]
                 data:this.cyData
-              }
+              },
+              // {
+              //   name:'陌生人进入',
+              //   type:'line',
+              //    color:'#1ab500',
+              //   areaStyle: {normal: {}},
+              //   // data:[120, 132, 101, 134, 90, 230, 210]
+              //   data:this.cyData
+              // }
             ]
           };
           this.lineEChart.setOption(option);
