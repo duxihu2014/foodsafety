@@ -11,7 +11,7 @@
             myChart:undefined,
             treatedData:[],
             untreatedData:[],
-            category:["未戴防护帽","未戴口罩","未穿工作装","抽烟","温度高","温度低","湿度高","湿度低"],
+            category:["未戴安全帽","未戴口罩","未穿工作装","抽烟",'老鼠出没','陌生人进入',"温度高","温度低","湿度高","湿度低"],
           }
       },
       computed:{
@@ -21,7 +21,7 @@
           let total = treatedData.map(function(v, i) {
             return v + untreatedData[i];
           });
-          
+
           return total;
         }
       },
@@ -106,7 +106,8 @@
                 axisTick : {show: false},
                 axisLabel: {
                   show: true,
-                  rotate: 30
+                  rotate: 60,
+                  fontSize:11,
                 },
                 data: this.category,
               },
