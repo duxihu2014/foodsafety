@@ -148,11 +148,11 @@ public class SyncController {
         Alarm alarm = new Alarm();
         alarm.setIndexCode(sensorNo);
         alarm.setContent(alarmContent);
-        alarm.setEventId("1");
+        alarm.setEventId("10005");
         alarm.setEventType(EventTypeConstants.SENSOR);
 //        alarm.setAlarmType(alarmName);
         alarm.setAlarmTime(new Date());
-        alarm.setAlarmSource("传感器报警");
+        alarm.setAlarmSource("水浸报警");
         alarm.setStatus("1");
         alarm.setCreateTime(new Date());
         alarmService.persist(alarm);
