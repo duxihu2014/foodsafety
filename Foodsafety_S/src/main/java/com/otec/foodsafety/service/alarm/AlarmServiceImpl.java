@@ -66,11 +66,11 @@ public class AlarmServiceImpl extends BaseServiceImpl<Alarm, Long> implements Al
 
 		//20190705解决web视频地址播放问题-修改
         for(AlarmExt alarmExt:results){
-            if(StringUtils.isNotBlank(alarmExt.getMsg())&&!alarmExt.getMsg().equals("null")){
-                alarmExt.setMsg(alarmExt.getMsg().replaceAll("\"event_video\":\"","\"event_video\":\""+"http://101.132.144.237:8080/event_video/"));
-            }
+//            if(StringUtils.isNotBlank(alarmExt.getMsg())&&!alarmExt.getMsg().equals("null")){
+//                alarmExt.setMsg(alarmExt.getMsg().replaceAll("\"event_video\":\"","\"event_video\":\""+"http://101.132.144.237:8080/event_video/"));
+//            }
             if(StringUtils.isNotBlank(alarmExt.getVideoUrl())&&!alarmExt.getVideoUrl().equals("null")){
-                alarmExt.setVideoUrl("http://101.132.144.237:8080/event_video/"+alarmExt.getVideoUrl());
+                alarmExt.setVideoUrl("/event_video/"+alarmExt.getVideoUrl());
             }
         }
 
