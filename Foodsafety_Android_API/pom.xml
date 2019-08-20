@@ -89,10 +89,6 @@
                     <include>**/*</include>
                 </includes>
             </resource>
-            <resource>
-                <directory>${basedir}/profiles/${profile.active}</directory>
-            </resource>
-
         </resources>
         <plugins>
             <!-- compiler插件, 设定JDK版本 -->

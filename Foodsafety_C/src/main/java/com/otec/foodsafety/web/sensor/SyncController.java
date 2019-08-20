@@ -152,7 +152,7 @@ public class SyncController {
         alarm.setEventType(EventTypeConstants.SENSOR);
 //        alarm.setAlarmType(alarmName);
         alarm.setAlarmTime(new Date());
-        alarm.setAlarmSource("传感器报警");
+        alarm.setAlarmSource("水浸报警");
         alarm.setStatus("1");
         alarm.setCreateTime(new Date());
         alarmService.persist(alarm);

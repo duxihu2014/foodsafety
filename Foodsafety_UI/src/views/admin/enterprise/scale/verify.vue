@@ -205,6 +205,11 @@
           default: undefined
         }
       },
+      watch:{
+        total(val){
+          this.$emit('setCount',val,6);
+        }
+      },
       data(){
         return {
           tabPosition:'0',

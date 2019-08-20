@@ -38,11 +38,8 @@
               totalCount = totalCount + v + untreatedData[i];
               return v + untreatedData[i];
             });
-              console.log(38,total)
-              console.log(39,untreatedCompaneyNames)
-
+              // console.log(39,untreatedCompaneyNames)
             total.forEach((item,index) =>{
-              console.log(41,item)
               if(index==0){
                 this.alarmData.push({"name":"未戴防护帽","value":item,"cname":["未戴防护帽:"+item+" "+"("+(item/totalCount*100).toFixed(2)+"%)","企业名称:"].concat(untreatedCompaneyNames[index])})
                 // this.alarmData.push({"name":"未戴防护帽","value":item})

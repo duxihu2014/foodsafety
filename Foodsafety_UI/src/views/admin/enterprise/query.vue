@@ -144,9 +144,9 @@ export default {
       list: null,
       total: null,
       listLoading: true,
-      initStatus:3, //企业状态默认值
+      initStatus:'3', //企业状态默认值
       listQuery: {
-        enterpriseStatus: this.initStatus,//新增企业状态
+        enterpriseStatus:'3',//新增企业状态
         superviseClassification: undefined,
         subjectClassification: undefined,
         certificateNoLike: undefined,
@@ -219,7 +219,7 @@ export default {
       let page = this.listQuery.page;
       let limit = this.listQuery.limit;
       this.listQuery = { page: page, limit: limit,
-        enterpriseStatus:this.initStatus,
+        enterpriseStatus:'3',
         superviseClassification: undefined,
         subjectClassification: undefined,
         certificateNoLike: undefined,

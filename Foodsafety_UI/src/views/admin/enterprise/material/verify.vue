@@ -180,6 +180,11 @@
           default: undefined
         }
       },
+      watch:{
+        total(val){
+          this.$emit('setCount',val,4);
+        }
+      },
         data(){
             return {
               tabPosition:'0',

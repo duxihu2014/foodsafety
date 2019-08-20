@@ -274,6 +274,7 @@
             })
             //3.获取晨检情况
             getRecordMorningCheck({"enterpriseId":this.user.enterpriseId}).then((response)=> {
+
              if(response.data.checkResult==1){
                this.morningCheckResult=true;
              }else if(response.data.checkResult==0){
@@ -285,11 +286,12 @@
             let url = `/api/admin/alert/list?page=1&limit=20&enterpriseId=${this.user['enterpriseId']}`;
             _self.timeId = window.setInterval(function(){
               fetch({url, method: 'get',}).then(data => {
+                console.log(1111)
                 _self.alarmData = data.rows[0];
                 _self.alarmTime = data.rows[0].alarmTime;
                 _self.dateDiff(_self.alarmTime);
                 _self.initCharts();
-              }).catch(err =>{
+              }).catch(error =>{
                 _self.clearTime();
                 this.$message.error('报警列表数据获取失败！');
               });

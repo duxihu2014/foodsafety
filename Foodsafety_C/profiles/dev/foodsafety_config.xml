@@ -15,6 +15,6 @@
 		<defaultPassword>123456</defaultPassword>
 	</passwrod>
 	<version>1.0.0</version>
-	<uploadUrl>http://106.75.119.205:8085/IntelligentCity_IMG/receiveDataServlet</uploadUrl>
+	<uploadUrl>http://192.168.1.151:8080/IntelligentCity_IMG/receiveDataServlet</uploadUrl>
 	<imageFolder>intelligentFoodsafety</imageFolder>
 </foodsafety-config>

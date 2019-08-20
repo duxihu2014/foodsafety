@@ -75,7 +75,7 @@
 </update>
 
 <select id="queryAlarmTotalLastMonth" resultMap="result_ResultMap_AlarmTask" parameterType="java.util.HashMap">
-    select * from T_ALARM_TOTAL t where t.ALARM_MONTH = DATE_FORMAT(DATE_SUB(CURDATE(),INTERVAL 1 month), '%Y%m') AND t.ENTERPRISE_ID = #{enterpriseId}
+    select * from T_ALARM_TOTAL t where t.ALARM_MONTH = DATE_FORMAT(DATE_SUB(CURDATE(),INTERVAL 1 month), '%Y%m')
 </select>
 
 <insert id="insertAlarmTotal" parameterType="com.otec.foodsafety.entity.collect.AlarmTotal">
