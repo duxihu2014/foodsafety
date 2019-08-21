@@ -176,6 +176,9 @@
         mounted(){
           this.initCharts();
         },
+        destoryed(){
+          this.clearTime()
+        },
         methods:{
           initCharts() {//初始化echarts
             this.myChart = this.echarts.init(this.$refs['echarts'], 'dark');
@@ -286,16 +289,15 @@
             let url = `/api/admin/alert/list?page=1&limit=20&enterpriseId=${this.user['enterpriseId']}`;
             _self.timeId = window.setInterval(function(){
               fetch({url, method: 'get',}).then(data => {
-                // console.log(1111)
                 _self.alarmData = data.rows[0];
                 _self.alarmTime = data.rows[0].alarmTime;
                 _self.dateDiff(_self.alarmTime);
                 _self.initCharts();
               }).catch(error =>{
                 _self.clearTime();
-                this.$message.error('报警列表数据获取失败！');
+                _self.$message.error('报警列表数据获取失败！');
               });
-            },1000)
+            },60000)
 
 
           },

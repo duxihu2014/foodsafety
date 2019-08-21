@@ -39,7 +39,7 @@
       <el-table-column align="center" label="注册状态" width="100" prop="registerStatus" :formatter="registerStatusFormatter"></el-table-column>
       <el-table-column  align="center"  label="操作" width="100" fixed="right">
         <template slot-scope="scope">
-          <el-button v-if="scope.row.registerStatus === 0" size="mini" type="success" @click="handleAudit(scope.row)">审核</el-button>
+          <el-button v-if="scope.row.registerStatus == 0" size="mini" type="success" @click="handleAudit(scope.row)">审核</el-button>
           <el-button v-else size="mini" :disabled="true">审核</el-button>
           <!-- <el-button size="mini" type="success" @click="handleAudit(scope.row)">审核</el-button> -->
         </template>

@@ -54,7 +54,7 @@
           grid: {
             x: '10%',
             y: '20%',
-            y2: '16%'
+            y2:'16%'
           },
           tooltip : {
             trigger: 'axis',
@@ -68,18 +68,19 @@
           xAxis : [
             {
               type : 'category',
+              boundaryGap : false,
               axisLabel: {
                 color:'#3AF6F9',
+                // color:'#3AF6F9',
+              },
+              axisTick:{       
+                show:false
               },
               axisLine: {
                   lineStyle: {
                       color:'#103D79'
                   }
               },
-              axisTick:{       
-                show:false
-              },
-              boundaryGap : false,
               // data : ['邮件营销','联盟广告','视频广告','直接访问','搜索引擎']
               data : this.dateArr
             }
@@ -98,7 +99,7 @@
               splitLine: {
                   show: true,
                   lineStyle:{
-                    color: '#0D2756',
+                    color: ['#0D2756'],
                     type:"solid"
                   }
               },
@@ -110,7 +111,7 @@
           legend: {
             bottom: "bottom",
             left: 'center',
-             type:"scroll",
+            type:"scroll",
             textStyle:{
               fontSize: 11,
               color:"#fff",
@@ -122,24 +123,17 @@
               name:'温度报警数',
               type:'line',
               color:'#E0B10B',
-              areaStyle: {
-                color:'#E0B10B ',
-                opacity:1 
-              },
+              areaStyle: { opacity:0.3, },
               data:this.wdData
             },
             {
               name:'湿度报警数',
               type:'line',
               color:'#00FCFD',
-              areaStyle: {
-                color:'#00FCFD ',
-                opacity:1 ,
-              },
+              areaStyle: { opacity:0.3, },
               data:this.sdData
             }
           ]
-          // color:["#FFD33E"]
         };
         this.lineEChart.setOption(option);
       },

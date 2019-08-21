@@ -94,6 +94,7 @@
               axisLine: {
                 show: false,
                 lineStyle:{
+                  fontSize:11,
                   color:'#fff',
                 }
               },

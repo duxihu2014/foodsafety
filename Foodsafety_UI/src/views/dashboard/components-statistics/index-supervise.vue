@@ -29,10 +29,6 @@
       },
       methods: {
           init(){
-            // let colors=["#2f41d3","#c45906","#c45906","#c45906"]
-            // let name=["A等级","B等级","C等级","D等级"]
-            // console.log(3444444,this.superviseClassificationOptions)
-            // let supervisionTotalData=[]
             this.superviseClassificationOptions.forEach(item=>{
                let resultData = {};
                resultData.name=item.text+'等级';
