@@ -195,7 +195,7 @@ public class AlarmStatisticsController extends VueBaseController<AlarmService, A
 	@ResponseBody
 	public GridDataModel allAlarmStatisticsByPeriodTypeDetail(
 			@RequestParam("selectType") String selectType,//selectType=1-周报查询，2-年报查询，
-			@RequestParam("date") String date, //date=7月23日
+			@RequestParam("date") String date, //date=2019-07-23
 			@RequestParam("yearAndMonth") String yearAndMonth,//2019-01
 			@RequestParam("type") String type//type(1-视频，2-温度，3-湿度，4-水浸)
 		) {
