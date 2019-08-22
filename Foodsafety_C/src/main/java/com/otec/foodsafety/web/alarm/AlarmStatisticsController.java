@@ -4,10 +4,15 @@ import com.cykj.grcloud.entity.page.GridDataModel;
 import com.cykj.grcloud.entity.page.PageObject;
 import com.google.common.collect.Maps;
 import com.otec.foodsafety.entity.alarm.Alarm;
+import com.otec.foodsafety.entity.equipment.Equipment;
+import com.otec.foodsafety.entity.sensor.SensorInfo;
 import com.otec.foodsafety.service.alarm.AlarmService;
+import com.otec.foodsafety.service.equipment.EquipmentService;
+import com.otec.foodsafety.service.sensor.SensorInfoService;
 import com.otec.foodsafety.web.VueBaseController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -29,14 +34,12 @@ public class AlarmStatisticsController extends VueBaseController<AlarmService, A
 	Logger log = LoggerFactory.getLogger(AlarmStatisticsController.class);
 
 
-//	@Autowired
-//	private AuthService authService;
-//	@Autowired
-//	SysAreaService sysAreaService;
-//	@Autowired
-//	AlarmService alarmService;
-//	@Autowired
-//	DateLocalService dateLocalService;
+
+	@Autowired
+	private SensorInfoService sensorInfoService;
+
+	@Autowired
+	private EquipmentService equipmentService;
 
 
 
@@ -257,37 +260,95 @@ public class AlarmStatisticsController extends VueBaseController<AlarmService, A
 	 */
 	@RequestMapping(value = "/allEquStatistics", method = RequestMethod.GET)
 	@ResponseBody
-	public List allEquStatistics(
-			@RequestParam("beginTime") String beginTime,//开始时间
-			@RequestParam("endTime") String endTime//结束时间
+	public List allEquStatistics(@RequestParam Map<String, String> params,
+			@RequestParam("startDate") String startDate,//开始时间
+			@RequestParam("endDate") String endDate//结束时间
 	) {
+
+		// 查询列表数据
+		PageObject po = getPageObject(params);
+		po.getCondition().putAll(params);
+		po.getCondition().put("status", "1");
+		GridDataModel model = equipmentService.getGridDataByCondition(po);
+		List<Equipment> list = (List<Equipment> )model.getRows();
 
 
 		List<Map<String, Object>> datamap = new ArrayList<>();
-		Map<String, Object> result = Maps.newHashMap();
 
-		result.put("equId", "xxfd");//设备ID
-		result.put("equName", "人脸识别摄像头");//预警位置---设备名称
-		result.put("num", 10);//备注
-		result.put("remarkType", "视频");//备注-   1-视频,2-传感器 (温度,湿度)
+		for (Equipment equipment:list){
+			System.out.println(equipment.getEquipmentNo());//设备编号
+			System.out.println(equipment.getEquipmentName());//设备名称
 
 
-		datamap.add(result);
+
+			Map mapAlerm = new HashMap<String, Object>();
+			mapAlerm.put("startDate", startDate);
+			mapAlerm.put("endDate", endDate);
+
+			//mapAlerm.put("eventType","1");
+			mapAlerm.put("indexCode",equipment.getEquipmentNo());
+			Integer video_num = biz.countAlarmByCondition(mapAlerm);
+
+			Map<String, Object> result = Maps.newHashMap();
+			result.put("equId", equipment.getEquipmentNo());//设备ID
+			result.put("equName", equipment.getEquipmentName());//预警位置---设备名称
+			result.put("num", video_num);//备注
+			result.put("remarkType", "视频");//备注-   1-视频,2-传感器 (温度,湿度)
+			datamap.add(result);
+		}
+
+		GridDataModel model2 = sensorInfoService.getGridDataByCondition(po);
+		List<SensorInfo> list2 = (List<SensorInfo> )model2.getRows();
+
+		for (SensorInfo sensorInfo:list2){
+			System.out.println(sensorInfo.getSensorNo());//设备编号
+			System.out.println(sensorInfo.getSensorName());//设备名称
 
 
-		Map<String, Object> result2 = Maps.newHashMap();
-
-		result2.put("equId", "xxfd2");//设备ID
-		result2.put("equName", "达永粮油仓库温湿度02");//预警位置---设备名称
-		result2.put("num", 11);//备注
-		result2.put("remarkType", "传感器");//备注-   1-视频,2-传感器 (温度,湿度)
+			Map mapAlerm = new HashMap<String, Object>();
+			mapAlerm.put("startDate", startDate);
+			mapAlerm.put("endDate", endDate);
 
 
-		datamap.add(result2);
+			//mapAlerm.put("eventType","1");
+			mapAlerm.put("indexCode",sensorInfo.getSensorNo());
+			Integer video_num = biz.countAlarmByCondition(mapAlerm);
 
+			Map<String, Object> result = Maps.newHashMap();
+			result.put("equId", sensorInfo.getSensorNo());//设备ID
+			result.put("equName", sensorInfo.getSensorName());//预警位置---设备名称
+			result.put("num", video_num);//备注
+			result.put("remarkType", "传感器");//备注-   1-视频,2-传感器 (温度,湿度)
+			datamap.add(result);
+		}
+
+
+//		List<Map<String, Object>> datamap = new ArrayList<>();
+//		Map<String, Object> result = Maps.newHashMap();
+//
+//		result.put("equId", "xxfd");//设备ID
+//		result.put("equName", "人脸识别摄像头");//预警位置---设备名称
+//		result.put("num", 10);//备注
+//		result.put("remarkType", "视频");//备注-   1-视频,2-传感器 (温度,湿度)
+//
+//
+//		datamap.add(result);
+//
+//
+//		Map<String, Object> result2 = Maps.newHashMap();
+//
+//		result2.put("equId", "xxfd2");//设备ID
+//		result2.put("equName", "达永粮油仓库温湿度02");//预警位置---设备名称
+//		result2.put("num", 11);//备注
+//		result2.put("remarkType", "传感器");//备注-   1-视频,2-传感器 (温度,湿度)
+//
+//
+//		datamap.add(result2);
+//
 
 		return datamap;
 	}
+
 
 
 	/**
@@ -295,35 +356,41 @@ public class AlarmStatisticsController extends VueBaseController<AlarmService, A
 	 */
 	@RequestMapping(value = "/allEquStatisticsDetail", method = RequestMethod.GET)
 	@ResponseBody
-	public List allEquStatisticsDetail(
-			@RequestParam("equId") String equId,//selectType=1-周报查询，2-年报查询
-			@RequestParam("beginTime") String beginTime,//开始时间
-			@RequestParam("endTime") String endTime//结束时间
+	public GridDataModel allEquStatisticsDetail(
+			@RequestParam("equId") String equId,//
+			@RequestParam("startDate") String startDate,//开始时间
+			@RequestParam("endDate") String endDate//结束时间
 	) {
-		//时间 预警位置  备注
-
-		List<Map<String, Object>> datamap = new ArrayList<>();
-		Map<String, Object> result = Maps.newHashMap();
-
-		result.put("datetime", "2019/07/28 22:00:30");//时间
-		result.put("equName", "人脸识别摄像头");//预警位置---设备名称
-		result.put("remarkType", "视频");//备注-   1-视频,2-传感器 (温度,湿度)
 
 
-		datamap.add(result);
+
+		Map<String, String> params = new HashMap<>();
+		params.put("startDate", startDate);
+		params.put("endDate", endDate);
+		params.put("indexCode",equId);
 
 
-		Map<String, Object> result2 = Maps.newHashMap();
 
-		result2.put("datetime", "2019/08/28 23:00:30");//时间
-		result2.put("equName", "达永粮油仓库温湿度02");//预警位置---设备名称
-		result2.put("remarkType", "传感器");//备注-   1-视频,2-传感器(温度,湿度)
-
-
-		datamap.add(result2);
+		// 查询列表数据
+		PageObject po = getPageObject(params);
+		po.getCondition().putAll(params);
+		GridDataModel model = biz.getGridDataModelByCondition(po);
 
 
-		return datamap;
+//		//时间 预警位置  备注
+//		List<Map<String, Object>> datamap = new ArrayList<>();
+//		Map<String, Object> result = Maps.newHashMap();
+//		result.put("datetime", "2019/07/28 22:00:30");//时间
+//		result.put("equName", "人脸识别摄像头");//预警位置---设备名称
+//		result.put("remarkType", "视频");//备注-   1-视频,2-传感器 (温度,湿度)
+//		datamap.add(result);
+//		Map<String, Object> result2 = Maps.newHashMap();
+//		result2.put("datetime", "2019/08/28 23:00:30");//时间
+//		result2.put("equName", "达永粮油仓库温湿度02");//预警位置---设备名称
+//		result2.put("remarkType", "传感器");//备注-   1-视频,2-传感器(温度,湿度)
+//		datamap.add(result2);
+
+		return model;
 	}
 
 
