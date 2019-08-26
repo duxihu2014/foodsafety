@@ -63,7 +63,7 @@
     EVENT_ID_4 = EVENT_ID_4 + #{eventId4}, EVENT_ID_10001 = EVENT_ID_10001 + #{eventId10001},
     EVENT_ID_10002 = EVENT_ID_10002 + #{eventId10002}, EVENT_ID_10003 = EVENT_ID_10003 + #{eventId10003},
     EVENT_ID_10004 = EVENT_ID_10004 + #{eventId10004}, STATUS_1 = STATUS_1 + #{status1}, STATUS_2 = STATUS_2 + #{status2}
-    where TOTAL_ID = #{totalId}
+    where ALARM_MONTH = #{alarmMonth} AND ENTERPRISE_ID = #{enterpriseId}
 </update>
 
 <select id="sortAlarmTotal" resultType="int" parameterType="java.util.HashMap">
@@ -75,7 +75,7 @@
 </update>
 
 <select id="queryAlarmTotalLastMonth" resultMap="result_ResultMap_AlarmTask" parameterType="java.util.HashMap">
-    select * from T_ALARM_TOTAL t where t.ALARM_MONTH = DATE_FORMAT(DATE_SUB(CURDATE(),INTERVAL 1 month), '%Y%m')
+    select * from T_ALARM_TOTAL t where t.ALARM_MONTH = DATE_FORMAT(DATE_SUB(CURDATE(),INTERVAL 1 month), '%Y%m') AND t.ENTERPRISE_ID = #{enterpriseId}
 </select>
 
 <insert id="insertAlarmTotal" parameterType="com.otec.foodsafety.entity.collect.AlarmTotal">

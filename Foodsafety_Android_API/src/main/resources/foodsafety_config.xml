@@ -2,8 +2,7 @@
 <foodsafety-config>
 	<path>
 		<remoteServerUrl>http://localhost:19380/Foodsafety_S/remoting/</remoteServerUrl>
-
-		<imageServerUrl>http://58.49.30.102:8282</imageServerUrl>
+		<imageServerUrl>http://106.75.119.205</imageServerUrl>
 	</path>
 	<webservice>
 	<httpClientPolicy>
@@ -17,6 +16,6 @@
 	</passwrod>
 	<version>1.0.0</version>
 
-	<uploadUrl>http://192.168.1.151:8080/IntelligentCity_IMG/receiveDataServlet</uploadUrl>
+	<uploadUrl>http://106.75.119.205:8085/IntelligentCity_IMG/receiveDataServlet</uploadUrl>
 	<imageFolder>intelligentFoodsafety</imageFolder>
 </foodsafety-config>

@@ -197,8 +197,8 @@ public class EnterpriseBaseController extends VueBaseController<EnterpriseBaseSe
         Map map = new HashMap<String, Object>();
         map.put("userId", Long.valueOf(sysUser.getUserId()));
         List<PersonnelThree> list = personnelThreeService.findEntitysByCondition(map);
-        PersonnelThree personnelThree = list.get(0);
         if (list != null && !list.isEmpty()) {
+			PersonnelThree personnelThree = list.get(0);
             params.put("personnelId", String.valueOf(personnelThree.getPersonnelId()));
             PageObject po = getPageObject(params);
             po.getCondition().putAll(params);

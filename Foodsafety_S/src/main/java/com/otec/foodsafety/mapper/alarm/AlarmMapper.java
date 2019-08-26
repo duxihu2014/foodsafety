@@ -1,20 +1,19 @@
 package com.otec.foodsafety.mapper.alarm;
 
-import java.util.List;
-import java.util.Map;
-
+import com.otec.foodsafety.entity.alarm.Alarm;
+import com.otec.foodsafety.entity.alarm.AlarmExt;
 import org.apache.ibatis.annotation.myibatis.GenericMapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.session.RowBounds;
 
-import com.otec.foodsafety.entity.alarm.Alarm;
-import com.otec.foodsafety.entity.alarm.AlarmExt;
+import java.util.List;
+import java.util.Map;
 
 
 public interface AlarmMapper extends GenericMapper<Alarm,Long>{
 	/**
 	 * 根据条件统计企业产品信息
-	 * 
+	 *
 	 * @param condition
 	 * @return
 	 */
@@ -22,7 +21,7 @@ public interface AlarmMapper extends GenericMapper<Alarm,Long>{
 
 	/**
 	 * [分页]根据条件获得企业产品信息
-	 * 
+	 *
 	 * @param condition
 	 * @return
 	 */
@@ -30,7 +29,7 @@ public interface AlarmMapper extends GenericMapper<Alarm,Long>{
 
 	/**
 	 * 根据条件获得企业产品信息
-	 * 
+	 *
 	 * @param condition
 	 * @return
 	 */
@@ -53,4 +52,6 @@ public interface AlarmMapper extends GenericMapper<Alarm,Long>{
     List<Map<String,Object>> getVideoTrend(Map<String, Object> params);
 
 	List<Map<String,Object>> getHealthWarning(@Param("enterpriseId")Long enterpriseId);
+
+	List<String> getEnterpriseNameByEventId(@Param("eventId")String eventId);
 }

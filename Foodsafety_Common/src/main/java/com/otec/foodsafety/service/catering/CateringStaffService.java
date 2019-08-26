@@ -20,6 +20,8 @@ public interface CateringStaffService extends BaseService<CateringStaff,Long> {
 
     void add(CateringStaff cs, CateringStaffCertificate csc, SysResource resource, String uploadUrl, String imageFolder) throws Exception;
 
+
+
     void update(CateringStaff cs, CateringStaffCertificate csc)throws Exception;
 
     void add(CateringStaff cs, CateringStaffCertificate csc) throws Exception;

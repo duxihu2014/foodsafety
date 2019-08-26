@@ -71,7 +71,9 @@ public class EnterpriseEquipmentServiceImpl extends BaseServiceImpl<EnterpriseEq
 			}
 			eec.setVerifyStatus("2");
 
-		} else {// 审核不通过
+		} else if(enterpriseVerify.getVerifyStatus().equals("4")){//撤回
+            eec.setVerifyStatus("4");
+        } else {// 审核不通过
 			eec.setVerifyStatus("3");
 		}
 		enterpriseEquipmentChangeMapper.updateById(eec);
@@ -123,7 +125,7 @@ public class EnterpriseEquipmentServiceImpl extends BaseServiceImpl<EnterpriseEq
 
 	@Override
 	public void modifyEnterpriseEquipment(Long userId, String reason, EnterpriseEquipment enterpriseEquipment,
-			String operType) throws Exception {
+										  String operType) throws Exception {
 		EnterpriseEquipmentChange enterpriseEquChange = new EnterpriseEquipmentChange();
 		BeanUtils.copyProperties(enterpriseEquipment, enterpriseEquChange);
 		// 1.新增 企业产品变更表
@@ -144,4 +146,5 @@ public class EnterpriseEquipmentServiceImpl extends BaseServiceImpl<EnterpriseEq
 		enterpriseVerifyMapper.persist(enterpriseVerify);
 
 	}
+
 }
