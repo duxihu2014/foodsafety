@@ -52,4 +52,6 @@ public interface AlarmMapper extends GenericMapper<Alarm,Long>{
     List<Map<String,Object>> getVideoTrend(Map<String, Object> params);
 
 	List<Map<String,Object>> getHealthWarning(@Param("enterpriseId")Long enterpriseId);
+
+	List<String> getEnterpriseNameByEventId(@Param("eventId")String eventId);
 }

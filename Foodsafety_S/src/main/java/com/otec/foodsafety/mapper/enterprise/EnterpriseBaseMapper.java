@@ -49,6 +49,8 @@ public interface EnterpriseBaseMapper extends GenericMapper<EnterpriseBase, Long
     List<Map<String,Object>> getSubjectClassificationByGrid(@Param("gridId") Long gridId);
     List<Map<String,Object>> getEnterpriseCountBySubject(@Param("areaId") Long areaId);
     List<Map<String,Object>> getEnterpriseCountBySupervise(@Param("areaId") Long areaId);
+    List<String> getMyEnterpriseName(Map<String, Object> params);
+
 
 
 }

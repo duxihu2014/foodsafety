@@ -13,9 +13,11 @@
 
     <task:scheduled-tasks>
         <!-- 每天凌晨1点执行一次 -->
-        <!--<task:scheduled ref="alarmTask" method="aggregateQuantity" cron="0 0 1 * * ?"/>-->
-        <!-- 每5分钟执行一次 -->
-        <task:scheduled ref="alarmTask" method="aggregateQuantity" cron="0 */5 * * * ?" />
+        <!---->
+        <task:scheduled ref="alarmTask" method="aggregateQuantity" cron="0 0 1 * * ?"/>
+        <!-- 每5分钟执行一次
+        <task:scheduled ref="alarmTask" method="aggregateQuantity" cron="0 */1 * * * ?" />
+        -->
     </task:scheduled-tasks>
 
 </beans>
