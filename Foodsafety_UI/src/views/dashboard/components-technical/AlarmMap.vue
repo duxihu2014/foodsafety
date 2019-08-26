@@ -53,6 +53,8 @@
             console.log("----坐标数据");
             console.log(this.pointData);
             if(this.pointData.length > 0){
+                console.log(898989889);
+                
               console.log(this.pointData[0].value[0]+","+this.pointData[0].value[1]);
               this.center = [this.pointData[0].value[0], this.pointData[0].value[1]];
             }
@@ -174,6 +176,7 @@
     .tec-page {
         width: 100%;
         height: 100%;
+        
     }
 
 

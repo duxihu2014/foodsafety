@@ -9,7 +9,7 @@
             <td><div class="ename">{{item.equName}}</div></td>
             <td>{{eventTypeFormatter(item)}}</td>
             <td><div :class="eventStatusColorFormatter(item.status)">{{eventStatusFormatter(item.status)}}</div></td>
-            <td>{{item.alarmTime}}</td>
+            <td class="time">{{item.alarmTime}}</td>
           </tr>
         </template>
       </table>
@@ -20,7 +20,7 @@
             <td><div class="ename">{{item.equName}}</div></td>
             <td>{{eventTypeFormatter(item)}}</td>
             <td><div :class="eventStatusColorFormatter(item.status)">{{eventStatusFormatter(item.status)}}</div></td>
-            <td>{{item.alarmTime}}</td>
+            <td class="time">{{item.alarmTime}}</td>
           </tr>
         </template>
       </table>
@@ -69,10 +69,13 @@
         });
       },
       eventTypeColor(eventType) {
-        if (eventType === '1')
-          return require('assets/camera.png');
-        else
-          return require('assets/humiture.png');
+        if (eventType === '1'){
+          // return require('assets/camera.png');
+          return require('assets/new_camera.png');
+        }
+        else{
+          return require('assets/new_humiture.png');
+        }
       },
       eventTypeFormatter(item){
         // console.log(item);
@@ -126,7 +129,7 @@
 <style scoped>
   .table-main {
     height: 90%;
-    background-color: #102133;
+    /* background-color: #102133; */
     color: #2d8ac7;
     overflow-y: scroll;
     overflow-x: hidden;
@@ -141,7 +144,7 @@
     font-weight: bolder;
     color:#3cfdff;
     text-align: center;
-    background-color: #102133;
+    /* background-color: #102133; */
     /*padding-bottom: 5%;*/
     height: 10%;
   }
@@ -200,14 +203,26 @@
     white-space:nowrap;
     overflow:hidden;
     text-overflow:ellipsis;
+    color: #51d7f8;
   }
   .estatusDone {
     color: green;
     white-space:nowrap;
   }
   .estatusUnDone {
-    color: red;
+    color: #ff035c;
     white-space:nowrap;
   }
+
+
+/* 改版 开始 */
+.time{
+    color: #ff035c;
+}
+.img_size{
+  width:20px !important;
+  height:20px !important;
+}
+/* 改版 结束 */
 
 </style>

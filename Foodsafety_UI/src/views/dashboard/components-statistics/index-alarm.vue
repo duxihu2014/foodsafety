@@ -54,7 +54,7 @@
               x: 'center',
               text: '视频报警趋势图'
             },
-            backgroundColor: '#102133',
+            backgroundColor: '',
             grid: {
               x: '10%',
               y: '20%',
@@ -72,13 +72,42 @@
             xAxis : [
               {
                 type : 'category',
+                axisLabel: {
+                  color:'#3AF6F9',
+                },
+                axisTick:{       
+                  show:false
+                },
+                axisLine: {
+                  lineStyle: {
+                      color:'#103D79'
+                  }
+                },
                 boundaryGap : false,
                 data : this.dateArr
               }
             ],
             yAxis : [
               {
-                type : 'value'
+                type : 'value',
+                axisLabel: {
+                    color:'#3AF6F9',
+                },
+                axisLine: {
+                  lineStyle: {
+                      color:'#103D79'
+                    }
+                  },
+                  splitLine: {
+                      show: true,
+                      lineStyle:{
+                        color: ['#0D2756'],
+                        type:"solid"
+                      }
+                  },
+                  axisTick:{       
+                      show:false
+                  },
               }
             ],
             legend: {
@@ -88,32 +117,62 @@
                 fontSize: 11,
                 color:"#fff",
               },
-              data: ['未戴安全帽','未戴口罩','未穿工作装','抽烟']
+              data: ['未戴防护帽','未戴口罩','未穿工作装','抽烟']
             },
             series : [
               {
-                name:'未戴安全帽',
+                name:'未戴防护帽',
                 type:'line',
+                 color:'#00bfff',
                 areaStyle: {},
-                data:this.aqmData
+
+                //       name: "餐饮服务许可证",
+                // type: "bar",
+                // stack: "总量",
+                // // barMaxWidth: 35,
+                // barGap: "10%",
+                // itemStyle: {
+                //   normal: {
+                //     color: "#04fe97",
+                //     label: {
+                //       show: true,
+                //       textStyle: {
+                //         color: "#fff"
+                //       },
+                //       position: "insideTop",
+                //       formatter: function(p) {
+                //         return p.value > 0 ? (p.value) : '';
+                //       }
+                //     }
+                //   }
+                // },
+
+                data:[120, 132, 101, 134, 90, 230, 210]
+                // data:this.aqmData
               },
               {
                 name:'未戴口罩',
                 type:'line',
+                 color:'#2a4cd8',
                 areaStyle: {},
-                data:this.kzData
+                data:[120, 132, 101, 134, 90, 230, 210]
+                // data:this.kzData
               },
               {
                 name:'未穿工作装',
                 type:'line',
+                color:'#d9b200',
                 areaStyle: {},
-                data:this.gzfData
+                data:[120, 132, 101, 134, 90, 230, 210]
+                // data:this.gzfData
               },
               {
                 name:'抽烟',
                 type:'line',
+                 color:'#7e00ff',
                 areaStyle: {normal: {}},
-                data:this.cyData
+                data:[120, 132, 101, 134, 90, 230, 210]
+                // data:this.cyData
               }
             ]
           };

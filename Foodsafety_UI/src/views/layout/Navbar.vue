@@ -28,7 +28,7 @@
         <div class="avatar-wrapper">
           <!--<template v-if="(user.userType == '3' && (count_register + count_verify + count_cert + count_onsite) > 0) || (user.userType == '4' && count_cert > 0 )">-->
           <template v-if="role.isSuperviseRole || role.isEnterpriseRole">
-            <el-badge class="message" :value="count_register+count_verify+count_cert+(user.personnelId>0?count_onsite:0)" :hidden="(count_register+count_verify+count_cert+(user.personnelId>0?count_onsite:0))<=0">
+            <el-badge class="message" :value="count_register+count_verify+(user.personnelId>0?count_onsite:0)" :hidden="(count_register+count_verify+(user.personnelId>0?count_onsite:0))<=0">
               <el-button size="small" type="primary" icon="el-icon-edit-outline" :loading="dataLoading">
                 待办
               </el-button>
@@ -54,11 +54,11 @@
               档案更新
             </el-badge>
           </el-dropdown-item>
-          <el-dropdown-item divided command="cert" v-if="role.isSuperviseRole || role.isEnterpriseRole">
+          <!-- <el-dropdown-item divided command="cert" v-if="role.isSuperviseRole || role.isEnterpriseRole">
             <el-badge :value="count_cert" :max="99" :hidden="count_cert<=0">
               证照预警
             </el-badge>
-          </el-dropdown-item>
+          </el-dropdown-item> -->
           <!--<el-dropdown-item divided command="safety" v-if="user.userType == '3' && count_onsite > 0">-->
           <el-dropdown-item divided command="safety" v-if="role.isSuperviseRole || role.isEnterpriseRole">
             <el-badge :value="count_onsite" :max="99" :hidden="count_onsite<=0">
@@ -220,6 +220,8 @@ export default {
           this.count_onsite = response.count_onsite;
           this.count_alarm = response.count_alarm;
           this.wait_lookAlarm_time = response.count_alarm_Time;
+          console.log(223,response);
+          
           if (this.count_alarm > 0) {
             this.currMediaName = true;
           } else {

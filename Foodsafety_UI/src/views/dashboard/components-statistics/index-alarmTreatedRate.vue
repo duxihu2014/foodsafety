@@ -11,7 +11,7 @@
             myChart:undefined,
             treatedData:[],
             untreatedData:[],
-            category:["未戴安全帽","未戴口罩","未穿工作装","抽烟","温度高","温度低","湿度高","湿度低"],
+            category:["未戴防护帽","未戴口罩","未穿工作装","抽烟","温度高","温度低","湿度高","湿度低"],
           }
       },
       computed:{
@@ -21,6 +21,7 @@
           let total = treatedData.map(function(v, i) {
             return v + untreatedData[i];
           });
+          
           return total;
         }
       },
@@ -52,15 +53,17 @@
               x: 'center',
               text: '当前报警处理情况统计'
             },
-            backgroundColor: '#102133',
+            backgroundColor: '',
+            // backgroundColor: '#102133',
             legend: {
               top: 20,
+              icon:"rect",
               textStyle: {
                 fontSize: 11,
                 color: '#fff',
               },
               selectedMode:false,
-              data: ['已处理', '总数']
+              data: ['已处理', '未处理']
             },
             tooltip : {
               trigger: 'axis',
@@ -114,7 +117,7 @@
                 axisLabel: {show:false},
                 splitArea: {show:false},
                 splitLine: {show:false},
-                 data: this.category,
+                data: this.category,
               },
 
             ],
@@ -122,21 +125,22 @@
               type: "value",
               splitLine: {show: false},
               axisTick: {show: false},
-              axisLabel: {interval: 0,},
+              axisLabel: {interval: 0,color:'#3AF6F9'},
               splitArea: {show: false},
             }],
 
             series: [{
-              name: "总数",
+              name: "未处理",
               type: 'bar',
               xAxisIndex:1,
               itemStyle:{
                 normal: {
                   show: true,
-                  color: '#277ace',
+                  color:'#0f36ad',
                   borderWidth:0,
                   label:{
-                    show: true,
+                    show: false,
+                    // show: true,
                     position:'top',
                     formatter: function(p) {
                       return p.value > 0 ? (p.value) : '';
@@ -154,10 +158,15 @@
               itemStyle:{
                 normal: {
                   show: true,
-                  color: '#5de3e1',
+                  color: new this.echarts.graphic.LinearGradient(  0, 0, 0, 1,
+                    [
+                        {offset: 0, color: '#23edfa'},
+                        {offset: 1, color: '#0061b2'}
+                    ]),
                   borderWidth:0,
                   label:{
-                    show: true,
+                    show: false,
+                    // show: true,
                     textStyle: {
                       color: "#fff"
                     },

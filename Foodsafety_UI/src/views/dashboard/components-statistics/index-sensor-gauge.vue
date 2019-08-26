@@ -40,7 +40,7 @@
         this.eChart = this.echarts.init(this.$refs['charts'], 'dark');
 
         let option = {
-          backgroundColor: '#102133',
+          backgroundColor: '',
           title : {
             textStyle: {
               fontSize: 15,
@@ -67,24 +67,18 @@
                 lineStyle: {       // 属性lineStyle控制线条样式
                   color: [[1, '#1e90ff']],
                   width: 2,
-                  shadowColor : '#fff', //默认透明
-                  shadowBlur: 10
                 }
               },
               axisLabel: {            // 坐标轴小标记
                 textStyle: {       // 属性lineStyle控制线条样式
                   fontWeight: 'bolder',
                   color: '#fff',
-                  shadowColor : '#fff', //默认透明
-                  shadowBlur: 10
                 }
               },
               axisTick: {            // 坐标轴小标记
                 length :8,        // 属性length控制线长
                 lineStyle: {       // 属性lineStyle控制线条样式
                   color: 'auto',
-                  shadowColor : '#fff', //默认透明
-                  shadowBlur: 10
                 }
               },
               splitLine: {           // 分隔线
@@ -92,8 +86,6 @@
                 lineStyle: {       // 属性lineStyle（详见lineStyle）控制线条样式
                   width:3,
                   color: '#fff',
-                  shadowColor : '#fff', //默认透明
-                  shadowBlur: 10
                 }
               },
               pointer: {           // 分隔线
@@ -129,24 +121,18 @@
                 lineStyle: {       // 属性lineStyle控制线条样式
                   color: [[1, '#1e90ff']],
                   width: 2,
-                  shadowColor : '#fff', //默认透明
-                  shadowBlur: 10
                 }
               },
               axisLabel: {            // 坐标轴小标记
                 textStyle: {       // 属性lineStyle控制线条样式
                   fontWeight: 'bolder',
                   color: '#fff',
-                  shadowColor : '#fff', //默认透明
-                  shadowBlur: 10
                 }
               },
               axisTick: {            // 坐标轴小标记
                 length :8,        // 属性length控制线长
                 lineStyle: {       // 属性lineStyle控制线条样式
                   color: 'auto',
-                  shadowColor : '#fff', //默认透明
-                  shadowBlur: 10
                 }
               },
               splitLine: {           // 分隔线
@@ -154,8 +140,6 @@
                 lineStyle: {       // 属性lineStyle（详见lineStyle）控制线条样式
                   width:3,
                   color: '#fff',
-                  shadowColor : '#fff', //默认透明
-                  shadowBlur: 10
                 }
               },
               pointer: {           // 分隔线

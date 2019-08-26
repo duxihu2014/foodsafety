@@ -13,6 +13,7 @@
                active-text-color="#20a0ff">
         <sidebar-item :routes='permission_routers'></sidebar-item>
       </el-menu>
+      {{permission_routers}}
     </div>
   </div>
 </template>

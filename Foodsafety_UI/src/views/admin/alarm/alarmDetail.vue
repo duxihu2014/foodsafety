@@ -112,7 +112,6 @@ export default {
     initAlarm(obj) {
       this.listFile = [];
       this.alarmEvent = obj;            
-
       if (this.alarmEvent.imgUrl) {
         this.listFile.push({
           url: this.alarmEvent.imgUrl
@@ -135,7 +134,8 @@ export default {
     },
     // 点击"+"图标时显示弹出框
     handlePictureCardPreview(file) {
-      this.dialogImageUrl = file.url;
+      // "http://foodsafety.91catv.com:8081/Foodsafety/"+ 
+      this.dialogImageUrl =file.url;
       this.dialogImageVisible = true;
     },
   } //end methods

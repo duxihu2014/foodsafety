@@ -48,6 +48,17 @@ export const constantRouterMap = [{
     component: _import('dashboard/index')
   }]
 },
+{
+  path: '/dashboard_full',
+  name:'dashboard_full',
+  component: Layout,
+  hidden: true,
+  children:[{
+    path: '/',
+    component: _import('dashboard/index')
+  }
+  ]
+},
   {
     path: '/personal/register',
     component: Layout,

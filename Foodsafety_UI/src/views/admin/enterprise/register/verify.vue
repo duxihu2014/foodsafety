@@ -10,6 +10,14 @@
           <el-form-item label="营业执照编号" prop="certificateNo"  class="filter-item">
             <el-input @keyup.enter.native="handleFilter" style="width: 200px;"  placeholder=""  v-model.trim="listQuery.certificateNoLike"> </el-input>
           </el-form-item>
+          <el-form-item label="注册状态" prop="registerStatus" class="filter-item">
+            <el-select placeholder="请选择" v-model.trim="listQuery.registerStatus">
+              <!--<el-option label="待审核" value="0"> </el-option>-->
+              <!--<el-option label="已通过" value="1"> </el-option>-->
+              <!--<el-option label="未通过" value="2"> </el-option>-->
+              <el-option v-for="item in  registerStatusOptions" :key="item.value" :label="item.text" :value="item.value"> </el-option>
+            </el-select>
+          </el-form-item>
           <el-form-item class="filter-item">
             <el-button type="primary" v-waves  @click="handleFilter">搜索</el-button>
             <el-button  v-waves  @click="resetQuery()">重置</el-button>
@@ -31,8 +39,9 @@
       <el-table-column align="center" label="注册状态" width="100" prop="registerStatus" :formatter="registerStatusFormatter"></el-table-column>
       <el-table-column  align="center"  label="操作" width="100" fixed="right">
         <template slot-scope="scope">
-          <el-button size="mini" type="success" @click="handleAudit(scope.row)">审核
-          </el-button>
+          <el-button v-if="scope.row.registerStatus === 0" size="mini" type="success" @click="handleAudit(scope.row)">审核</el-button>
+          <el-button v-else size="mini" :disabled="true">审核</el-button>
+          <!-- <el-button size="mini" type="success" @click="handleAudit(scope.row)">审核</el-button> -->
         </template>
       </el-table-column>
     </el-table>
@@ -365,6 +374,9 @@
         ...mapGetters(["user","staticData"]),
         subjectClassificationOptions(){
           return this.staticData["企业主体分类"];
+        },
+        registerStatusOptions(){
+          return this.staticData["企业注册状态"];
         },
         economicNatureOptions(){
           return this.staticData["企业经济性质"];

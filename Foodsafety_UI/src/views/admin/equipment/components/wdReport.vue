@@ -52,32 +52,41 @@
     methods: {
       queryReport(){
         this.alarmId = this.alarmDataId;
-          // console.log("--------alarmId="+this.alarmId);
         alarmReport({alarmId: this.alarmId}).then(response => {
+          // console.log('====================================')
+          // console.log(58,response)
+          // console.log('====================================')
           this.wd_max = response.sensor.humidityHigh;
           this.wd_max_value = response.sensor.humidityHigh;
           this.wd_min = response.sensor.humidityLow;
           this.sd_max = response.sensor.dampnessHigh;
           this.sd_min = response.sensor.dampnessLow;
+
+  
           response.list.forEach((item)=>{
             this.xdata.push(item.mini);
-            if(this.type == 'wd'){
-              this.ydata.push(item.humidity);
-              this.wd_max_value = Math.max(this.wd_max_value, item.humidity);
-            }else {
-              this.ydata.push(item.dampness);
-            }
-
+              if(this.type == 'wd'){
+                this.ydata.push(item.humidity);
+                this.wd_max_value = Math.max(this.wd_max_value, item.humidity);
+              }else {
+                this.ydata.push(item.dampness);
+              }
           });
+
           let tn = this.type == 'wd'?'温度':'湿度';
           // console.log("--------type="+this.type);
           // console.log("--------tn="+tn);
-        if(this.type == 'wd'){
-          this.initCharts("charts", this.xdata, this.ydata, tn+"监控统计图", this.wd_max, this.wd_min, (this.wd_max_value+10)-this.wd_max_value%10);
-        }else{
-          this.initCharts("charts", this.xdata, this.ydata, tn+"监控统计图", this.sd_max, this.sd_min, 100);
-        }
 
+
+          // console.log(78, this.xdata, this.ydata, );
+          // console.log(79, this.xdata, this.ydata, );
+          // if(response.list.length>1){
+            if(this.type == 'wd'){
+              this.initCharts("charts", this.xdata, this.ydata, tn+"监控统计图", this.wd_max, this.wd_min, (this.wd_max_value+10)-this.wd_max_value%10);
+            }else{
+              this.initCharts("charts", this.xdata, this.ydata, tn+"监控统计图", this.sd_max, this.sd_min, 100);
+            }
+        // }
           // this.initCharts("sdcharts", this.xdata, this.ydata_sd, "湿度监控统计图");
         });
 
@@ -115,7 +124,9 @@
                 yAxisIndex: 'none'
               },
               restore: {},
-              saveAsImage: {}
+              saveAsImage: {
+                name:title+"日期:("+this.rdate+")"
+              }
             }
           },
           dataZoom: [{
@@ -171,7 +182,8 @@
           toolbox: {
             feature: {
               restore: {},
-              saveAsImage: {}
+              saveAsImage: {
+              }
             }
           },
           series: [
@@ -197,7 +209,8 @@
           toolbox: {
             feature: {
               restore: {},
-              saveAsImage: {}
+              saveAsImage: {
+              }
             }
           },
           series: [
@@ -234,6 +247,7 @@
         let _this = this;
         setInterval(function () {
           getCurrentMonitor({sensorNo: _this.sensorNo}).then(response => {
+
             // this.wd_value = response.humidity;
             // this.sd_value = response.dampness;
             _this.pieEChart_sd_option.series[0].data[0].value = response.dampness;

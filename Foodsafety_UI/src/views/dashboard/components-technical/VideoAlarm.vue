@@ -47,7 +47,7 @@
             },
             initEchart(data){
 
-                let xData = ['未戴安全帽', '未戴口罩', '未穿工作装', '抽烟'];
+                let xData = ['未戴防护帽', '未戴口罩', '未穿工作装', '抽烟'];
                 let wh = this.filterData(data, '1');
                 let wl = this.filterData(data, '2');
                 let sh = this.filterData(data, '3');

@@ -1,11 +1,17 @@
 <template>
-  <div class="main-index" :class="[mDashboard]">
+  <div class="main-index background_img" :class="[{all_full_screen:getfullscreenPath=='/dashboard_full'},mDashboard]">
     <el-row  style="height: 66%;padding-left: 2px;">
       <el-col :span="6" >
         <el-row  class="div-block">
-          <el-col style="padding-left:2px;padding-top: 2px;">
-            <!--报警处理统计柱状图-->
-            <index-alarm-process ref="echarts1"></index-alarm-process>
+          <el-col  style="padding:1.3%" :class="[{chart_samll:getfullscreenPath=='1'}]">
+             <div class="relative_box border_line " >
+              <div class="all_btn" v-if="getfullscreenPath==false">
+                    <a  href="" target="_blank"  ref="target"></a>
+                    <span  @click="screen_all" class="btn_color big_btn">全屏</span>
+              </div>
+              <!--报警处理统计柱状图-->
+              <index-alarm-process ref="echarts1"></index-alarm-process>
+             </div>
           </el-col>
         </el-row>
         <el-row  class="div-block">
@@ -92,6 +98,16 @@
     computed: {
       mDashboard(){
         return loadDashboardHeight();
+      },
+      getfullscreenPath(){
+        if(this.$route.query.id){
+            return this.$route.query.id
+        }else if(this.$route.path=='/dashboard_full'){
+            return '/dashboard_full'
+        }else{
+          return false
+        }
+
       }
     },
     created(){
@@ -138,7 +154,11 @@
       };
     },
     methods:{
-
+     screen_all(){
+            let target = this.$refs.target
+            target.setAttribute('href', window.location.origin + '//#/dashboard_full')
+            target.click()
+        },
     }
   }
 </script>
@@ -156,4 +176,102 @@
     height: 50%;
     /*text-align: center;*/
   }
+  /* 全屏样式 开始*/
+  .relative_box{
+    position: relative;
+  }
+  .border_line{
+      width:100%;height:100%;box-sizing: border-box; border:1px solid rgb(16, 61, 121) ;
+      /* border-radius: 5px; */
+      padding:7px;
+  }
+  .item_box{
+    padding:0.3%;
+  }
+  .all_btn{
+    position: absolute;
+    top:0;
+    left:0;
+    padding:4px 8px;
+    z-index: 100;
+    cursor: pointer;
+  }
+  .each_btn{
+    position: absolute;
+    top:0;
+    right:0;
+    z-index: 100;
+
+  }
+  .big_btn{
+    font-size: 2.0vh;
+    font-weight: 700;
+  }
+  .btn_color{
+    display: inline-block;
+    padding:4px 15px;
+     color:rgb(203, 209, 209);
+     opacity: 0;
+     transition:all 0.3s linear;
+  }
+  .btn_color:hover{
+     opacity: 1;
+     color:#3cfdff;
+  }
+  .all_full_screen{
+    position: fixed;
+    height: 100%;
+    z-index: 99955;
+    width: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding-top: 16px;
+    background: #001059 ;
+  }
+
+.chart_samll{
+    position: fixed;
+    width: 100%;
+    height: auto;
+    z-index: 88888;
+    padding: 5px;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #001059 ;
+}
+
+.background_img{
+  background: url("../../assets/full_screen/bg.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  -webkit-background-size: cover;
+  -o-background-size: cover;
+  background-position: center 0;
+}
+.title_img{
+    height: 64%;
+    text-align: center;
+    width:96%;
+    margin: 0 auto;
+    padding-top: 5px;
+}
+.title_bg{
+  background: url("../../assets/full_screen/title_bg.png");
+  background-repeat: no-repeat;
+  background-size: 99.5% 100.5%;
+  -webkit-background-size: 99.5% 100.5%;
+  -o-background-size:  99.5% 100.5%;
+  background-position: center;
+}
+
+.p_lt{position: absolute;top: 0.5%;left: 0.7%;}
+.p_rt{position: absolute;top: 0.5%;right: 0.8%;}
+.p_lb{position: absolute;bottom: 1.4%;left: 0.7%;}
+.p_rb{position: absolute;bottom: 1.4%;right:0.8%;}
+  /* 全屏样式 结束*/
+
 </style>

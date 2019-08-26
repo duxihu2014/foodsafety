@@ -374,3 +374,16 @@ code {
 .amap-info-content{
   background: #f5f1f1!important;
 }
+
+//改版首页 开始
+.index_map .amap-info-content{
+  background: rgb(68, 68, 68) !important;
+  border-color:rgb(73, 73, 73) ;
+  border-radius: 3px;
+  color:#fff;
+}
+.index_map .amap-info-sharp{
+  opacity: 0.3;
+}
+
+//改版首页 结束

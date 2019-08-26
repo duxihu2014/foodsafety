@@ -50,7 +50,7 @@
               // subtext: '',
               x:'center'
             },
-            backgroundColor: '#102133',
+            backgroundColor: '',
             grid: {
               x: '10%',
               y: '20%',
@@ -65,6 +65,7 @@
             legend: {
               bottom: "bottom",
               left: 'center',
+              icon:"rect",
               textStyle:{
                 fontSize: 11,
                 color:"#fff",
@@ -80,7 +81,8 @@
                 splitArea: {
                   "show": false
                 },
-                data : this.dateArr
+                data:[150,99,55]
+                // data : this.dateArr
               }
             ],
             yAxis: {
@@ -93,7 +95,8 @@
               },
               minInterval: 1
             },
-            series: [{
+            series: [
+              {
               name: "餐饮服务许可证",
               type: "bar",
               stack: "总量",
@@ -101,7 +104,7 @@
               barGap: "10%",
               itemStyle: {
                 normal: {
-                  // color: "rgba(255,144,128,1)",
+                  color: "#04fe97",
                   label: {
                     show: true,
                     textStyle: {
@@ -114,14 +117,16 @@
                   }
                 }
               },
-              data: this.ecArray,
+                data:[20,30,55]
+
+              // data: this.ecArray,
             }, {
                 name: "健康证",
                 type: "bar",
                 stack: "总量",
                 itemStyle: {
                   normal: {
-                    // color: "rgba(0,191,183,1)",
+                    color: "#2f41d3",
                     // "barBorderRadius": 0,
                     label: {
                       show: true,
@@ -132,7 +137,8 @@
                     }
                   }
                 },
-                data: this.scArray
+                 data:[190,99,222]
+                // data: this.scArray
               }, {
                 name: "总数",
                 type: "line",
@@ -141,7 +147,7 @@
                 symbol:'circle',
                 itemStyle: {
                   normal: {
-                    // color: "rgba(252,230,48,1)",
+                    color: "#ec6afe",
                     // "barBorderRadius": 0,
                     label: {
                       show: true,
@@ -152,7 +158,9 @@
                     }
                   }
                 },
-                data: this.totalArray
+              data: [210,129,277]
+
+                // data: this.totalArray
               },
             ]
           }
