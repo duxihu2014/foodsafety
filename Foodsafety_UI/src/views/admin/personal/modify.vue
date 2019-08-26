@@ -3,7 +3,7 @@
 
 
     <el-tabs v-model="activeName"  @tab-click="handleClick">
-      <el-tab-pane label="档案更新" name="a1"><verify1 tabName="pane-a1" @setCount="setCount"></verify1></el-tab-pane>
+      <el-tab-pane label="基本信息更新" name="a1"><verify1 tabName="pane-a1" @setCount="setCount"></verify1></el-tab-pane>
       <el-tab-pane label="证照更新" name="a2"><verify2 tabName="pane-a2" @setCount="setCount"></verify2></el-tab-pane>
       <el-tab-pane label="产品更新" name="a3"><verify3 tabName="pane-a3" @setCount="setCount"></verify3></el-tab-pane>
       <el-tab-pane label="原料更新" name="a4"><verify4 tabName="pane-a4" @setCount="setCount"></verify4></el-tab-pane>

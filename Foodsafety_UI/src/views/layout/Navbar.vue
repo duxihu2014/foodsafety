@@ -82,16 +82,26 @@
       </div>-->
       <div class="avatar-container" v-if="role.isSuperviseRole || role.isEnterpriseRole">
         <el-badge style="margin-top: 5px;" class="message" :value="count_alarm" :max="99" :hidden="count_alarm<=0">
-          <a :href="'#/admin/alarm/index?queryTime='+lookAlarm_time" @click="handleClick">
+          <div @click="handleClick">
             <el-button size="small" type="danger" icon="el-icon-bell">
               报警
             </el-button>
-          </a>
+          </div>
+        </el-badge>
+      </div>
+
+      <!-- <div class="avatar-container" v-if="role.isSuperviseRole || role.isEnterpriseRole">
+        <el-badge style="margin-top: 5px;" class="message" :value="count_alarm" :max="99" :hidden="count_alarm<=0">
+          <a :href="'#/admin/alarm/index?queryTime='+lookAlarm_time" @click="handleClick">
+            <el-button size="small" type="danger" icon="el-icon-bell">
+              报警{{lookAlarm_time}}
+            </el-button>
+          </a> -->
           <!--<el-button v-else="count_alarm?<=9" size="small" type="warning" icon="el-icon-bell">
             报警
           </el-button>-->
-        </el-badge>
-      </div>
+        <!-- </el-badge>
+      </div> -->
     </el-menu>
     <tabs-view></tabs-view>
 
@@ -214,7 +224,6 @@ export default {
     getCount() {
       if (this.role.isEnterpriseRole) {
         getEnterpriseCount({ alermStartTime: this.lookAlarm_time }).then(response => {
-          // console.log(217,response)
           this.count_cert = response.count_cert;
           this.count_onsite = response.count_onsite;
           this.count_alarm = response.count_alarm;
@@ -227,12 +236,7 @@ export default {
         });
       } else if (this.role.isSuperviseRole) {
         getSuperviseCount({ alermStartTime: this.lookAlarm_time }).then(response => {
-          // console.log(230,response)
-
-          this.count_register = response.count_register;
-          this.count_verify = response.count_verify;
-          this.count_cert = response.count_cert;
-          this.count_onsite = response.count_onsite;
+          this.count_register = response.count_onsite;
           this.count_alarm = response.count_alarm;
           this.wait_lookAlarm_time = response.count_alarm_Time;
           if (this.count_alarm > 0) {
@@ -323,6 +327,10 @@ export default {
     },
     handleClick() {
       this.currMediaName = false;
+      // let href=`#/admin/alarm/index?queryTime=${this.lookAlarm_time}`;
+      let path='/alarm/now_index';
+      this.$store.dispatch("addVisitedViews", this.getRouterByPath(path));
+      this.$router.push({ path: path,query:{queryTime:this.lookAlarm_time} });
       this.initCount(this.wait_lookAlarm_time);
     },
     updatePass() {

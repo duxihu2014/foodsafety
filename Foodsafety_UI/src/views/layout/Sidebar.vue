@@ -41,6 +41,7 @@
     },
     methods: {
       toggleClick() {
+        // console.log(this.permission_routers)
         this.$store.dispatch("ToggleSideBar");
         $(window).trigger("resize");
       },
