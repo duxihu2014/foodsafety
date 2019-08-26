@@ -29,7 +29,7 @@
     methods: {
       init() {
         getAlarmRanking({areaId: this.user.areaId, eventType: 2, limit: 10}).then(response => {
-          console.log(response);
+          // console.log(response);
           if (response.rel) {
             response.data.forEach(item => {
               this.enterpriseNames.unshift(item.enterpriseName);

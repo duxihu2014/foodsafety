@@ -66,7 +66,8 @@
         <!-- -->
       </el-col>
     </el-row>
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" :before-close="cancel">>
+    <!-- <div v-show="dialogFormVisible" style="border:1px solid red;width:100%;height:100%;position:fixed;top:0;left:0;bottom:0;background:green;z-index:2000;"> -->
+    <el-dialog class="slimScrollBar" :modal-append-to-body="false" :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" :before-close="cancel" >
       <div style="margin-bottom: 20px;margin-top: -15px"><hr/>
         <p/>
       </div>
@@ -131,14 +132,13 @@
         </span>
       </div>
     </el-dialog>
+    <!-- </div> -->
     <!-- vidio -->
-    <div class="videobg" v-if="isVideoShow">
-      <div class="videobox">
-        <div class="iconCose">
-          <div class="el-icon-circle-close  iconStyle" @click="handleCloseVideo()"><span>关闭</span></div>
-        </div>
-      <videoStream  :vurl="videoObj"  ></videoStream>
+    <div  v-drag class="videobox" v-if="isVideoShow">
+      <div class="iconCose">
+        <div class="el-icon-circle-close  iconStyle" @click="handleCloseVideo()"><span>关闭</span></div>
       </div>
+          <videoStream  :vurl="videoObj"  ></videoStream>
     </div>
   </div>
 </template>
@@ -179,7 +179,7 @@ export default {
         if(this.oldEquipmentNo == value){
           callback();
         }else{
-          checkEquNo({ sensorNo: value}).then(response => {
+          checkEquNo({ equipmentNo: value}).then(response => {
             if (response.data) {
             return callback(new Error("设备编码不能重复"));
           } else {
@@ -235,7 +235,7 @@ export default {
       enterprise_update: false,
       equipmentForm: {
         equipmentName: undefined,
-        equipmentNo: undefined,
+        equipmentNo: undefined,//摄像头用
         equipmentDescribe: undefined,
         equipmentType: "1", //默认级别1
         cloudControlUrl: undefined,
@@ -297,6 +297,8 @@ export default {
       isVideoShow:false,
       videoObj:{},
       videoId:0,
+      positionX:0,
+      positionY:0
     };
   },
   props: ["paramCompId", "paramGroupId"],
@@ -319,7 +321,30 @@ export default {
   computed: {
     ...mapGetters(["staticData", "user"])
   },
+  directives: {
+    drag: {
+      bind: function (el) {
+        let odiv = el; 
+        odiv.onmousedown = (e) => {
+          let disX = e.clientX - odiv.offsetLeft;
+          let disY = e.clientY - odiv.offsetTop;
+          document.onmousemove = (e)=>{
+            let left = e.clientX - disX;    
+            let top = e.clientY - disY;
+            //移动当前元素
+            odiv.style.left = left + 'px';
+            odiv.style.top = top + 'px';
+          };
+          document.onmouseup = (e) => {
+            document.onmousemove = null;
+            document.onmouseup = null;
+          };
+        };
+      }
+    }
+  },
   methods: {
+
     init() {
       let _this = this;
       //初始化地区信息
@@ -593,6 +618,7 @@ export default {
               isShow:true,
               url:response.data.url
           }
+          // console.log(598,this.videoObj)
           this.isVideoShow=true 
           // this.playUrl = "VLCPLAY://" + response.data.url;
           // document.getElementById("playHref").href = this.playUrl;
@@ -659,9 +685,12 @@ export default {
     position: fixed;
     top: 14%;
     left: 10%;
-    /* margin-top: -300px;
-    margin-left: -300px; */
     z-index: 100;
+       /* position: relative;     
+        top: 10px;
+        left: 10px;
+        width: 200px;
+        height: 200px; */
 }
 .iconCose{
   width: 100%;
