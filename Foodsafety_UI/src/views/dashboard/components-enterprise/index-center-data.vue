@@ -176,6 +176,9 @@
         mounted(){
           this.initCharts();
         },
+        destoryed(){
+          this.clearTime()
+        },
         methods:{
           initCharts() {//初始化echarts
             this.myChart = this.echarts.init(this.$refs['echarts'], 'dark');
@@ -274,10 +277,10 @@
             })
             //3.获取晨检情况
             getRecordMorningCheck({"enterpriseId":this.user.enterpriseId}).then((response)=> {
-              console.log(245,response);
+
              if(response.data.checkResult==1){
                this.morningCheckResult=true;
-             }else{
+             }else if(response.data.checkResult==0){
                this.morningCheckResult=false;
              }
             })
@@ -290,16 +293,17 @@
                 _self.alarmTime = data.rows[0].alarmTime;
                 _self.dateDiff(_self.alarmTime);
                 _self.initCharts();
-              }).catch(err =>{
+              }).catch(error =>{
                 _self.clearTime();
-                this.$message.error('报警列表数据获取失败！');
+                _self.$message.error('报警列表数据获取失败！');
               });
-            },1000)
+            },60000)
 
 
           },
           //计算两时间相差
           dateDiff(time){
+            // console.log(306,time)
             var dateBegin = new Date(time.replace(/-/g, "/"));//开始时间
             var dateEnd = new Date();//结束时间（当前系统时间）
             var dateDiff = dateEnd.getTime() - dateBegin.getTime();//时间差的毫秒数
@@ -308,6 +312,7 @@
             this.minutes =  Math.floor(leave1/(60*1000))<10?"0"+ Math.floor(leave1/(60*1000)): Math.floor(leave1/(60*1000))//计算相差分钟数
             var leave2 = dateDiff%(60*1000);//计算分钟后剩余的毫秒数
             this.seconds =  Math.floor(leave2/(1000))<10?"0"+Math.floor(leave2/(1000)):Math.floor(leave2/(1000))//计算相差秒数
+            // console.log(314,this.seconds)
           },
           resizeEchart(){
             this.myChart.resize();

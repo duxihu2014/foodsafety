@@ -27,6 +27,7 @@
       methods: {
         init(){
           getWarning({areaId:this.user.areaId}).then(data => {
+            // console.log(30,data)
             // debugger
             data.forEach(item => {
               this.dateArr.push(item.validDate);
@@ -65,7 +66,13 @@
             legend: {
               bottom: "bottom",
               left: 'center',
+               type:"scroll",
               icon:"rect",
+              pageIconColor: '#6495ed',
+              pageIconInactiveColor: '#aaa',
+              pageTextStyle:{
+                color:'#ccc'
+              },
               textStyle:{
                 fontSize: 11,
                 color:"#fff",
@@ -81,8 +88,8 @@
                 splitArea: {
                   "show": false
                 },
-                data:[150,99,55]
-                // data : this.dateArr
+                // data:[150,99,55]
+                data : this.dateArr
               }
             ],
             yAxis: {
@@ -117,9 +124,8 @@
                   }
                 }
               },
-                data:[20,30,55]
-
-              // data: this.ecArray,
+                // data:[20,30,55]
+              data: this.ecArray,
             }, {
                 name: "健康证",
                 type: "bar",
@@ -137,8 +143,8 @@
                     }
                   }
                 },
-                 data:[190,99,222]
-                // data: this.scArray
+                //  data:[190,99,222]
+                data: this.scArray
               }, {
                 name: "总数",
                 type: "line",
@@ -158,9 +164,8 @@
                     }
                   }
                 },
-              data: [210,129,277]
-
-                // data: this.totalArray
+              // data: [210,129,277]
+                data: this.totalArray
               },
             ]
           }

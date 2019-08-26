@@ -134,11 +134,13 @@
     </el-dialog>
     <!-- </div> -->
     <!-- vidio -->
-    <div  v-drag class="videobox" v-if="isVideoShow">
-      <div class="iconCose">
-        <div class="el-icon-circle-close  iconStyle" @click="handleCloseVideo()"><span>关闭</span></div>
-      </div>
-          <videoStream  :vurl="videoObj"  ></videoStream>
+    <div  v-drag class="videobox" v-if="isVideoShow" >
+      <VueDragResize   :isActive = 'true' :minw="500" :minh="600" style="border:1px solid red ;background:#ccc;">
+            <!-- <div class="iconCose" style="height:4%;width:100%">
+              <div class="el-icon-circle-close  iconStyle" @click="handleCloseVideo()"><span>关闭</span></div>
+            </div> -->
+            <videoStream style="width:100%;height:96%" :vurl="videoObj" @handleEventClose="handleCloseVideo()" ></videoStream>
+      </VueDragResize>
     </div>
   </div>
 </template>
@@ -160,10 +162,12 @@ import { getAllUserMap } from "api/admin/user/index";
 import { spacelValidator } from "utils/validate";
 import { parseValueToText, parseTime } from "utils/index";
 import videoStream from "../videoStream";
+import VueDragResize from 'vue-drag-resize'
 export default {
   name: "",
   components: {
     videoStream,
+    VueDragResize
   },
   data() {
     const mobileValidator = (rule, value, callback) => {
@@ -344,7 +348,10 @@ export default {
     }
   },
   methods: {
-
+    handleCloseVideo(data){
+      console.log(data);
+      this.isVideoShow=data
+    },
     init() {
       let _this = this;
       //初始化地区信息
@@ -547,9 +554,9 @@ export default {
       this.dialogVideoVisible = false;
       this.videoReset = false;
     },
-    handleCloseVideo(){
-      this.isVideoShow=false
-    },
+    // handleCloseVideo(){
+    //   this.isVideoShow=false
+    // },
     resetQuery() {
       this.listQuery = {
         equipmentNameLike: "",
@@ -672,15 +679,7 @@ export default {
   font-size: 12px;
   outline: none;
 }
-.videobg{
-    /* position: fixed; */
-    /* width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    background:rgba(0,0,0,0);
-    z-index: 100; */
-}
+
 .videobox{
     position: fixed;
     top: 14%;
@@ -692,19 +691,11 @@ export default {
         width: 200px;
         height: 200px; */
 }
-.iconCose{
+/* .iconCose{
   width: 100%;
   box-sizing: border-box;
   background:#409EFF;
   color:#fff;
-}
-.iconStyle{
-  font-size:23px;
-  padding: 3px 8px;
-  cursor:pointer;
-}
-.iconStyle>span{
-  font-size: 18px;
-  vertical-align: middle;
-}
+} */
+
 </style>

@@ -12,6 +12,7 @@
               <el-option v-for="item in  changeTypeOptions" :key="item.value" :label="item.text" :value="item.value"> </el-option>
             </el-select>
           </el-form-item>
+
           <el-form-item label="变更审核状态" prop="verifyStatus" class="filter-item">
             <el-select  placeholder="请选择" v-model.trim="listQuery.verifyStatus">
               <el-option v-for="item in  verifyStatusOptions" :key="item.value" :label="item.text" :value="item.value"> </el-option>
@@ -204,6 +205,11 @@
           default: undefined
         }
       },
+      watch:{
+        total(val){
+          this.$emit('setCount',val,6);
+        }
+      },
       data(){
         return {
           tabPosition:'0',
@@ -219,7 +225,6 @@
             enterpriseNameLike:undefined,
             changeType:undefined,
             verifyStatus:"1"
-
           },
           needFixedRight:false,
           dialogFormVisible: false,
@@ -309,7 +314,7 @@
           this.getList();
         },
         resetQuery() {
-          this.listQuery.verifyStatus= "1";
+          this.listQuery.verifyStatus="1";
           this.listQuery.enterpriseNameLike= "";
           this.listQuery.changeType=undefined;
         },

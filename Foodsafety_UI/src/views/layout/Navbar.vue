@@ -28,7 +28,7 @@
         <div class="avatar-wrapper">
           <!--<template v-if="(user.userType == '3' && (count_register + count_verify + count_cert + count_onsite) > 0) || (user.userType == '4' && count_cert > 0 )">-->
           <template v-if="role.isSuperviseRole || role.isEnterpriseRole">
-            <el-badge class="message" :value="count_register+count_verify+(user.personnelId>0?count_onsite:0)" :hidden="(count_register+count_verify+(user.personnelId>0?count_onsite:0))<=0">
+            <el-badge class="message" :value="count_register+count_verify+(res_count_cert)+(user.personnelId>0?count_onsite:0)" :hidden="(count_register+count_verify+(user.personnelId>0?count_onsite:0))<=0">
               <el-button size="small" type="primary" icon="el-icon-edit-outline" :loading="dataLoading">
                 待办
               </el-button>
@@ -54,11 +54,13 @@
               档案更新
             </el-badge>
           </el-dropdown-item>
-          <!-- <el-dropdown-item divided command="cert" v-if="role.isSuperviseRole || role.isEnterpriseRole">
-            <el-badge :value="count_cert" :max="99" :hidden="count_cert<=0">
-              证照预警
-            </el-badge>
-          </el-dropdown-item> -->
+          <el-dropdown-item divided command="cert" v-if="role.isSuperviseRole || role.isEnterpriseRole">
+             <div v-if="isshowtype_four">
+              <el-badge  :value="count_cert" :max="99" :hidden="count_cert<=0">
+                证照预警
+              </el-badge>
+            </div>
+          </el-dropdown-item>
           <!--<el-dropdown-item divided command="safety" v-if="user.userType == '3' && count_onsite > 0">-->
           <el-dropdown-item divided command="safety" v-if="role.isSuperviseRole || role.isEnterpriseRole">
             <el-badge :value="count_onsite" :max="99" :hidden="count_onsite<=0">
@@ -80,16 +82,26 @@
       </div>-->
       <div class="avatar-container" v-if="role.isSuperviseRole || role.isEnterpriseRole">
         <el-badge style="margin-top: 5px;" class="message" :value="count_alarm" :max="99" :hidden="count_alarm<=0">
-          <a :href="'#/admin/alarm/index?queryTime='+lookAlarm_time" @click="handleClick">
+          <div @click="handleClick">
             <el-button size="small" type="danger" icon="el-icon-bell">
               报警
             </el-button>
-          </a>
+          </div>
+        </el-badge>
+      </div>
+
+      <!-- <div class="avatar-container" v-if="role.isSuperviseRole || role.isEnterpriseRole">
+        <el-badge style="margin-top: 5px;" class="message" :value="count_alarm" :max="99" :hidden="count_alarm<=0">
+          <a :href="'#/admin/alarm/index?queryTime='+lookAlarm_time" @click="handleClick">
+            <el-button size="small" type="danger" icon="el-icon-bell">
+              报警{{lookAlarm_time}}
+            </el-button>
+          </a> -->
           <!--<el-button v-else="count_alarm?<=9" size="small" type="warning" icon="el-icon-bell">
             报警
           </el-button>-->
-        </el-badge>
-      </div>
+        <!-- </el-badge>
+      </div> -->
     </el-menu>
     <tabs-view></tabs-view>
 
@@ -143,6 +155,7 @@ export default {
       } else callback();
     };
     return {
+      isshowtype_four:false, //是否是企业版
       role: {
         isEnterpriseRole: false,
         isSuperviseRole: false,
@@ -187,6 +200,7 @@ export default {
       this.role.isSuperviseRole = true;
     } else if (this.user.userType == "4") {
       this.role.isEnterpriseRole = true;
+      this.isshowtype_four=true;
     } else {
       this.role.isOthersRole = true;
     }
@@ -196,7 +210,15 @@ export default {
     }, 1000 * 30);
   },
   computed: {
-    ...mapGetters(["sidebar", "name", "avatar", "user"])
+    ...mapGetters(["sidebar", "name", "avatar", "user"]),
+    res_count_cert(){
+      if(this.user.userType == "4"){
+          return this.count_cert 
+      }else{
+        return 0
+      }
+    }
+
   },
   methods: {
     getCount() {
@@ -214,14 +236,9 @@ export default {
         });
       } else if (this.role.isSuperviseRole) {
         getSuperviseCount({ alermStartTime: this.lookAlarm_time }).then(response => {
-          this.count_register = response.count_register;
-          this.count_verify = response.count_verify;
-          this.count_cert = response.count_cert;
-          this.count_onsite = response.count_onsite;
+          this.count_register = response.count_onsite;
           this.count_alarm = response.count_alarm;
           this.wait_lookAlarm_time = response.count_alarm_Time;
-          console.log(223,response);
-          
           if (this.count_alarm > 0) {
             this.currMediaName = true;
           } else {
@@ -310,6 +327,10 @@ export default {
     },
     handleClick() {
       this.currMediaName = false;
+      // let href=`#/admin/alarm/index?queryTime=${this.lookAlarm_time}`;
+      let path='/alarm/now_index';
+      this.$store.dispatch("addVisitedViews", this.getRouterByPath(path));
+      this.$router.push({ path: path,query:{queryTime:this.lookAlarm_time} });
       this.initCount(this.wait_lookAlarm_time);
     },
     updatePass() {

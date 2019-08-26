@@ -1,6 +1,5 @@
 import Cookies from 'js-cookie';
 import { getData ,getAreaData} from 'api/remoteSearch';
-import { log } from 'util';
 const app = {
   state: {
     sidebar: {
@@ -48,7 +47,6 @@ const app = {
       state.visitedViews.splice(index, 1)
     },
     SET_STATIC_DATA: (state, data) => {
-      console.log,("app.js----50"+state,data);
       state.staticData = data;
     },
     SAVE_VIEWS: (state) => {
@@ -102,10 +100,6 @@ const app = {
     getStaticData: ({ commit }) => {
       return new Promise((resolve, reject) => {
         getData().then(response => {
-          // Object.keys(response).forEach((v,i)=>{
-          //   console.log(response[v]);
-          // })
-          // console.log("app.js---105--getStaticData------"+Object.keys(response));
           const data = response;
           commit('SET_STATIC_DATA', data);
           resolve(response);

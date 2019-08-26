@@ -21,31 +21,42 @@
       methods: {
         init() {
           getAlarmCount({}).then(response => {
+            // console.log(24,response)
+        // Object
+            //   data:
+            //   treated: [{…}]
+            //   untreated: Array(5)
+            //   0:
+            //   companeyN: ["上海达永快餐服务有限公司"]
+            //   count: 31
+            //   eventId: "10001"
             let treatedData = this.filterData(response.data.treated);
             let untreatedData = this.filterData(response.data.untreated);
+            let untreatedCompaneyNames = this.filterCompaneyName(response.data.untreated);
             let totalCount = 0; //总数
             let total = treatedData.map(function(v, i) {
               totalCount = totalCount + v + untreatedData[i];
               return v + untreatedData[i];
             });
+              // console.log(39,untreatedCompaneyNames)
             total.forEach((item,index) =>{
               if(index==0){
-                this.alarmData.push({"name":"未戴防护帽","value":item,"cname":["未戴防护帽:"+item+" "+"("+(item/totalCount*100).toFixed(2)+"%)","企业名称:",'zh',"fjdk",'jdfkdj','风角度讲费了闪姐发送否决了点击放大就废了就付款了三等奖费j',"fjdk",'jdfkdj','fjdfiei']})
+                this.alarmData.push({"name":"未戴防护帽","value":item,"cname":["未戴防护帽:"+item+" "+"("+(item/totalCount*100).toFixed(2)+"%)","企业名称:"].concat(untreatedCompaneyNames[index])})
                 // this.alarmData.push({"name":"未戴防护帽","value":item})
               }else if(index==1){
-                this.alarmData.push({"name":"未戴口罩","value":item,"cname":["未戴口罩:"+item+" "+"("+(item/totalCount*100).toFixed(2)+"%)","企业名称:",'1czh',"fjdk5",'jdfkdj434',"fjdk",'jdfkdj','fjdfiei']})
+                this.alarmData.push({"name":"未戴口罩","value":item,"cname":["未戴口罩:"+item+" "+"("+(item/totalCount*100).toFixed(2)+"%)","企业名称:"].concat(untreatedCompaneyNames[index])})
                 // this.alarmData.push({"name":"未戴口罩","value":item})
               }else if(index==2){
-                this.alarmData.push({"name":"未穿工作装","value":item,"cname":["未穿工作装:"+item+" "+"("+(item/totalCount*100).toFixed(2)+"%)","企业名称:",'zfddfdh风角度讲咖啡店的解放军的 地方的',"fj455554dk",'jdf5555kdj']})
+                this.alarmData.push({"name":"未穿工作装","value":item,"cname":["未穿工作装:"+item+" "+"("+(item/totalCount*100).toFixed(2)+"%)","企业名称:"].concat(untreatedCompaneyNames[index])})
                 // this.alarmData.push({"name":"未穿工作装","value":item})
               }else if(index==3){
-                this.alarmData.push({"name":"抽烟","value":item,"cname":["抽烟:"+item+" "+"("+(item/totalCount*100).toFixed(2)+"%)","企业名称:","fjddffcc55k",'jd55555fkdj',"fjdk",'jdfkdj','fjdfiei']})
+                this.alarmData.push({"name":"抽烟","value":item,"cname":["抽烟:"+item+" "+"("+(item/totalCount*100).toFixed(2)+"%)","企业名称:"].concat(untreatedCompaneyNames[index])})
                 // this.alarmData.push({"name":"抽烟","value":item})
               }else if(index==4){
-                this.alarmData.push({"name":"老鼠出没","value":item,"cname":["老鼠出没:"+item+" "+"("+(item/totalCount*100).toFixed(2)+"%)","企业名称:",'zfddfdh风角度讲咖啡店的解放军的 地方的',"fj455554dk",'jdf5555kdj']})
+                this.alarmData.push({"name":"老鼠出没","value":item,"cname":["老鼠出没:"+item+" "+"("+(item/totalCount*100).toFixed(2)+"%)","企业名称:"].concat(untreatedCompaneyNames[index])})
                 // this.alarmData.push({"name":"未穿工作装","value":item})
               }else if(index==5){
-                this.alarmData.push({"name":"陌生人进入","value":item,"cname":["陌生人进入:"+item+" "+"("+(item/totalCount*100).toFixed(2)+"%)","企业名称:",'zhddds',"fjddffcc55k",'jd55555fkdj',"fjdk",'jdfkdj','fjdfiei']})
+                this.alarmData.push({"name":"陌生人进入","value":item,"cname":["陌生人进入:"+item+" "+"("+(item/totalCount*100).toFixed(2)+"%)","企业名称:"].concat(untreatedCompaneyNames[index])})
                 // this.alarmData.push({"name":"抽烟","value":item})
               }
             })
@@ -94,12 +105,19 @@
             backgroundColor: '',
             // backgroundColor: '#102133',
             legend: {
+              type:"scroll",
               bottom: "bottom",
               left: 'center',
               icon:"rect",
+              pageIconColor: '#6495ed',
+              pageIconInactiveColor: '#aaa',
+              pageTextStyle:{
+                color:'#ccc'
+              },
               textStyle:{
                 fontSize: 11,
                 color:"#fff",
+
               },
               data: this.category
             },
@@ -141,6 +159,25 @@
               result[4]=item.count;
             }else if(item.eventId==6){
               result[5]=item.count;
+            }
+          })
+          return result;
+        },
+        filterCompaneyName(data){
+          let result =["","","","","",""];
+          data.forEach(item =>{
+            if(item.eventId==1){
+              result[0]=item.companeyName;
+            }else if(item.eventId==2){
+              result[1]=item.companeyName;
+            }else if(item.eventId==3){
+              result[2]=item.companeyName;
+            }else if(item.eventId==4){
+              result[3]=item.companeyName;
+            }else if(item.eventId==5){
+              result[4]=item.companeyName;
+            }else if(item.eventId==6){
+              result[5]=item.companeyName;
             }
           })
           return result;

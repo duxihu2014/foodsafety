@@ -125,7 +125,7 @@
               },
               restore: {},
               saveAsImage: {
-                name:title+"日期:("+this.rdate+")"
+                name:title+"(日期:"+this.rdate+")"
               }
             }
           },

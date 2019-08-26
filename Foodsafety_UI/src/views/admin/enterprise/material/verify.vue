@@ -17,6 +17,7 @@
                 <el-option v-for="item in  verifyStatusOptions" :key="item.value" :label="item.text" :value="item.value"> </el-option>
               </el-select>
             </el-form-item>
+
             <el-form-item class="filter-item">
               <el-button type="primary" v-waves  @click="handleFilter">搜索</el-button>
               <el-button  v-waves  @click="resetQuery()">重置</el-button>
@@ -179,6 +180,11 @@
           default: undefined
         }
       },
+      watch:{
+        total(val){
+          this.$emit('setCount',val,4);
+        }
+      },
         data(){
             return {
               tabPosition:'0',
@@ -192,9 +198,7 @@
                 dataType: "5",
                 areaId: undefined,
                 enterpriseNameLike:undefined,
-                changeType:undefined,
-                verifyStatus:"1"
-
+                changeType:undefined
               },
               needFixedRight:false,
               dialogFormVisible: false,
@@ -272,7 +276,7 @@
             this.getList();
           },
           resetQuery() {
-            this.listQuery.verifyStatus= "1";
+            this.listQuery.verifyStatus="1";
             this.listQuery.enterpriseNameLike= "";
             this.listQuery.changeType=undefined;
           },
