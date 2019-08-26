@@ -7,7 +7,7 @@ import org.apache.ibatis.annotation.myibatis.Table;
 import java.io.Serializable;
 import java.util.Date;
 
-@Table(dataBase = DataBase.MYSQL, tabName = "T_CATERING_STAFF", pkId = "staffId", seqName = "",notColumn = {"enterpriseName","resourcePath","validStatus","certificateStatus","certificateId","certificatePhoto","issuingUnit","issuingDate","certificateNumber","examinationDate","validDate"})
+@Table(dataBase = DataBase.MYSQL, tabName = "T_CATERING_STAFF", pkId = "staffId", seqName = "",notColumn = {"enterpriseName","resourcePath","validStatus","certificateStatus","certificateId","certificatePhoto","issuingUnit","issuingDate","certificateNumber","examinationDate","examinationResult","validDate"})
 public class CateringStaff implements Serializable {
 
 private static final long serialVersionUID = 1L;
@@ -51,6 +51,7 @@ private static final long serialVersionUID = 1L;
 	@JsonFormat(pattern="yyyy-MM-dd", timezone="GMT+8")
 	private Date examinationDate;  //体检时间
 
+	private String examinationResult;
 
 	@JsonFormat(pattern="yyyy-MM-dd", timezone="GMT+8")
 	private Date validDate;
@@ -124,7 +125,13 @@ private static final long serialVersionUID = 1L;
 	public void setExaminationDate(Date examinationDate) {
 		this.examinationDate = examinationDate;
 	}
+	public String getExaminationResult() {
+		return examinationResult;
+	}
 
+	public void setExaminationResult(String examinationResult) {
+		this.examinationResult = examinationResult;
+	}
 	public Date getValidDate() {
 		return validDate;
 	}

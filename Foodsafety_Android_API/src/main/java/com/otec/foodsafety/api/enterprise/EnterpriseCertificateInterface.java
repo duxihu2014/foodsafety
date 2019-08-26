@@ -134,4 +134,27 @@ public class EnterpriseCertificateInterface extends BaseInterface {
         }
     }
 
+    /**
+     *
+     * @param changeId
+     * @return
+     */
+//    @RequestMapping(value = "/revocation/{changeId}", method = RequestMethod.POST)
+//    @ResponseBody
+//    public ObjectRestResponse<EnterpriseCertificateChange> revocation(@PathVariable Long changeId) {
+//        try {
+//            SysUser sysUser = sessionFilter.getJWTUser(request);
+//            EnterpriseCertificate enterpriseCertificate = enterpriseCertificateService.findById(changeId);
+//            enterpriseCertificateService.modifyEnterpriseCertificate("", "", null, sysUser.getUserId(), "注销证照", enterpriseCertificate,
+//                    "3");// 删除
+//            return new ObjectRestResponse<EnterpriseCertificateChange>().rel(true);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            ObjectRestResponse resp = new ObjectRestResponse<EnterpriseCertificateChange>().rel(false);
+//            resp.setStatus(500);
+//            resp.setMessage("企业证照删除失败!");
+//            return resp;
+//        }
+//    }
+
 }
