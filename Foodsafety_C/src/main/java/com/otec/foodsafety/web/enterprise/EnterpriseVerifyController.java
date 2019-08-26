@@ -25,8 +25,8 @@ public class EnterpriseVerifyController extends VueBaseController<EnterpriseVeri
     private EnterpriseVerifyService enterpriseVerifyService;
 
     /**
-     * 根据区域id和数据类型获取审批数据
-     * @param params
+     *
+     * @param params根据区域id和数据类型获取审批数据
      * @return
      */
     @RequestMapping(value="/getPage")
