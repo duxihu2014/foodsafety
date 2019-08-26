@@ -74,11 +74,11 @@
 	</sql>
 	<resultMap id="Extend_ResultMap"
 		type="com.otec.foodsafety.entity.alarm.AlarmExt"
-		extends="result_ResultMap_Alarm">		
+		extends="result_ResultMap_Alarm">
 		<result property="enterpriseId" column="ENTERPRISE_ID" />
-		<result property="enterpriseName" column="ENTERPRISE_NAME" />		
-		<result property="equName" column="EQU_NAME" />	
-		
+		<result property="enterpriseName" column="ENTERPRISE_NAME" />
+		<result property="equName" column="EQU_NAME" />
+
 	</resultMap>
 
 	<select id="countAlarmByCondition"

@@ -77,9 +77,9 @@ public class AlarmServiceImpl extends BaseServiceImpl<Alarm, Long> implements Al
 	public AlarmExt getAlarmById(Long productId) {
 		Map<String, Object> cond = new HashMap<String, Object>();
 		cond.put("productId", productId);
-		List<AlarmExt> item = mapper.findAlarmByCondition(cond);		
-		
-		return item==null?null:item.get(0);		
+		List<AlarmExt> item = mapper.findAlarmByCondition(cond);
+
+		return item==null?null:item.get(0);
 	}
 
 	public void sendByAlarm(Alarm alarm){

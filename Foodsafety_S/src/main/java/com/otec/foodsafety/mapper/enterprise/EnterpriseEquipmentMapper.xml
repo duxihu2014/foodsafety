@@ -62,7 +62,7 @@
 		<result property="verifyStatus" column="VERIFY_STATUS" />
 		<result property="changeType" column="CHANGE_TYPE" />
 		<result property="changeReason" column="CHANGE_REASON" />
-		
+
 	</resultMap>
 
 	<select id="countEnterpriseEquipmentByCondition"
