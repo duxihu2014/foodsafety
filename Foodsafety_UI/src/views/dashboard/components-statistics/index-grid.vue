@@ -27,14 +27,14 @@
             getGridEnterpriseCount({areaId:this.user.areaId,gridStatus:1}).then(response => {
               // console.log(28,response);
               this.gridTotal=response.data;
-              // console.log(29,this.gridTotal);
-              let totalCount=500;   //需要计算总数  返回真数据后 在下面的foreach中累加 item.value值
+              let totalCount=0;  
+              response.data.forEach(item=>{
+                totalCount+=item.value
+              })
               response.data.forEach(item=>{
                 this.gridName.push(item.name)
-                // 添加模拟数据
-                item.cname=["分布: "+"("+(item.value/totalCount*100).toFixed(2)+"%)","企业名称:"].concat(item.companyName)
+                item.cname=["分布: "+"("+(item.value/totalCount*100).toFixed(2)+"%)"].concat(item.companyName)
               })
-              this.gridTotal=response.data
               // this.gridTotal=[{name:'松江',value:10},{name:'车墩镇',value:0},{name:'佘山镇',value:50}]
               this.initCharts();
             })

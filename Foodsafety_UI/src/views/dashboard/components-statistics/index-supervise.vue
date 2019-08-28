@@ -52,7 +52,7 @@
                   if(item.regulatoryLevel==this.supervisionTotal[i].rel){
 
                     this.supervisionTotal[i].value=item.total;
-                    this.supervisionTotal[i].cname=[this.supervisionTotal[i].name+":"+item.total+"("+(item.total/totalCount*100).toFixed(2)+'%)','企业名称:'].concat(item.companeyName)
+                    this.supervisionTotal[i].cname=[this.supervisionTotal[i].name+":"+item.total+"("+(item.total/totalCount*100).toFixed(2)+'%)'].concat(item.companeyName)
                     return ;
                   }
                 }

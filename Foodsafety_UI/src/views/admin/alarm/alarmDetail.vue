@@ -63,21 +63,15 @@
 import { parseValueToText, parseTime } from "utils/index";
 import alertConst from "api/admin/alarm/alertType";
 import report from "views/admin/equipment/components/wdReport";
-// import videoStream from "../equipment/videoStream";
 
 export default {
   name: "alarmDetail",
   components: {
     report,
-    // videoStream
   },
   data() {
     return {
-      // videoObj:{
-      //         vid:1,
-      //         isShow:true,
-      //         url:''
-      //     },
+      
       alarmEvent: {
         id: undefined,
         indexCode: undefined,
@@ -148,7 +142,6 @@ export default {
     },
     // 点击"+"图标时显示弹出框
     handlePictureCardPreview(file) {
-      // "http://foodsafety.91catv.com:8081/Foodsafety/"+ 
       this.dialogImageUrl =file.url;
       this.dialogImageVisible = true;
     },

@@ -133,6 +133,11 @@
         <el-button v-else type="primary" @click="update('equipmentForm')">确 定</el-button>
       </div>
     </el-dialog>
+    <!-- vidio -->
+    <div  class="videobox" style="width:600px;height:600px;background:#000"  v-if="isloading"  v-loading="!isVideoShow" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.8)"></div>
+    <div  class="videobox" v-if="isVideoShow"  >
+        <videoStream style="width:100%;height:100%" :vurl="videoObj" @handleEventClose="handleCloseVideo" ></videoStream>
+    </div>
   </div>
 </template>
 
@@ -145,11 +150,12 @@ import { loadGridHeight } from "api/screen";
 import { getToken } from "utils/auth";
 import queryConditions from "components/QueryConditions/index";
 import { getAudioMap } from "api/admin/equipment/audio";
-
+import videoStream from "./videoStream";
 export default {
   name: "index",
   components: {
-    queryConditions
+    queryConditions,
+    videoStream
   },
   data() {
     return {
@@ -216,7 +222,11 @@ export default {
       isEdit: false,
       isShowPeople: false, //是否显示设备管理员
       enterprise_update: false,
-      audioOptions: []
+      audioOptions: [],
+      isVideoShow:false,
+      isloading:false,
+      videoId:0,
+      videoObj:{},
     };
   },
   created() {
@@ -306,6 +316,9 @@ export default {
       this.listQuery.page = val;
       this.getList();
     },
+    handleCloseVideo(data){
+      this.isVideoShow=data
+    },
     resetQuery() {
       this.listQuery.barcodeCoding = "";
       this.listQuery.equipmentNameLike = "";
@@ -351,14 +364,24 @@ export default {
       // console.log("弹出下载窗口");
     },
     playVideo(row) {
+      this.isVideoShow=false;
+      this.isloading=true;
       play(row.equipmentId).then(response => {
         if (response.data.result == "success") {
-          this.playUrl = "VLCPLAY://" + response.data.url;
-          document.getElementById("playHref").href = this.playUrl;
-          document.getElementById("playHref").click();
-          if (!this.downloadTimer) {
-            this.downloadTimer = setTimeout(this.showDownload, 1000);
+          // this.playUrl = "VLCPLAY://" + response.data.url;
+          // document.getElementById("playHref").href = this.playUrl;
+          // document.getElementById("playHref").click();
+          // if (!this.downloadTimer) {
+          //   this.downloadTimer = setTimeout(this.showDownload, 1000);
+          // }
+          this.videoId++
+          this.videoObj={
+              vid:this.videoId,
+              isShow:true,
+              url:response.data.url
           }
+          this.isloading=false;
+          this.isVideoShow=true 
         } else {
           this.$notify({
             title: "提示",
@@ -472,7 +495,10 @@ export default {
         })
         .catch(() => {});
     }
-  }
+  },
+  beforeDestroy() {
+    this.videoId=0;
+  },
 };
 </script>
 <style scoped>
@@ -488,5 +514,11 @@ export default {
   text-decoration: none;
   font-size: 12px;
   outline: none;
+}
+.videobox{
+    position: fixed;
+    top: 24%;
+    left: 35%;
+    z-index: 100;
 }
 </style>

@@ -41,22 +41,22 @@
               // console.log(39,untreatedCompaneyNames)
             total.forEach((item,index) =>{
               if(index==0){
-                this.alarmData.push({"name":"未戴防护帽","value":item,"cname":["未戴防护帽:"+item+" "+"("+(item/totalCount*100).toFixed(2)+"%)","企业名称:"].concat(untreatedCompaneyNames[index])})
+                this.alarmData.push({"name":"未戴防护帽","value":item,"cname":["未戴防护帽:"+item+" "+"("+(item/totalCount*100).toFixed(2)+"%)"].concat(untreatedCompaneyNames[index])})
                 // this.alarmData.push({"name":"未戴防护帽","value":item})
               }else if(index==1){
-                this.alarmData.push({"name":"未戴口罩","value":item,"cname":["未戴口罩:"+item+" "+"("+(item/totalCount*100).toFixed(2)+"%)","企业名称:"].concat(untreatedCompaneyNames[index])})
+                this.alarmData.push({"name":"未戴口罩","value":item,"cname":["未戴口罩:"+item+" "+"("+(item/totalCount*100).toFixed(2)+"%)"].concat(untreatedCompaneyNames[index])})
                 // this.alarmData.push({"name":"未戴口罩","value":item})
               }else if(index==2){
-                this.alarmData.push({"name":"未穿工作装","value":item,"cname":["未穿工作装:"+item+" "+"("+(item/totalCount*100).toFixed(2)+"%)","企业名称:"].concat(untreatedCompaneyNames[index])})
+                this.alarmData.push({"name":"未穿工作装","value":item,"cname":["未穿工作装:"+item+" "+"("+(item/totalCount*100).toFixed(2)+"%)"].concat(untreatedCompaneyNames[index])})
                 // this.alarmData.push({"name":"未穿工作装","value":item})
               }else if(index==3){
-                this.alarmData.push({"name":"抽烟","value":item,"cname":["抽烟:"+item+" "+"("+(item/totalCount*100).toFixed(2)+"%)","企业名称:"].concat(untreatedCompaneyNames[index])})
+                this.alarmData.push({"name":"抽烟","value":item,"cname":["抽烟:"+item+" "+"("+(item/totalCount*100).toFixed(2)+"%)"].concat(untreatedCompaneyNames[index])})
                 // this.alarmData.push({"name":"抽烟","value":item})
               }else if(index==4){
-                this.alarmData.push({"name":"老鼠出没","value":item,"cname":["老鼠出没:"+item+" "+"("+(item/totalCount*100).toFixed(2)+"%)","企业名称:"].concat(untreatedCompaneyNames[index])})
+                this.alarmData.push({"name":"老鼠出没","value":item,"cname":["老鼠出没:"+item+" "+"("+(item/totalCount*100).toFixed(2)+"%)"].concat(untreatedCompaneyNames[index])})
                 // this.alarmData.push({"name":"未穿工作装","value":item})
               }else if(index==5){
-                this.alarmData.push({"name":"陌生人进入","value":item,"cname":["陌生人进入:"+item+" "+"("+(item/totalCount*100).toFixed(2)+"%)","企业名称:"].concat(untreatedCompaneyNames[index])})
+                this.alarmData.push({"name":"陌生人进入","value":item,"cname":["陌生人进入:"+item+" "+"("+(item/totalCount*100).toFixed(2)+"%)"].concat(untreatedCompaneyNames[index])})
                 // this.alarmData.push({"name":"抽烟","value":item})
               }
             })
@@ -88,16 +88,16 @@
                           margin-right:1px;
                           height:20px;
                           max-width:100%;
-                      
                           font-size:12px;
+                          white-space:nowrap;
+                          text-overflow:ellipsis;
+                          overflow:hidden;
                           ">${item}</div>
                         `
                     }
                     html+="</div>"
                     params.marker=html
-                    // console.log(params[0],ticket)
-                    // this.alarmData[params[0].dataIndex]
-//										console.log(data.answerCount,data.answerCount[params[0].dataIndex] ,params[0].dataIndex)
+                //	console.log(data.answerCount,data.answerCount[params[0].dataIndex] ,params[0].dataIndex)
                   return params.marker  
               }
 
