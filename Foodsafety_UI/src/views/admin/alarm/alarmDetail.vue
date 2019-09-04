@@ -41,7 +41,8 @@
               <i class="el-icon-plus"></i>
             </el-upload>
           </el-form-item>
-          <el-form-item v-if="equType==1" style="margin-top: -30px;">            
+          <el-form-item v-if="equType==1" style="margin-top: -30px;"> 
+          <!-- <videoStream  :vurl="videoObj"  ></videoStream> -->
             <video id="myvideo" :src="alarmEvent.videoUrl" controls="controls" autoplay="autoplay" height="320" width="520"> </video>
           </el-form-item>
         </el-form>
@@ -62,13 +63,15 @@
 import { parseValueToText, parseTime } from "utils/index";
 import alertConst from "api/admin/alarm/alertType";
 import report from "views/admin/equipment/components/wdReport";
+
 export default {
   name: "alarmDetail",
   components: {
-    report
+    report,
   },
   data() {
     return {
+      
       alarmEvent: {
         id: undefined,
         indexCode: undefined,
@@ -111,8 +114,12 @@ export default {
      },
     initAlarm(obj) {
       this.listFile = [];
-      this.alarmEvent = obj;            
+      this.alarmEvent = obj;  
 
+
+      // this.videoObj.url= obj.videoUrl;    
+      
+      
       if (this.alarmEvent.imgUrl) {
         this.listFile.push({
           url: this.alarmEvent.imgUrl
@@ -135,7 +142,7 @@ export default {
     },
     // 点击"+"图标时显示弹出框
     handlePictureCardPreview(file) {
-      this.dialogImageUrl = file.url;
+      this.dialogImageUrl =file.url;
       this.dialogImageVisible = true;
     },
   } //end methods

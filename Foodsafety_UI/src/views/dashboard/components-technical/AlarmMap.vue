@@ -51,9 +51,9 @@
                   this.compGeo["comp_"+item.enterpriseInfo.enterpriseId] = [item.enterpriseInfo.longitude, item.enterpriseInfo.latitude];
                 })
             console.log("----坐标数据");
-            console.log(this.pointData);
+            // console.log(this.pointData);
             if(this.pointData.length > 0){
-              console.log(this.pointData[0].value[0]+","+this.pointData[0].value[1]);
+            //   console.log(this.pointData[0].value[0]+","+this.pointData[0].value[1]);
               this.center = [this.pointData[0].value[0], this.pointData[0].value[1]];
             }
             this.initEchart();
@@ -153,8 +153,8 @@
 
               this.elmap = echart.getModel().getComponent('amap').getAMap();
               if(this.pointData.length > 0){
-                console.log(this.pointData[0].value[0]+","+this.pointData[0].value[1]);
-                console.log(this.elmap);
+                // console.log(this.pointData[0].value[0]+","+this.pointData[0].value[1]);
+                // console.log(this.elmap);
                   // this.elmap.setCenter([this.pointData[0].value[0],this.pointData[0].value[1]]);
                 // this.elmap.setCenter([this.pointData[0].value[0],this.pointData[0].value[1]]);
                 // this.elmap.setCenter([121.218347,31.002938]);
@@ -174,6 +174,7 @@
     .tec-page {
         width: 100%;
         height: 100%;
+        
     }
 
 

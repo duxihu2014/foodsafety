@@ -18,7 +18,6 @@
               <el-option v-for="item in  registerStatusOptions" :key="item.value" :label="item.text" :value="item.value"> </el-option>
             </el-select>
           </el-form-item>
-
           <el-form-item class="filter-item">
             <el-button type="primary" v-waves  @click="handleFilter">搜索</el-button>
             <el-button  v-waves  @click="resetQuery()">重置</el-button>
@@ -38,11 +37,11 @@
       <el-table-column align="center" label="生产地址" width="300" prop="registerBase.productionAddress" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column align="center" label="营业执照编号" width="180" prop="registerCertificate.certificateNo" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column align="center" label="注册状态" width="100" prop="registerStatus" :formatter="registerStatusFormatter"></el-table-column>
-      <el-table-column align="center" label="操作" width="100" fixed="right">
+      <el-table-column  align="center"  label="操作" width="100" fixed="right">
         <template slot-scope="scope">
-          <el-button v-if="scope.row.registerStatus === 0" size="mini" type="success" @click="handleAudit(scope.row)">审核</el-button>
+          <el-button v-if="scope.row.registerStatus == 0" size="mini" type="success" @click="handleAudit(scope.row)">审核</el-button>
           <el-button v-else size="mini" :disabled="true">审核</el-button>
-
+          <!-- <el-button size="mini" type="success" @click="handleAudit(scope.row)">审核</el-button> -->
         </template>
       </el-table-column>
     </el-table>
@@ -322,7 +321,7 @@
             dialogImageUrl:undefined,//预览图片的地址
             area:null,
             areaOptions:[],
-            list: [],
+            list: null,
             total: null,
             listLoading: true,
             listQuery:{
@@ -464,9 +463,8 @@
           });
         },
         getList(){
-          console.log(this.user.areaId)
+          // console.log(this.user.areaId)
             getRegisterEnterprisePage(this.listQuery).then(response => {
-              console.log(response);
               this.list = response.rows;
               this.total = response.total;
               this.listLoading = false;

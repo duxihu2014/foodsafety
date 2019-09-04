@@ -50,11 +50,11 @@
             x: 'center',
             text: 'IOT报警趋势图'
           },
-          backgroundColor: '#102133',
+          backgroundColor: '',
           grid: {
             x: '10%',
             y: '20%',
-            y2: '16%'
+            y2:'16%'
           },
           tooltip : {
             trigger: 'axis',
@@ -69,17 +69,49 @@
             {
               type : 'category',
               boundaryGap : false,
+              axisLabel: {
+                color:'#3AF6F9',
+                // color:'#3AF6F9',
+              },
+              axisTick:{       
+                show:false
+              },
+              axisLine: {
+                  lineStyle: {
+                      color:'#103D79'
+                  }
+              },
+              // data : ['邮件营销','联盟广告','视频广告','直接访问','搜索引擎']
               data : this.dateArr
             }
           ],
           yAxis : [
             {
-              type : 'value'
+              type : 'value',
+              axisLabel: {
+                color:'#3AF6F9',
+              },
+              axisLine: {
+                  lineStyle: {
+                      color:'#103D79'
+                  }
+              },
+              splitLine: {
+                  show: true,
+                  lineStyle:{
+                    color: ['#0D2756'],
+                    type:"solid"
+                  }
+              },
+              axisTick:{       
+                show:false
+              },
             }
           ],
           legend: {
             bottom: "bottom",
             left: 'center',
+            type:"scroll",
             textStyle:{
               fontSize: 11,
               color:"#fff",
@@ -90,13 +122,15 @@
             {
               name:'温度报警数',
               type:'line',
-              areaStyle: {},
+              color:'#E0B10B',
+              areaStyle: { opacity:0.3, },
               data:this.wdData
             },
             {
               name:'湿度报警数',
               type:'line',
-              areaStyle: {},
+              color:'#00FCFD',
+              areaStyle: { opacity:0.3, },
               data:this.sdData
             }
           ]

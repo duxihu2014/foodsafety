@@ -6,6 +6,7 @@ import com.google.common.collect.Maps;
 import com.otec.foodsafety.entity.collect.AlarmTotal;
 import com.otec.foodsafety.entity.credit.CreditRecord;
 import com.otec.foodsafety.entity.enterprise.EnterpriseBase;
+import com.otec.foodsafety.entity.enterprise.EnterpriseSupervision;
 import com.otec.foodsafety.entity.jwt.ObjectRestResponse;
 import com.otec.foodsafety.entity.producesafety.RecordMorningCheck;
 import com.otec.foodsafety.entity.safety.RevisitResult;
@@ -220,6 +221,20 @@ public class DashboardController extends VueBaseController<RevisitResultService,
     @ResponseBody
     public ObjectRestResponse< List<Map<String,Object>>> getEnterpriseCountBySupervise(@RequestParam(required = false) Long areaId) {
         List<Map<String,Object>>  list=enterpriseBaseService.getEnterpriseCountBySupervise(areaId);
+
+        for(Map<String, Object> datamap:list){
+            System.out.println(datamap.get("regulatoryLevel"));
+            System.out.println(datamap.get("count"));
+
+            Map<String,Object> mydatamap = new HashMap<>();
+            mydatamap.put("superviseClassification",datamap.get("regulatoryLevel"));
+            mydatamap.put("areaId",areaId);
+            List<String> lists = enterpriseBaseService.getMyEnterpriseName(mydatamap);
+            datamap.put("companeyName",lists);
+        }
+
+
+
         return new ObjectRestResponse<>().rel(true).data(list);
     }
 
@@ -247,6 +262,18 @@ public class DashboardController extends VueBaseController<RevisitResultService,
             param1.put("gridId",grid.getGridId());
             param1.put("extendSql", "AND REGULATORY_LEVEL IS NOT NULL ");
             int count = enterpriseSupervisionService.countByCondition(param1);
+
+            Map<String,Object> datamap1 = new HashMap<>();
+            datamap1.put("gridId",grid.getGridId());
+            List<EnterpriseSupervision> list1 = enterpriseSupervisionService.findEntitysByCondition(datamap1);
+            List<String> mylist = new ArrayList<>();
+            for(EnterpriseSupervision enterpriseSupervision:list1){
+                EnterpriseBase enterpriseBase = enterpriseBaseService.findById(enterpriseSupervision.getEnterpriseId());
+                if(enterpriseBase!=null){
+                    mylist.add(enterpriseBase.getEnterpriseName());
+                }
+            }
+            map.put("companyName",mylist);
             map.put("name",grid.getGridName());
             map.put("value",count);
             result.add(map);
@@ -459,6 +486,16 @@ public class DashboardController extends VueBaseController<RevisitResultService,
         Map result = new HashMap();
         result.put("treated", list1);
         result.put("untreated", list2);
+
+
+        for(Map<String, Object> datamap:list2){
+            System.out.println(datamap.get("eventId"));
+            System.out.println(datamap.get("count"));
+            List<String> lists = alarmService.getEnterpriseName(datamap.get("eventId").toString());
+            datamap.put("companeyName",lists);
+
+        }
+
         if (result != null && !result.isEmpty())
             return new ObjectRestResponse<Map<String, Object>>().rel(true).data(result);
         else

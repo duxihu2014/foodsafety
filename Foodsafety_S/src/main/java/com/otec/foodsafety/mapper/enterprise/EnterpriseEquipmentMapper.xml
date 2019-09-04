@@ -64,8 +64,8 @@
 		<result property="changeReason" column="CHANGE_REASON" />
         <result property="verifyConclusion" column="VERIFY_CONCLUSION" />
         <result property="verifyId" column="VERIFY_ID" />
-		
-	</resultMap>
+
+    </resultMap>
 
 	<select id="countEnterpriseEquipmentByCondition"
 		resultType="java.lang.Integer" parameterType="java.util.HashMap">

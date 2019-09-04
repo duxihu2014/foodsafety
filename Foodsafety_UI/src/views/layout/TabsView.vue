@@ -7,7 +7,6 @@
     </router-link>
   </div>
 </template>
-
 <script>
 import { mapGetters, mapActions } from "vuex";
 import Cookies from "js-cookie";

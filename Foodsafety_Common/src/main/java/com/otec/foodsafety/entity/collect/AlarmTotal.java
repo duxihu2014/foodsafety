@@ -1,8 +1,9 @@
 package com.otec.foodsafety.entity.collect;
 
-import java.io.Serializable;
 import org.apache.ibatis.annotation.myibatis.DataBase;
 import org.apache.ibatis.annotation.myibatis.Table;
+
+import java.io.Serializable;
 
 @Table(dataBase = DataBase.MYSQL, tabName = "T_ALARM_TOTAL", pkId = "totalId", seqName = "", notColumn = {""})
 public class AlarmTotal implements Serializable {
@@ -19,7 +20,7 @@ public class AlarmTotal implements Serializable {
 	
 	private String enterpriseName;
 	
-	private int totalAll;
+	private long totalAll;
 	
 	private int totalVideo;
 	
@@ -89,12 +90,19 @@ public class AlarmTotal implements Serializable {
 		return this.enterpriseName;
 	}
 
-	public void setTotalAll(int totalAll) {
-		this.totalAll = totalAll;
+//	public void setTotalAll(int totalAll) {
+//		this.totalAll = totalAll;
+//	}
+//
+//	public int getTotalAll() {
+//		return this.totalAll;
+//	}
+	public long getTotalAll() {
+		return totalAll;
 	}
-	 
-	public int getTotalAll() {
-		return this.totalAll;
+
+	public void setTotalAll(long totalAll) {
+		this.totalAll = totalAll;
 	}
 
 	public void setTotalVideo(int totalVideo) {

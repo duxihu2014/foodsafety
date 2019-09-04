@@ -2,7 +2,7 @@
 <foodsafety-config>
 	<path>
 		<remoteServerUrl>http://106.75.119.205:8089/Foodsafety_S/remoting/</remoteServerUrl>
-		<imageServerUrl>http://106.75.119.205:8289</imageServerUrl>
+		<imageServerUrl>http://106.75.119.205:80</imageServerUrl>
 	</path>
 	<webservice>
 		<httpClientPolicy>
@@ -15,6 +15,6 @@
 		<defaultPassword>123456</defaultPassword>
 	</passwrod>
 	<version>1.0.0</version>
-	<uploadUrl>http://106.75.119.205:8089/IntelligentCity_IMG/receiveDataServlet</uploadUrl>
+	<uploadUrl>http://106.75.119.205:8085/Cloud_service/receiveDataServlet</uploadUrl>
 	<imageFolder>intelligentFoodsafety</imageFolder>
 </foodsafety-config>

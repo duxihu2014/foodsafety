@@ -73,7 +73,7 @@ public class SensorMonitorServiceImpl  extends BaseServiceImpl<SensorMonitor,Lon
 		map.put("sensorNo", alarm.getIndexCode());
 		map.put("startTime", alarm.getCreateTime());
 		DateTime dateTime = new DateTime(alarm.getCreateTime());
-		DateTime dayBefore7 = DateTime.now().minusDays(7);
+		DateTime dayBefore7 = DateTime.now().minusDays(8);		//减8天是数据库函数 处理的8天前的数据
 		if(dateTime.getMillis() < dayBefore7.getMillis()){
 			map.put("isHistory", "1");
 		}
@@ -118,7 +118,7 @@ public class SensorMonitorServiceImpl  extends BaseServiceImpl<SensorMonitor,Lon
 		map.put("sensorNo", alarm.getIndexCode());
 		map.put("startTime", alarm.getCreateTime());
 		DateTime dateTime = new DateTime(alarm.getCreateTime());
-		DateTime dayBefore7 = DateTime.now().minusDays(7);
+		DateTime dayBefore7 = DateTime.now().minusDays(8);	//减8天是数据库函数 处理的8天前的数据
 		if(dateTime.getMillis() < dayBefore7.getMillis()){
 			map.put("isHistory", "1");
 		}
@@ -165,4 +165,5 @@ public class SensorMonitorServiceImpl  extends BaseServiceImpl<SensorMonitor,Lon
 		result.put("type", type);
 		return result;
 	}
+
 }

@@ -12,7 +12,13 @@
           </el-form-item>
           <el-form-item label="主体分类" class="filter-item">
             <el-select  v-model="listQuery.subjectClassification" placeholder="请选择" clearable filterabler>
-              <el-option v-for="(item, index) in subjectClassificationOptions" :key="item.value" :label="item.text" :value="item.value"> </el-option>
+              <el-option v-for="(item, index) in subjectClassificationOptions" :key="item.value" :label="item.text" :value="item.value"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="企业状态" class="filter-item">
+            <el-select  v-model="listQuery.enterpriseStatus" placeholder="请选择" clearable filterabler>
+              <!-- <el-option v-for="(item, index) in testData" :key="item.value" :label="item.text" :value="item.value"></el-option> -->
+              <el-option v-for="(item, index) in enterpriseStatusData" :key="item.value" :label="item.text" :value="item.value"></el-option>
             </el-select>
           </el-form-item>
           <!--<el-form-item label="营业执照" prop="certificateNo" class="filter-item">
@@ -43,7 +49,7 @@
       <el-table-column align="center" label="生产地址" width="300" prop="productionAddress" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column align="center" label="营业执照编号" width="180" prop="certificateNo" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column align="center" label="企业状态" width="100" prop="enterpriseStatus" :formatter="enterpriseStatusFormatter"></el-table-column>
-      <el-table-column align="center" label="操作" width="100" fixed="right">
+      <el-table-column align="center" label="操作" width="100" fixed="right" >
         <template slot-scope="scope">
           <el-button size="mini" type="primary" @click="handleView(scope.row)">查看
           </el-button>
@@ -104,6 +110,8 @@ import queryConditions from "components/QueryConditions/index";
 import { mapGetters } from "vuex";
 import { parseValueToText, parseTime, findParentNode } from "utils/index";
 import { loadGridHeight } from "api/screen";
+
+
 export default {
   name: "verify",
   components: {
@@ -136,7 +144,9 @@ export default {
       list: null,
       total: null,
       listLoading: true,
+      initStatus:'3', //企业状态默认值
       listQuery: {
+        enterpriseStatus:'3',//新增企业状态
         superviseClassification: undefined,
         subjectClassification: undefined,
         certificateNoLike: undefined,
@@ -154,7 +164,7 @@ export default {
       },
       dialogVisible: false,
       dialogTitle: "注册企业审核",
-      activeName: "first"
+      activeName: "first",
 
     }
   },
@@ -167,6 +177,10 @@ export default {
     superviseClassificationOptions() {
       return this.staticData["监管级别"];
     },
+    enterpriseStatusData(){
+      return this.staticData["企业状态"];
+
+    }
     /*economicNatureOptions() {
       return this.staticData["企业经济性质"];
     }*/
@@ -205,6 +219,7 @@ export default {
       let page = this.listQuery.page;
       let limit = this.listQuery.limit;
       this.listQuery = { page: page, limit: limit,
+        enterpriseStatus:'3',
         superviseClassification: undefined,
         subjectClassification: undefined,
         certificateNoLike: undefined,
@@ -233,6 +248,8 @@ export default {
     },
     //审核查看
     handleView(row) {
+      // console.log(265,row);
+      
       this.dialogVisible = true;
       this.enterpriseId = row.enterpriseId;
       this.enterpriseName = row.enterpriseName;
@@ -254,7 +271,7 @@ export default {
     registerStatusFormatter(row, column, cellValue) {
       return parseValueToText(cellValue, this.staticData["企业注册状态"]);
     },
-      enterpriseStatusFormatter(row, column, cellValue) {
+    enterpriseStatusFormatter(row, column, cellValue) {
       return parseValueToText(cellValue, this.staticData['企业状态']);
     },
     superviseClassificationFormatter(cellValue) {

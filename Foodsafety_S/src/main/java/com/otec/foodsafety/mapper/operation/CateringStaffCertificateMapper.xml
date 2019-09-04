@@ -40,7 +40,7 @@
 		<result column="CERTIFICATE_STATUS" property="certificateStatus" jdbcType="VARCHAR" />
 
 		<result column="ENTERPRISE_ID" property="enterpriseId" jdbcType="INTEGER" />
-		<result column="ENTERPRISE_NAME" property="enterpriseName" jdbcType="INTEGER" />
+		<result column="ENTERPRISE_NAME" property="enterpriseName" jdbcType="VARCHAR" />
 		<result column="STAFF_NAME" property="staffName" jdbcType="VARCHAR" />
 		<result column="SEX" property="sex" jdbcType="VARCHAR" />
 		<result column="ID_CARD_NO" property="idCardNo" jdbcType="VARCHAR" />

@@ -1,7 +1,12 @@
 package com.otec.foodsafety.service.alarm;
 
+import com.cykj.grcloud.entity.page.GridDataModel;
+import com.cykj.grcloud.entity.page.PageObject;
+import com.cykj.grcloud.service.impl.base.BaseServiceImpl;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.otec.foodsafety.entity.alarm.Alarm;
+import com.otec.foodsafety.entity.alarm.AlarmExt;
 import com.otec.foodsafety.entity.enterprise.EnterpriseBase;
 import com.otec.foodsafety.mapper.alarm.AlarmMapper;
 import com.otec.foodsafety.mapper.util.PushService;
@@ -15,17 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.ibatis.session.RowBounds;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import com.cykj.grcloud.entity.page.GridDataModel;
-import com.cykj.grcloud.entity.page.PageObject;
-import com.cykj.grcloud.service.impl.base.BaseServiceImpl;
-
-import com.otec.foodsafety.entity.alarm.Alarm;
-import com.otec.foodsafety.entity.alarm.AlarmExt;
-import com.otec.foodsafety.mapper.alarm.AlarmMapper;
 
 @Service
 @Transactional
@@ -72,17 +66,17 @@ public class AlarmServiceImpl extends BaseServiceImpl<Alarm, Long> implements Al
 
 		//20190705解决web视频地址播放问题-修改
         for(AlarmExt alarmExt:results){
-            if(StringUtils.isNotBlank(alarmExt.getMsg())&&!alarmExt.getMsg().equals("null")){
-                alarmExt.setMsg(alarmExt.getMsg().replaceAll("\"event_video\":\"","\"event_video\":\""+"http://101.132.144.237:8080/event_video/"));
-            }
+//            if(StringUtils.isNotBlank(alarmExt.getMsg())&&!alarmExt.getMsg().equals("null")){
+//                alarmExt.setMsg(alarmExt.getMsg().replaceAll("\"event_video\":\"","\"event_video\":\""+"http://101.132.144.237:8080/event_video/"));
+//            }
             if(StringUtils.isNotBlank(alarmExt.getVideoUrl())&&!alarmExt.getVideoUrl().equals("null")){
-                alarmExt.setVideoUrl("http://101.132.144.237:8080/event_video/"+alarmExt.getVideoUrl());
+                alarmExt.setVideoUrl("/event_video/"+alarmExt.getVideoUrl());
             }
         }
 
 //		for(AlarmExt alarmExt:results){
 //			alarmExt.setMsg(alarmExt.getMsg().replaceAll("\"event_video\":\"","\"event_video\":\""+"http://101.132.144.237:8080/event_video/"));
-//			alarmExt.setVideoUrl("http://101.132.144.237:8080/event_video/"+alarmExt.getVideoUrl());
+//			alarmExt.setVideoUrl("/event_video/"+alarmExt.getVideoUrl());
 //		}
 
 
@@ -93,9 +87,9 @@ public class AlarmServiceImpl extends BaseServiceImpl<Alarm, Long> implements Al
 	public AlarmExt getAlarmById(Long productId) {
 		Map<String, Object> cond = new HashMap<String, Object>();
 		cond.put("productId", productId);
-		List<AlarmExt> item = mapper.findAlarmByCondition(cond);		
-		
-		return item==null?null:item.get(0);		
+		List<AlarmExt> item = mapper.findAlarmByCondition(cond);
+
+		return item==null?null:item.get(0);
 	}
 
 	public void sendByAlarm(Alarm alarm){
@@ -150,4 +144,12 @@ public class AlarmServiceImpl extends BaseServiceImpl<Alarm, Long> implements Al
 		return mapper.getVideoTrend(params);
 
 	}
+
+
+	@Override
+	public List<String> getEnterpriseName(String eventId) {
+		return mapper.getEnterpriseNameByEventId(eventId);
+	}
+
+
 }

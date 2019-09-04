@@ -49,7 +49,7 @@
             x: 'center',
             text: '投诉立案统计'
           },
-          backgroundColor: '#102133',
+          backgroundColor: '',
           grid: {
             // x: '10%',
             y: '25%',
@@ -63,6 +63,7 @@
           },
           legend: {
             top: 20,
+            icon:'rect',
             left: 'center',
             textStyle:{
               fontSize: 11,
@@ -77,29 +78,57 @@
                 show: true,
                 rotate: 30
               },*/
+              axisLabel: {
+                color:'#3AF6F9',
+              },
               splitLine: {
                 "show": false
               },
               splitArea: {
                 "show": false
               },
-              data: this.category,
+              axisTick:{       
+                show:false
+              },
+              axisLine: {
+                lineStyle: {
+                  color:'#103D79'
+                }
+            },
+              data: [55,99]
+              // data: this.category,
             }
           ],
           yAxis: [{
             type: 'value',
-            splitLine: {
-              show: false
+            axisLabel: {
+              color:'#3AF6F9',
+            },
+            axisLine: {
+              lineStyle: {
+                color:'#103D79'
+              }
             },
             splitArea: {
-              "show": false
-            }
+              show: false,
+            },
+            splitLine: {
+                show: true,
+                lineStyle:{
+                color: '#0D2756',
+                type:"solid"
+              }
+            },
+            axisTick:{       
+                show:false
+            },
           }],
 
           series: [{
             name: "待处理",
             type: 'bar',
             stack: "总量",
+            color:'#FFFD00',
             itemStyle:{
               normal: {
                 label:{
@@ -111,12 +140,14 @@
                 }
               }
             },
-            data: this.untreatedData
+            data: [29,59,55,11]
+            // data: this.untreatedData
           },{
             name: "处理完成",
             type: 'bar',
             barWidth: '20px',
             stack: "总量",
+            color:'#03F39C',
             itemStyle:{
               normal: {
                 label:{
@@ -128,12 +159,14 @@
                 }
               }
             },
-            data: this.treatedData
+            data:[2,33,36,11]
+            // data: this.treatedData
           },{
               name: "总数",
               type: "line",
               stack: "总量",
               symbolSize:10,
+              color:"#FFFD00",
               symbol:'circle',
               itemStyle: {
                 normal: {
@@ -147,7 +180,8 @@
                   }
                 }
               },
-              data: this.totalData
+              data:[31,92,91,22]
+              // data: this.totalData
             },
           ]
         }

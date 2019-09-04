@@ -12,7 +12,7 @@
               <el-option v-for="item in  changeTypeOptions" :key="item.value" :label="item.text" :value="item.value"> </el-option>
             </el-select>
           </el-form-item>
-
+          
           <el-form-item label="变更审核状态" prop="verifyStatus" class="filter-item">
             <el-select  placeholder="请选择" v-model.trim="listQuery.verifyStatus">
               <el-option v-for="item in  verifyStatusOptions" :key="item.value" :label="item.text" :value="item.value"> </el-option>
@@ -37,15 +37,14 @@
       <el-table-column align="center" fixed="right" label="操作" width="100" v-if="needFixedRight">
         <template slot-scope="scope">
           <!--<el-button size="mini" type="primary" @click="handelAudit(scope.row)">审核</el-button>-->
-
-          <el-button v-if="scope.row.verifyStatus === 1" size="mini" type="primary" @click="handelAudit(scope.row)">审核</el-button>
+          <el-button v-if="scope.row.verifyStatus == 1" size="mini" type="primary" @click="handelAudit(scope.row)">审核</el-button>
           <el-button v-else size="mini" :disabled="true">审核</el-button>
         </template>
       </el-table-column>
       <el-table-column align="center" label="操作" width="100" v-else>
         <template slot-scope="scope">
           <!--<el-button size="mini" type="primary" @click="handelAudit(scope.row)">审核</el-button>-->
-          <el-button v-if="scope.row.verifyStatus === 1" size="mini" type="primary" @click="handelAudit(scope.row)">审核</el-button>
+          <el-button v-if="scope.row.verifyStatus == 1" size="mini" type="primary" @click="handelAudit(scope.row)">审核</el-button>
           <el-button v-else size="mini" :disabled="true">审核</el-button>
         </template>
       </el-table-column>
@@ -270,11 +269,16 @@
         default: undefined
       }
     },
+    watch:{
+      total(val){
+        this.$emit('setCount',val,1);
+      }
+    },
     data(){
       return {
         tabPosition:'0',
         height:undefined,
-        list: [],
+        list: null,
         total: null,
         listLoading: true,
         listQuery: {
@@ -310,14 +314,14 @@
       changeTypeOptions(){
         return this.staticData["企业变更操作类型"]
       },
-      verifyStatusOptions(){
-        return this.staticData["变更审核状态"]
-      },
       statusOptions(){
         return this.staticData["企业非基本信息状态"]
       },
       subjectClassificationOptions(){
         return this.staticData["企业主体分类"];
+      },
+      verifyStatusOptions(){
+        return this.staticData["变更审核状态"]
       },
       economicNatureOptions(){
         return this.staticData["企业经济性质"];
@@ -368,6 +372,7 @@
         this.getList();
       },
       resetQuery() {
+        this.listQuery.verifyStatus="1";
         this.listQuery.enterpriseNameLike= "";
         this.listQuery.changeType=undefined;
       },

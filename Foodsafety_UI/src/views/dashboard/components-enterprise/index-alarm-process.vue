@@ -11,7 +11,7 @@
         myChart:undefined,
         treatedData:[],
         untreatedData:[],
-        category:["未戴安全帽","未戴口罩","未穿工作装","抽烟","温度高","温度低","湿度高","湿度低"],
+        category:["未戴防护帽","未戴口罩","未穿工作装","抽烟","温度高","温度低","湿度高","湿度低"],
       }
     },
     computed:{
@@ -51,7 +51,7 @@
             x: 'center',
             text: '报警处理情况统计'
           },
-          backgroundColor: '#102133',
+          backgroundColor: '',
           grid: {
             // x: '10%',
             y: '25%',
@@ -65,6 +65,7 @@
           },
           legend: {
             top: 20,
+            icon:'rect',
             left: 'center',
             textStyle:{
               fontSize: 11,
@@ -76,27 +77,48 @@
           xAxis: [
             {
               type: "category",
+              axisTick:{       
+                show:false
+              },
               axisLabel: {
                 show: true,
                 rotate: 30
               },
-              splitLine: {
-                "show": false
-              },
-              splitArea: {
-                "show": false
-              },
-              data: this.category,
+              axisLine: {
+                lineStyle: {
+                    color:'#103D79'
+                },
+                splitLine: {
+                  show: false
+                },
+                splitArea: {
+                  show: false
+                }
+          
+            },
+              // data:[30,50,55,66],
+              data: this.category
             }
           ],
           yAxis: [{
             type: 'value',
-            splitLine: {
-              show: false
+            axisLabel: {
+              color:'#3AF6F9',
+            },
+            axisLine: {
+                lineStyle: {
+                    color:'#103D79'
+                }
             },
             splitArea: {
-              "show": false
-            }
+              show: false
+            },
+            splitLine: {
+                show: false
+            },
+            axisTick:{       
+                show:false
+            },
           }],
 
           series: [{
@@ -105,7 +127,11 @@
             stack: "总量",
             itemStyle:{
               normal: {
-                // color: "rgba(0,191,183,1)",
+                color: new this.echarts.graphic.LinearGradient(  0, 0, 0, 1,
+                [
+                    {offset: 0, color: '#23edfa'},
+                    {offset: 1, color: '#0061b2'}
+                ]),
                 // "barBorderRadius": 0,
                 label:{
                   show: true,
@@ -116,6 +142,7 @@
                 }
               }
             },
+            // data: [70,23,44,22]
             data: this.treatedData
           }, {
               name: "未处理",
@@ -123,7 +150,7 @@
               stack: "总量",
               itemStyle:{
                 normal: {
-                  // color: "rgba(0,191,183,1)",
+                  color:'#0f36ad',
                   // "barBorderRadius": 0,
                   label:{
                     show: true,
@@ -134,6 +161,7 @@
                   }
                 }
               },
+              // data: [99,888,555,444]
               data: this.untreatedData
             },{
               name: "总数",
@@ -141,6 +169,7 @@
               stack: "总量",
               symbolSize:10,
               symbol:'circle',
+              color:'#D9AE00',
               itemStyle: {
                 normal: {
                   // color: "rgba(252,230,48,1)",
