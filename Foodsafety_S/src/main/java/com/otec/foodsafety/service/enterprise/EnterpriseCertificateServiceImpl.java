@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.cykj.grcloud.service.impl.base.BaseServiceImpl;
 import com.otec.foodsafety.entity.enterprise.EnterpriseCertificate;
 import com.otec.foodsafety.entity.enterprise.EnterpriseCertificateChange;
+import com.otec.foodsafety.entity.enterprise.EnterpriseCertificateExt;
 import com.otec.foodsafety.entity.enterprise.EnterpriseVerify;
 import com.otec.foodsafety.entity.system.SysResource;
 import com.otec.foodsafety.mapper.enterprise.EnterpriseCertificateChangeMapper;
@@ -64,6 +65,12 @@ public class EnterpriseCertificateServiceImpl extends BaseServiceImpl<Enterprise
     public List<EnterpriseCertificate> getEnterpriseCertificatePage(Map map, int start, int pageSize) {
         RowBounds rowBounds = new RowBounds(start, pageSize);
         return enterpriseCertificateMapper.getCertificatePage(map,rowBounds);
+    }
+
+    @Override
+    public List<EnterpriseCertificateExt> getEnterpriseCertificatePageExt(Map map, int start, int pageSize) {
+        RowBounds rowBounds = new RowBounds(start, pageSize);
+        return enterpriseCertificateMapper.getCertificatePageExt(map,rowBounds);
     }
 
     /**
@@ -222,7 +229,9 @@ public class EnterpriseCertificateServiceImpl extends BaseServiceImpl<Enterprise
             }
             enterpriseCertificateChange.setVerifyStatus("2");
 
-        }else{//审核不通过
+        }else if(enterpriseVerify.getVerifyStatus().equals("4")){//撤回
+            enterpriseCertificateChange.setVerifyStatus("4");
+        } else{//审核不通过
             enterpriseCertificateChange.setVerifyStatus("3");
         }
         enterpriseCertificateChangeMapper.updateById(enterpriseCertificateChange);

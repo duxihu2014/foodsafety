@@ -3,13 +3,13 @@ package com.otec.foodsafety.api.enterprise;
 import com.cykj.grcloud.entity.page.GridDataModel;
 import com.cykj.grcloud.entity.page.PageObject;
 import com.otec.foodsafety.api.BaseInterface;
-import com.otec.foodsafety.entity.enterprise.EnterpriseCertificate;
-import com.otec.foodsafety.entity.enterprise.EnterpriseCertificateChange;
+import com.otec.foodsafety.entity.enterprise.*;
 import com.otec.foodsafety.entity.EnterpriseCertificateChangeExt;
 import com.otec.foodsafety.entity.jwt.ObjectRestResponse;
 import com.otec.foodsafety.entity.system.SysResource;
 import com.otec.foodsafety.entity.system.SysUser;
 import com.otec.foodsafety.service.enterprise.EnterpriseCertificateService;
+import com.otec.foodsafety.service.enterprise.EnterpriseVerifyService;
 import com.otec.foodsafety.service.system.SysResourceService;
 import com.otec.foodsafety.util.JSONUtils;
 import com.otec.foodsafety.util.SysInitConfig;
@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -30,6 +31,9 @@ public class EnterpriseCertificateInterface extends BaseInterface {
 
     @Autowired
     SysResourceService sysResourceService;
+
+    @Autowired
+    EnterpriseVerifyService enterpriseVerifyService;
 
     @Autowired
     SessionFilter sessionFilter;
@@ -46,7 +50,7 @@ public class EnterpriseCertificateInterface extends BaseInterface {
         PageObject po = getPageObject(params);
         po.getCondition().putAll(params);
         Integer total = enterpriseCertificateService.getEnterpriseCertificatePageCount(params);
-        List<EnterpriseCertificate> enterpriseCertificateList = enterpriseCertificateService.getEnterpriseCertificatePage(params,po.getOffset(),po.getPageSize());
+        List<EnterpriseCertificateExt> enterpriseCertificateList = enterpriseCertificateService.getEnterpriseCertificatePageExt(params,po.getOffset(),po.getPageSize());
 
         String imageServerUrl = SysInitConfig.getInstance().get(SysInitConfig.CfgProp.IMAGESERVERURL);
 
@@ -56,7 +60,6 @@ public class EnterpriseCertificateInterface extends BaseInterface {
                 cer.setResourcePath(imageServerUrl+"/"+resource.getResourcePath());
             }
         }
-
         GridDataModel model = new GridDataModel(enterpriseCertificateList,total);
 
         return model;
@@ -139,22 +142,29 @@ public class EnterpriseCertificateInterface extends BaseInterface {
      * @param changeId
      * @return
      */
-//    @RequestMapping(value = "/revocation/{changeId}", method = RequestMethod.POST)
-//    @ResponseBody
-//    public ObjectRestResponse<EnterpriseCertificateChange> revocation(@PathVariable Long changeId) {
-//        try {
-//            SysUser sysUser = sessionFilter.getJWTUser(request);
-//            EnterpriseCertificate enterpriseCertificate = enterpriseCertificateService.findById(changeId);
-//            enterpriseCertificateService.modifyEnterpriseCertificate("", "", null, sysUser.getUserId(), "注销证照", enterpriseCertificate,
-//                    "3");// 删除
-//            return new ObjectRestResponse<EnterpriseCertificateChange>().rel(true);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            ObjectRestResponse resp = new ObjectRestResponse<EnterpriseCertificateChange>().rel(false);
-//            resp.setStatus(500);
-//            resp.setMessage("企业证照删除失败!");
-//            return resp;
-//        }
-//    }
+    @RequestMapping(value = "/revoke/{changeId}/{verifyId}", method = RequestMethod.POST)
+    @ResponseBody
+    public ObjectRestResponse<EnterpriseCertificateChange> revoke(
+          @PathVariable Long changeId,@PathVariable Long verifyId,
+          @RequestParam("verifyConclusion") String verifyConclusion) {
+        try {
+            SysUser sysUser = sessionFilter.getJWTUser(request);
+            EnterpriseCertificate enterpriseCertificate = new EnterpriseCertificate();
+            EnterpriseCertificateChange eec = enterpriseCertificateService.getChangeById(changeId);
+            EnterpriseVerify enterpriseVerify = enterpriseVerifyService.findById(Long.valueOf(verifyId));
+            enterpriseVerify.setVerifyStatus("4");  //撤回
+            enterpriseVerify.setVerifyUserId(sysUser.getUserId());
+            enterpriseVerify.setVerifyTime(new Date());
+            enterpriseVerify.setVerifyConclusion(verifyConclusion);
+            enterpriseCertificateService.verifyEnterpriseCertificate(enterpriseCertificate,eec,enterpriseVerify);
+            return new ObjectRestResponse<EnterpriseCertificateChange>().rel(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+            ObjectRestResponse resp = new ObjectRestResponse<EnterpriseCertificateChange>().rel(false);
+            resp.setStatus(500);
+            resp.setMessage("企业证照删除失败!");
+            return resp;
+        }
+    }
 
 }
