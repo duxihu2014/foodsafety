@@ -21,7 +21,6 @@
               <el-option v-for="(item, index) in enterpriseStatusData" :key="item.value" :label="item.text" :value="item.value"></el-option>
             </el-select>
           </el-form-item>
-         
           <!--<el-form-item label="营业执照" prop="certificateNo" class="filter-item">
             <el-input @keyup.enter.native="handleFilter" style="width: 200px;" placeholder="" v-model.trim="listQuery.certificateNoLike"> </el-input>
           </el-form-item>-->
@@ -145,9 +144,9 @@ export default {
       list: null,
       total: null,
       listLoading: true,
-      initStatus:3, //企业状态默认值
+      initStatus:'3', //企业状态默认值
       listQuery: {
-        enterpriseStatus: this.initStatus,//新增企业状态
+        enterpriseStatus:'3',//新增企业状态
         superviseClassification: undefined,
         subjectClassification: undefined,
         certificateNoLike: undefined,
@@ -178,9 +177,10 @@ export default {
     superviseClassificationOptions() {
       return this.staticData["监管级别"];
     },
-    enterpriseStatusData() {
+    enterpriseStatusData(){
       return this.staticData["企业状态"];
-    },
+
+    }
     /*economicNatureOptions() {
       return this.staticData["企业经济性质"];
     }*/
@@ -219,7 +219,7 @@ export default {
       let page = this.listQuery.page;
       let limit = this.listQuery.limit;
       this.listQuery = { page: page, limit: limit,
-        enterpriseStatus:this.initStatus,
+        enterpriseStatus:'3',
         superviseClassification: undefined,
         subjectClassification: undefined,
         certificateNoLike: undefined,
@@ -248,7 +248,7 @@ export default {
     },
     //审核查看
     handleView(row) {
-      console.log(265,row);
+      // console.log(265,row);
       
       this.dialogVisible = true;
       this.enterpriseId = row.enterpriseId;
@@ -271,8 +271,7 @@ export default {
     registerStatusFormatter(row, column, cellValue) {
       return parseValueToText(cellValue, this.staticData["企业注册状态"]);
     },
-      enterpriseStatusFormatter(row, column, cellValue) {
-        console.log(274,row,column,cellValue);
+    enterpriseStatusFormatter(row, column, cellValue) {
       return parseValueToText(cellValue, this.staticData['企业状态']);
     },
     superviseClassificationFormatter(cellValue) {

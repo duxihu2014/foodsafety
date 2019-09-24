@@ -13,6 +13,7 @@
         return{
           superviseCharts:{},
           supervisionTotal:[],
+          superviseName:[]
         }
       },
       computed: {
@@ -28,9 +29,18 @@
       },
       methods: {
           init(){
-            let colors=["#2f41d3","#c45906","#c45906","#c45906"]
-            let name=["A等级","B等级","C等级","D等级"]
+            this.superviseClassificationOptions.forEach(item=>{
+               let resultData = {};
+               resultData.name=item.text+'等级';
+               resultData.value=0;
+               resultData.rel=item.value;
+               resultData.cname=[resultData.name+":0(0.00%)"]
+               this.superviseName.push(resultData.name)
+               this.supervisionTotal.push(resultData)
+            })
+
             getSupervisionByArea({areaId:this.user.areaId}).then(response => {
+              // console.log(34,response)
               this.seriesData=response.data
               let totalCount=0;
               response.data.forEach(item=>{
@@ -38,28 +48,36 @@
               })
               response.data.forEach(item => {
                 let result = {};
-                if(item.regulatoryLevel=='1'){
-                  result.value = item.total;
-                  result.name = "A等级";
-                  // 添加模拟数据
-                  result.cname=['A等级:'+item.total+"("+(item.total/totalCount*100).toFixed(2)+'%)','企业名称:','zh',"fjdk",'jdfkdj','风角度讲费了闪姐发送否决了点击放大就废了就付款了三等奖费j',"fjdk",'jdfkdj','fjdfiei']
-                }else if(item.regulatoryLevel=='2'){
-                  result.value = item.total;
-                  result.name = "B等级";
-                  // 添加模拟数据
-                  result.cname=['A等级:'+item.total+"("+(item.total/totalCount*100).toFixed(2)+'%)','企业名称:','zh','fdfhdfh风角度讲费了闪姐发送否决了点击放大就废了就付款了三等奖费j',"fjdk",'jdfkdj','fjdfiei']
-                }else if(item.regulatoryLevel=='3'){
-                  result.value = item.total;
-                  result.name = "C等级"
-                  // 添加模拟数据
-                  result.cname=['A等级:'+item.total+"("+(item.total/totalCount*100).toFixed(2)+'%)','企业名称:','jdfkdj','否决了点击放大就废了就付款了三等奖费j',"fjdk",'jdfkdj','fjdfiei']
-                }else if(item.regulatoryLevel=='4'){
-                  result.value = item.total;
-                  result.name = "D等级"
-                  // 添加模拟数据
-                  result.cname=['A等级:'+item.total+"("+(item.total/totalCount*100).toFixed(2)+'%)','企业名称:','zh',"fjdk",'jdfkdj','风角度讲费了闪姐发送否决了点击放大就废了就付款了三等奖费j',"fjdk",'jdfkdj','fjdfiei']
+                for(let i=0;i<this.supervisionTotal.length;i++){
+                  if(item.regulatoryLevel==this.supervisionTotal[i].rel){
+
+                    this.supervisionTotal[i].value=item.total;
+                    this.supervisionTotal[i].cname=[this.supervisionTotal[i].name+":"+item.total+"("+(item.total/totalCount*100).toFixed(2)+'%)'].concat(item.companeyName)
+                    return ;
+                  }
                 }
-                this.supervisionTotal.push(result)
+                // if(item.regulatoryLevel=='1'){
+                //   result.value = item.total;
+                //   result.name = "A等级";
+                //   // 添加模拟数据
+                //   result.cname=['A等级:'+item.total+"("+(item.total/totalCount*100).toFixed(2)+'%)','企业名称:'].concat(item.companeyName)
+                // }else if(item.regulatoryLevel=='2'){
+                //   result.value = item.total;
+                //   result.name = "B等级";
+                //   // 添加模拟数据
+                //   result.cname=['B等级:'+item.total+"("+(item.total/totalCount*100).toFixed(2)+'%)','企业名称:'].concat(item.companeyName)
+                // }else if(item.regulatoryLevel=='3'){
+                //   result.value = item.total;
+                //   result.name = "C等级"
+                //   // 添加模拟数据
+                //   result.cname=['C等级:'+item.total+"("+(item.total/totalCount*100).toFixed(2)+'%)','企业名称:'].concat(item.companeyName)
+                // }else if(item.regulatoryLevel=='4'){
+                //   result.value = item.total;
+                //   result.name = "D等级"
+                //   // 添加模拟数据
+                //   result.cname=['D等级:'+item.total+"("+(item.total/totalCount*100).toFixed(2)+'%)','企业名称:'].concat(item.companeyName)
+                // }
+                // this.supervisionTotal.push(result)
               });
               this.initCharts();
             });
@@ -99,22 +117,25 @@
                     }
                     html+="</div>"
                     params.marker=html
-                    // console.log(params[0],ticket)
-                    // this.alarmData[params[0].dataIndex]
-//										console.log(data.answerCount,data.answerCount[params[0].dataIndex] ,params[0].dataIndex)
                   return params.marker  
               }
             },
             legend: {
-              orient: 'vertical',
+              // orient: 'vertical',
               bottom: "bottom",
               left: 'center',
               icon:"rect",
+              type:"scroll",
+              pageIconColor: '#6495ed',
+              pageIconInactiveColor: '#aaa',
+              pageTextStyle:{
+                color:'#ccc'
+              },
               textStyle:{
                 fontSize: 11,
                 color:"#fff",
               },
-              data: ['A等级','B等级','C等级','D等级']
+              data: this.superviseName
             },
             color : [ '#2f41d3', '#c45906', '#d8af00', '#1ab500','#03bcfd', '#2649d7'],
             series:

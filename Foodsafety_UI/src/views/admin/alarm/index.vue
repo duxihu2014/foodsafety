@@ -16,25 +16,27 @@
               <el-option label="已处理" value="2"> </el-option>
             </el-select>
           </el-form-item>
-            <el-form-item label="企业状态" class="filter-item">
-            <el-select  v-model="listQuery.enterpriseStatus" placeholder="请选择" clearable filterabler>
-            <!-- <el-select  v-model="listQuery.enterpriseStatus" placeholder="请选择" clearable filterabler> -->
+
+          <el-form-item label="报警类型" class="filter-item">
+            <el-select  v-model="listQuery.eventId" placeholder="请选择" clearable filterabler>
               <!-- <el-option v-for="(item, index) in testData" :key="item.value" :label="item.text" :value="item.value"></el-option> -->
               <el-option v-for="(item, index) in enterpriseStatusData" :key="item.value" :label="item.text" :value="item.value"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item  label="期间" class="filter-item">
-                  <el-date-picker
-                    v-model="listQuery.startAndEndDate"
-                    type="daterange"
-                    align="right"
-                    unlink-panels
-                    range-separator="至"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                    :picker-options="pickerOptions2">
-                  </el-date-picker>
+          <el-form-item label="日期" class="filter-item">
+             <el-date-picker
+              v-model="listQuery.selectDate"
+              type="daterange"
+              align="right"
+              unlink-panels
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              :picker-options="pickerOptions"
+              value-format="yyyy-MM-dd">
+            </el-date-picker>
           </el-form-item>
+
           <el-form-item class="filter-item">
             <el-button type="primary" v-waves @click="handleFilter">搜索</el-button>
             <el-button v-waves @click="resetQuery()">重置</el-button>
@@ -116,7 +118,6 @@
         <el-button   type="primary" @click="submitProcessing('processingForm')">确 定</el-button>
       </div>
     </el-dialog>
-
   </div>
 </template>
 
@@ -124,46 +125,11 @@
 import { mapGetters } from "vuex";
 import { alertPage, getAlertObj, getCount ,processing} from "api/admin/alarm/index";
 import alertConst from "api/admin/alarm/alertType";
-import { parseValueToText, parseTime } from "utils/index";
+import { parseValueToText, parseTime ,pickerOptions} from "utils/index";
 import { loadGridHeight } from "api/screen";
 import queryConditions from "components/QueryConditions/index";
-let PicjOption=  {
-          shortcuts: [{
-            text: '最近一周',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-              picker.$emit('pick', [start, end]);
-            }
-          }, {
-            text: '最近一个月',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-              picker.$emit('pick', [start, end]);
-            }
-          }, {
-            text: '最近三个月',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
-              picker.$emit('pick', [start, end]);
-            }
-          },
-           {
-            text: '最近一年',
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 365);
-              picker.$emit('pick', [start, end]);
-            }
-          }
-          ]
-        };
+
+let NOWDATE='';  //tab 切换后用这个日期查询上一次报警的信息
 export default {
   name: "region",
   components: {
@@ -172,12 +138,11 @@ export default {
   },
   data() {
     return {
-      list: null,
+      list: [],
       total: null,
       listLoading: true,
       selection: [],
       listQuery: {
-        startAndEndDate:'',//新增日期
         indexCodeLike: undefined,
         status: "",
         enterpriseId: undefined,
@@ -188,9 +153,9 @@ export default {
         eventType: "1", ////1:摄像头 2:传感器
         page: 1,
         limit: 20,
-        enterpriseStatus:''
+        enterpriseStatus:[],
+        selectDate:[]
       },
-      pickerOptions2:PicjOption,
       dialogFormVisible: false,
       alarmEvent: {
         id: undefined,
@@ -216,8 +181,12 @@ export default {
       processingRules:{
         processingResult:[{required: true, message: "请输入处理结果", trigger: "blur"}]
       },
+      IOTTpye:"",
       processingForm:{processingResult:undefined},
-      processingDialogFormVisible:false
+      processingDialogFormVisible:false,
+      pickerOptions:pickerOptions,
+      serverImageUrl:process.env.SERVERIMAGEURL, //img基础路径
+      baseVideoURL:process.env.SERVERVIDEOURL , //视频基础路径
     };
   },
   created() {
@@ -227,12 +196,45 @@ export default {
   },
   computed: {
     ...mapGetters(["staticData", "user"]),
-    enterpriseStatusData() {
-      if(this.listQuery.eventType==1){
+    enterpriseStatusData(){
+      if(this.equType =='2'){
+        this.IOTTpye=this.staticData["IOT报警类型"];
+        return this.staticData["IOT报警类型"];
+      }else{
         return this.staticData["摄像头报警类型"];
       }
-        return this.staticData["IOT报警类型"];
     },
+  },
+  watch:{
+    //优化 实时页面 快速点击tab 按钮 切换 数据不显示问题 开始 
+      cemareTotal(n,o){
+        if(this.$route.path=="/alarm/now_index"){
+          if(Number(this.cemareTotal)>0&&this.list.length==0){
+            this.listQuery.alermStartDate=NOWDATE
+            this.getList()
+          }
+        }
+      },
+      sensorTotal(n,o){
+        if(this.$route.path=="/alarm/now_index"){
+          if(Number(this.sensorTotal)>0 && this.list.length==0){
+            this.listQuery.alermStartDate=NOWDATE
+            this.getList()
+          }
+        }
+      },
+      list(n,o){
+        if(this.$route.path=="/alarm/now_index"){
+          if(n.length!=o.length&&Number(this.sensorTotal)>0){
+            if(this.list.length==0&&Number(this.sensorTotal)>0){
+              this.listQuery.alermStartDate=NOWDATE
+                  this.getList()
+              }
+            }
+        }
+      }
+    //优化 实时页面 快速点击tab 按钮 切换 数据不显示问题 结束 
+
   },
   mounted() {
     //首次整个视图都渲染完毕后执行
@@ -267,15 +269,22 @@ export default {
     setEnterpriseId(data) {
       this.listQuery.enterpriseId = data;
     },
-    initParam() {
-      if (this.$route.query.queryTime) {
-        this.listQuery.alermStartDate = parseTime(this.$route.query.queryTime);
+    initParam() {  //初始化实时报警参数
+     if(this.$route.path=="/alarm/now_index"){
+        if (this.$route.query.queryTime) {     //报警跳转传来的时间
+            this.listQuery.alermStartDate = parseTime(this.$route.query.queryTime);
+            NOWDATE = parseTime(this.$route.query.queryTime);
+        }else if(NOWDATE){   //导航切换用 保存的时间
+          this.listQuery.alermStartDate=NOWDATE
+        }else{         //浏览器涮新 用当前时间
+          this.listQuery.alermStartDate=parseTime(new Date())
+        }
       }
     },
-
     //tab转换查询
     handleClick() {
-      this.listQuery.enterpriseStatus='';
+  
+       this.listQuery.enterpriseStatus=[];
       if (this.tabPosition == "first") {
         this.listQuery.eventType = "1";
         this.equType = "1";
@@ -283,23 +292,38 @@ export default {
         this.listQuery.eventType = "2";
         this.equType = "2";
       }
-      this.getList();
+        this.getList();
     },
     getCount() {
       getCount(this.listQuery).then(response => {
         this.cemareTotal = response.count_cemare;
         this.sensorTotal = response.count_sensor;
+        if(this.cemareTotal){
+          this.listQuery.eventType = "1";
+          this.equType = "1";
+          this.tabPosition="first";
+          this.getList()
+        }else if(this.sensorTotal){
+          this.listQuery.eventType = "2";
+          this.equType = "2";
+          this.tabPosition="second";
+          this.getList()
+        }
       });
     },
     getList() {
       this.listLoading = true;
       this.listQuery.enterpriseId = this.user.enterpriseId;
-      alertPage(this.listQuery).then(response => {
-        // console.log(232,response);
-        this.list = response.rows;
-        this.total = response.total;
-        this.listLoading = false;
-      });
+      let dates_arr=this.listQuery.selectDate
+      if(dates_arr.length>0){ 
+        this.listQuery.alermStartDate=dates_arr[0];
+        this.listQuery.alermEndDate=dates_arr[1];
+      }
+        alertPage(this.listQuery).then(response => {
+            this.list = response.rows;
+            this.total = response.total;
+            this.listLoading = false;
+        });
     },
     handleFilter() {
       this.listQuery.alermStartDate = undefined;
@@ -318,8 +342,6 @@ export default {
       this.getList();
     },
     handleView(row) {
-      console.log(256,row);
-      
       this.dialogFormVisible = true;  
       getAlertObj(row.id).then(response => {
         // console.log("3333333333333333",response.data);
@@ -360,26 +382,27 @@ export default {
         //   this.$refs["alarmDiv"].initAlarm(this.alarmEvent);
         // });
 
-
-        this.alarmEvent.id = row.id;
-        this.alarmEvent.indexCode = row.indexCode;
-        this.alarmEvent.alarmSource = row.alarmSource;
-        this.alarmEvent.eventId = row.eventId;
+        let resultData= response.data;
+        // console.log(44444444,resultData)
+        this.alarmEvent.id = resultData.id;
+        this.alarmEvent.indexCode = resultData.indexCode;
+        this.alarmEvent.alarmSource = resultData.alarmSource;
+        this.alarmEvent.eventId = resultData.eventId;
          if(this.listQuery.eventType==1){
           this.alarmEvent.alarmType = parseValueToText(
-                    row.eventId,
+                    resultData.eventId,
                     this.staticData["摄像头报警类型"]
                   ); //报警类型
         }else{
            this.alarmEvent.alarmType = parseValueToText(
-                    row.eventId,
+                    resultData.eventId,
                     this.staticData["IOT报警类型"]
                   ); //报警类型
         }
-        this.alarmEvent.content = row.content;
-        this.alarmEvent.equName = row.equName;
+        this.alarmEvent.content = resultData.content;
+        this.alarmEvent.equName = resultData.equName;
         this.alarmEvent.enterpriseName = row.enterpriseName;
-        this.alarmEvent.alarmTime = row.alarmTime;
+        this.alarmEvent.alarmTime = resultData.alarmTime;
         if (
           this.alarmEvent.eventId == "10001" ||
           this.alarmEvent.eventId == "10002"
@@ -389,8 +412,8 @@ export default {
           this.alarmEvent.sensorAlarmType = "sd";
         }
         if (this.tabPosition == "first") {
-          this.alarmEvent.imgUrl = "http://foodsafety.91catv.com:8081/Foodsafety/"+row.imgUrl;
-          this.alarmEvent.videoUrl = row.videoUrl;
+          this.alarmEvent.imgUrl =this.serverImageUrl+'\\'+resultData.imgUrl;
+          this.alarmEvent.videoUrl = this.baseVideoURL+resultData.videoUrl;
         }
         this.$nextTick(() => {
           this.$refs["alarmDiv"].initAlarm(this.alarmEvent);
@@ -402,7 +425,8 @@ export default {
       this.cameraDialogVisible = true;
     },
     resetQuery() {
-      this.listQuery.startAndEndDate = "";
+      this.listQuery.selectDate=[];
+      this.listQuery.enterpriseStatus = '';
       this.listQuery.indexCodeLike = undefined;
       this.listQuery.enterpriseId = undefined;
       this.listQuery.areaId = undefined;
@@ -410,7 +434,6 @@ export default {
       this.listQuery.alermStartDate = undefined;
       this.listQuery.alermEndDate = undefined;
       this.listQuery.status = "";
-      this.listQuery.enterpriseStatus=''
     },
     dialogClose() {
       this.dialogFormVisible = false;
@@ -427,6 +450,10 @@ export default {
       if(this.listQuery.eventType==1){
         return parseValueToText(cellValue, this.staticData["摄像头报警类型"]);
       }else{
+        // this.equType =='2
+        // console.log(4344444,parseValueToText(cellValue, this.staticData["摄像头报警类型"]))
+        // console.log( 4444,this.staticData["IOT报警类型"])
+          //  return this.staticData["IOT报警类型"];
         return parseValueToText(cellValue, this.staticData["IOT报警类型"]);
       }
       

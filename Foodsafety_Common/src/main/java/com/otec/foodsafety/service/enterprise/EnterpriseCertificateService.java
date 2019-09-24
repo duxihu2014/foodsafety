@@ -3,6 +3,7 @@ package com.otec.foodsafety.service.enterprise;
 import com.cykj.grcloud.service.base.BaseService;
 import com.otec.foodsafety.entity.enterprise.EnterpriseCertificate;
 import com.otec.foodsafety.entity.enterprise.EnterpriseCertificateChange;
+import com.otec.foodsafety.entity.enterprise.EnterpriseCertificateExt;
 import com.otec.foodsafety.entity.enterprise.EnterpriseVerify;
 import com.otec.foodsafety.entity.system.SysResource;
 import org.springframework.remoting.service.annotation.RemoteService;
@@ -27,6 +28,14 @@ public interface EnterpriseCertificateService extends BaseService<EnterpriseCert
      * @return
      */
     List<EnterpriseCertificate> getEnterpriseCertificatePage(Map map, int start, int pageSize);
+    /**
+     * 获取证照分页数据
+     * @param map
+     * @param start
+     * @param pageSize
+     * @return
+     */
+    List<EnterpriseCertificateExt> getEnterpriseCertificatePageExt(Map map, int start, int pageSize);
     /**
      *修改企业证照信息
      * @param uploadUrl

@@ -269,6 +269,11 @@
         default: undefined
       }
     },
+    watch:{
+      total(val){
+        this.$emit('setCount',val,1);
+      }
+    },
     data(){
       return {
         tabPosition:'0',
@@ -367,7 +372,7 @@
         this.getList();
       },
       resetQuery() {
-        this.listQuery.verifyStatus= "1";
+        this.listQuery.verifyStatus="1";
         this.listQuery.enterpriseNameLike= "";
         this.listQuery.changeType=undefined;
       },

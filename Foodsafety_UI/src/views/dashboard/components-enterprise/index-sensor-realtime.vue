@@ -82,23 +82,23 @@
     },
     methods: {
       queryReport(){
-        console.log(2222);
+        // console.log(2222);
         page({page: 1, limit: 20, status: "1"}).then(response => {
-          console.log(87,response);
-          this.sensorList = [
-            {sensorName:'nvjhf',enterpriseGroupName:84936666498},
-            {sensorName:'nvjhf',enterpriseGroupName:84936666498},
-            {sensorName:'nvjhf',enterpriseGroupName:84936666498},
-            {sensorName:'nvjhf',enterpriseGroupName:84936666498},
-            {sensorName:'nvjhf',enterpriseGroupName:84936666498},
-            {sensorName:'nvjhf',enterpriseGroupName:84936666498},
-            {sensorName:'nvjhf',enterpriseGroupName:84936666498},
-            {sensorName:'nvjhf',enterpriseGroupName:84936666498},
-            {sensorName:'nvjhf',enterpriseGroupName:84936666498},
-            {sensorName:'nvjhf',enterpriseGroupName:84936666498},
-            {sensorName:'nvjhf',enterpriseGroupName:84936666498},
-            {sensorName:'sssssnvjhf',enterpriseGroupName:8493498},{sensorName:'nvjdsdsdhf',enterpriseGroupName:8493498}];
-          // this.sensorList = response.rows;
+          // console.log(87,response);
+          // this.sensorList = [
+          //   {sensorName:'nvjhf',enterpriseGroupName:84936666498},
+          //   {sensorName:'nvjhf',enterpriseGroupName:84936666498},
+          //   {sensorName:'nvjhf',enterpriseGroupName:84936666498},
+          //   {sensorName:'nvjhf',enterpriseGroupName:84936666498},
+          //   {sensorName:'nvjhf',enterpriseGroupName:84936666498},
+          //   {sensorName:'nvjhf',enterpriseGroupName:84936666498},
+          //   {sensorName:'nvjhf',enterpriseGroupName:84936666498},
+          //   {sensorName:'nvjhf',enterpriseGroupName:84936666498},
+          //   {sensorName:'nvjhf',enterpriseGroupName:84936666498},
+          //   {sensorName:'nvjhf',enterpriseGroupName:84936666498},
+          //   {sensorName:'nvjhf',enterpriseGroupName:84936666498},
+          //   {sensorName:'sssssnvjhf',enterpriseGroupName:8493498},{sensorName:'nvjdsdsdhf',enterpriseGroupName:8493498}];
+          this.sensorList = response.rows;
           if (this.sensorList.length > 0) {
             this.sensorNo = this.sensorList[0].sensorNo;
             this.$nextTick(function() {
@@ -127,10 +127,10 @@
           // this.initCharts("wdcharts", this.xdata, this.ydata, "实时温度监控", this.wd_max, this.wd_min, (this.wd_max_value+10)-this.wd_max_value%10);
           // this.initCharts("sdcharts", this.xdata, this.ydata_sd, "实时湿度监控", this.sd_max, this.sd_min, 100);
           getCurrentMonitor({sensorNo: this.sensorNo}).then(response => {
-            console.log(112,response);
-            
-            this.wd_value = response.humidity;
-            this.sd_value = response.dampness;
+            // console.log(112,response);
+            this.wd_value = response.humidity?response.humidity:0;
+            this.sd_value = response.dampness?response.dampness:0;
+            // console.log(134, response.humidity,response.dampness)
             // this.initPieCharts_wd(this.refs.wdcharts_pie,500,600,'heloo', this.wd_max,this.wd_min,900);
             // this.initPieCharts_sd(this.refs.sdcharts_pie,this.sd_min, this.sd_max);
             this.initPieCharts_wd("wdcharts_pie",this.wd_min, this.wd_max);

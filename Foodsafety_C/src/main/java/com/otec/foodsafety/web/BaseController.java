@@ -15,18 +15,18 @@ import java.io.PrintWriter;
 
 public class BaseController{
 	protected static Logger logger = LoggerFactory.getLogger(BaseController.class);
-	
+
 	/**
-	 * 	
+	 *
 	 * @param request
 	 * @return
 	 */
 	protected PageObject getPageObject(HttpServletRequest request){
 		return getPageObject(request,null);
 	}
-	
+
 	/**
-	*order asc
+	 *order asc
 	 *page	1
 	 *rows	10
 	 *sort	roleId
@@ -35,7 +35,7 @@ public class BaseController{
 	 * @return
 	 */
 	protected PageObject getPageObject(HttpServletRequest request,
-			String orderByClause){
+									   String orderByClause){
 		PageObject pageObject = new PageObject();
 		String currPageStr = request.getParameter("page");
 		if(StringUtils.isBlankString(currPageStr)){
@@ -51,7 +51,7 @@ public class BaseController{
 		}
 		try{
 			pageObject.setCurrPage(Integer.valueOf(currPageStr));
-			pageObject.setPageSize(Integer.valueOf(pageSizeStr));			
+			pageObject.setPageSize(Integer.valueOf(pageSizeStr));
 		}catch(NumberFormatException e){
 			pageObject.setCurrPage(1);
 			pageObject.setPageSize(Integer.MAX_VALUE);
@@ -77,22 +77,22 @@ public class BaseController{
 		}
 		return "{\"success\":"+result+",\"msg\":\"" + errMsg + "\"}";
 	}
-	
-	
+
+
 	public static void ajaxJsonResponse(PrintWriter out,boolean result,String errMsg){
 		writeToPage(makeJsonResponse(result,errMsg),out);
 	}
-	
+
 	public static void ajaxJsonResponseSuccess(PrintWriter out){
 		ajaxJsonResponse(out,true,"操作成功");
 	}
-	
+
 	public static void writeToPage(String content,PrintWriter out){
 		out.print(content);
 		out.flush();
 		out.close();
 	}
-	
+
 	public static void writeToPage(String content, HttpServletResponse response) {
 		response.setCharacterEncoding("UTF-8");
 		response.setHeader("Content-Type", "text/html;charset=UTF-8");
@@ -109,21 +109,21 @@ public class BaseController{
 			}
 		}
 	}
-	
-	
+
+
 	public Result convertToRtnObj(GridDataModel model){
 		Result rtn =  Result.ok();
 		rtn.put("msg", "");
 		rtn.put("count", model.getTotal());
-	
+
 		rtn.put("data",model.getRows());
-		
+
 		return rtn;
-		
-		
-		
+
+
+
 	}
-	
-	
-	
+
+
+
 }

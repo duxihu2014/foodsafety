@@ -134,11 +134,9 @@
     </el-dialog>
     <!-- </div> -->
     <!-- vidio -->
-    <div  v-drag class="videobox" v-if="isVideoShow">
-      <div class="iconCose">
-        <div class="el-icon-circle-close  iconStyle" @click="handleCloseVideo()"><span>关闭</span></div>
-      </div>
-          <videoStream  :vurl="videoObj"  ></videoStream>
+    <div  class="videobox" style="width:600px;height:600px;background:#000"  v-if="isloading"  v-loading="!isVideoShow" element-loading-text="拼命加载中" element-loading-spinner="el-icon-loading" element-loading-background="rgba(0, 0, 0, 0.8)"></div>
+    <div  class="videobox" v-if="isVideoShow"  >
+        <videoStream style="width:100%;height:100%;" :vurl="videoObj" @handleEventClose="handleCloseVideo" ></videoStream>
     </div>
   </div>
 </template>
@@ -295,10 +293,9 @@ export default {
       downloadUrl: process.env.SERVERIMAGEURL + "/vlcplay.rar",
       downloadTimer: null,
       isVideoShow:false,
+      isloading:false,
       videoObj:{},
       videoId:0,
-      positionX:0,
-      positionY:0
     };
   },
   props: ["paramCompId", "paramGroupId"],
@@ -321,30 +318,8 @@ export default {
   computed: {
     ...mapGetters(["staticData", "user"])
   },
-  directives: {
-    drag: {
-      bind: function (el) {
-        let odiv = el; 
-        odiv.onmousedown = (e) => {
-          let disX = e.clientX - odiv.offsetLeft;
-          let disY = e.clientY - odiv.offsetTop;
-          document.onmousemove = (e)=>{
-            let left = e.clientX - disX;    
-            let top = e.clientY - disY;
-            //移动当前元素
-            odiv.style.left = left + 'px';
-            odiv.style.top = top + 'px';
-          };
-          document.onmouseup = (e) => {
-            document.onmousemove = null;
-            document.onmouseup = null;
-          };
-        };
-      }
-    }
-  },
+  
   methods: {
-
     init() {
       let _this = this;
       //初始化地区信息
@@ -547,8 +522,8 @@ export default {
       this.dialogVideoVisible = false;
       this.videoReset = false;
     },
-    handleCloseVideo(){
-      this.isVideoShow=false
+    handleCloseVideo(data){
+      this.isVideoShow=data
     },
     resetQuery() {
       this.listQuery = {
@@ -609,6 +584,7 @@ export default {
     },
     playVideo(row) {
       this.isVideoShow=false;
+      this.isloading=true;
       play(row.equipmentId).then(response => {
         if (response.data.result == "success") {
           // this.playUrl ="VLCPLAY://rtsp://admin:Otec_123@192.168.1.192:1554/cam/realmonitor?channel=1^&subtype=0";
@@ -619,6 +595,7 @@ export default {
               url:response.data.url
           }
           // console.log(598,this.videoObj)
+          this.isloading=false;
           this.isVideoShow=true 
           // this.playUrl = "VLCPLAY://" + response.data.url;
           // document.getElementById("playHref").href = this.playUrl;
@@ -672,39 +649,10 @@ export default {
   font-size: 12px;
   outline: none;
 }
-.videobg{
-    /* position: fixed; */
-    /* width: 100%;
-    height: 100%;
-    top: 0;
-    left: 0;
-    background:rgba(0,0,0,0);
-    z-index: 100; */
-}
 .videobox{
     position: fixed;
-    top: 14%;
-    left: 10%;
+    top: 24% !important;
+    left: 35% !important;
     z-index: 100;
-       /* position: relative;     
-        top: 10px;
-        left: 10px;
-        width: 200px;
-        height: 200px; */
-}
-.iconCose{
-  width: 100%;
-  box-sizing: border-box;
-  background:#409EFF;
-  color:#fff;
-}
-.iconStyle{
-  font-size:23px;
-  padding: 3px 8px;
-  cursor:pointer;
-}
-.iconStyle>span{
-  font-size: 18px;
-  vertical-align: middle;
 }
 </style>
