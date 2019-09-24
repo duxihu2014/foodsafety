@@ -40,6 +40,12 @@ private static final long serialVersionUID = 1L;
 
 	private Long enterpriseId;
 
+
+	private Long resourceId;
+
+
+	private String  resourcePath;
+
 	private String enterpriseName;
 	private String institutionName;
 	private long personnelId;//三员编号
@@ -227,5 +233,22 @@ private static final long serialVersionUID = 1L;
 
 	public void setAreaId(Long areaId) {
 		this.areaId = areaId;
+	}
+
+
+	public Long getResourceId() {
+		return resourceId;
+	}
+
+	public void setResourceId(Long resourceId) {
+		this.resourceId = resourceId;
+	}
+
+	public String getResourcePath() {
+		return resourcePath;
+	}
+
+	public void setResourcePath(String resourcePath) {
+		this.resourcePath = resourcePath;
 	}
 }

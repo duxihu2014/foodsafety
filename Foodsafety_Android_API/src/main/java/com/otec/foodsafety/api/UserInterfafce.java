@@ -46,12 +46,44 @@ public class UserInterfafce {
     }
 
 
-    @RequestMapping(value = "/updateUserPwd", method = RequestMethod.POST)
-    public ResponseEntity<?> updateUserPwd(@RequestBody SysUser sysUser) {
+    @RequestMapping(value = "/updateImg", method = RequestMethod.POST)
+    public ResponseEntity<?> updateImg(Long resourceId) {
         Map<Object, Object> item = new HashMap<Object, Object>();
         SysUser userInfo = sessionFilter.getJWTUser(request);
 
+        userInfo.setUserId(userInfo.getUserId());
+        userInfo.setResourceId(resourceId);
+        try {
+            if (userInfo.getUserId() > 0) {
+                sysUserService.updateById(userInfo);
+                item.put("state",1);
+                return ResponseEntity.ok(item);
+            } else {
+                item.put("state",0);
+                item.put("errorMsg","操作员不存在，无法修改密码");
+                return ResponseEntity.ok(item);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            ObjectRestResponse resp = new ObjectRestResponse<SysUser>().rel(false);
+            resp.setStatus(500);
+            resp.setMessage(e.getMessage());
+            item.put("state",0);
+            item.put("errorMsg",e.getMessage());
+            return ResponseEntity.ok(item);
+        }
+    }
+
+
+    @RequestMapping(value = "/updateUserPwd", method = RequestMethod.POST)
+    //public ResponseEntity<?> updateUserPwd(@RequestBody SysUser sysUser) {
+    public ResponseEntity<?> updateUserPwd(String userPwd, String userPwdOld) {
+        Map<Object, Object> item = new HashMap<Object, Object>();
+        SysUser userInfo = sessionFilter.getJWTUser(request);
+        SysUser sysUser = new SysUser();
         sysUser.setUserId(userInfo.getUserId());
+        sysUser.setUserPwd(userPwd);
+        sysUser.setUserPwd_old(userPwdOld);
         try {
             if (sysUser.getUserId() > 0) {
                 if (sysUserService.checkUserPwd(sysUser)) {
@@ -78,4 +110,7 @@ public class UserInterfafce {
             return ResponseEntity.ok(item);
         }
     }
+
+
+
 }

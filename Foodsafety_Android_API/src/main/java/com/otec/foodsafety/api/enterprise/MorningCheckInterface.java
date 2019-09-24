@@ -4,14 +4,20 @@ import com.cykj.grcloud.entity.page.GridDataModel;
 import com.cykj.grcloud.entity.page.PageObject;
 import com.otec.foodsafety.api.BaseInterface;
 import com.otec.foodsafety.entity.jwt.ObjectRestResponse;
-import com.otec.foodsafety.entity.producesafety.RecordDisinfection;
+import com.otec.foodsafety.entity.operation.CateringStaff;
 import com.otec.foodsafety.entity.producesafety.RecordMorningCheck;
+import com.otec.foodsafety.entity.system.SysUser;
+import com.otec.foodsafety.service.catering.CateringStaffService;
 import com.otec.foodsafety.service.producesafety.RecordMorningCheckService;
 import com.otec.foodsafety.service.util.DateLocalService;
+import com.otec.foodsafety.web.context.SessionFilter;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,6 +31,13 @@ public class MorningCheckInterface extends BaseInterface {
     RecordMorningCheckService recordMorningCheckService;
     @Autowired
     DateLocalService dateLocalService;
+
+    @Autowired
+    private SessionFilter sessionFilter;
+
+
+    @Autowired
+    private CateringStaffService cateringStaffService;
 
     @RequestMapping(value="/{enterpriseId}" ,method = RequestMethod.GET)
     @ResponseBody
@@ -78,5 +91,51 @@ public class MorningCheckInterface extends BaseInterface {
         }
 
     }
+
+
+    @RequestMapping(value="/deteteMorningCheck" ,method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<?> deteteMorningCheck(Long recordId) {
+        recordMorningCheckService.removeById(recordId);
+        Map<Object, Object> item = new HashMap<Object, Object>();
+        item.put("state",1);
+        return ResponseEntity.ok(item);
+    }
+
+
+
+    //晨检人列表接口
+    @RequestMapping(value="/checkPeopleList" ,method = RequestMethod.GET)
+    @ResponseBody
+    public GridDataModel checkPeopleList(@RequestParam Map<String, String> params) {
+
+        SysUser sysUser = sessionFilter.getJWTUser(request);
+        if ("2".equals(sysUser.getUserType()) || "3".equals(sysUser.getUserType())){
+
+            //如果没有选择查询条件中的地区，默认只查询登录用户所在地区内的数据
+            if(StringUtils.isEmpty(params.get("areaId")) ){
+                params.put("areaId",sysUser.getAreaId()+"");
+            }
+
+        } else if("4".equals(sysUser.getUserType()))
+            params.put("enterpriseId",sysUser.getEnterpriseId().toString());
+
+        params.put("staffStatus","1");//员工状态 ，1-在职
+
+        String staffName = params.get("staffName");
+        if (org.apache.commons.lang3.StringUtils.isNotBlank(staffName)) {
+            params.put("staffName",staffName);
+        }
+
+        // 查询列表数据
+        PageObject po = getPageObject(params);
+        Integer total = cateringStaffService.getPageCount(params);
+        List<CateringStaff> list = cateringStaffService.getPage(params,po.getOffset(),po.getPageSize());
+        GridDataModel model = new GridDataModel(list,total);
+        return model;
+
+    }
+
+
 
 }

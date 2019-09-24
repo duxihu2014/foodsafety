@@ -86,6 +86,7 @@
 				/api/register/** = anon
 				/api/login/** = anon
 				/api/safe/uploadImg = anon
+				/api/version/* = anon
 				/** = statelessAuthc
 
 			</value>

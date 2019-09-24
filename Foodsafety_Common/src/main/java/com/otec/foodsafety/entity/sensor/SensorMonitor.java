@@ -1,10 +1,9 @@
 package com.otec.foodsafety.entity.sensor;
 
-import java.io.Serializable;
 import org.apache.ibatis.annotation.myibatis.DataBase;
 import org.apache.ibatis.annotation.myibatis.Table;
 
-import java.math.BigDecimal;
+import java.io.Serializable;
 import java.util.Date;
 
 @Table(pkId = "id", usingSeq = true, seqName = "", dataBase=DataBase.MYSQL, tabName = "T_SENSOR_MONITOR", notColumn = { "mini","sensorName" })

@@ -3,12 +3,15 @@ package com.otec.foodsafety.api.enterprise;
 import com.cykj.grcloud.entity.page.GridDataModel;
 import com.cykj.grcloud.entity.page.PageObject;
 import com.otec.foodsafety.api.BaseInterface;
+import com.otec.foodsafety.entity.sensor.SensorInfo;
 import com.otec.foodsafety.entity.sensor.SensorMonitor;
 import com.otec.foodsafety.service.sensor.SensorInfoService;
 import com.otec.foodsafety.service.sensor.SensorMonitorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -93,6 +96,45 @@ public class SensorInterface  extends BaseInterface {
     public Map<String, Object> alarmReport(@RequestParam Map<String, String> params) {
         return sensorMonitorService.getAppReportByAlarm(Long.valueOf(params.get("alarmId")));
     }
+
+
+    /**
+     * 获取传感器列表
+     * @param params
+     * @return
+     */
+    @RequestMapping(value="/getCurrentMonitorList" ,method = RequestMethod.GET)
+    @ResponseBody
+    public List< Map<String,Object>> getCurrentMonitorList(@RequestParam Map<String, String> params) {
+        List<Map<String,Object>> datalist =  new ArrayList<>();
+        // 查询列表数据
+        PageObject po = getPageObject(params);
+        po.getCondition().putAll(params);
+        po.getCondition().put("status", "1");
+        GridDataModel model = sensorInfoService.getGridDataByCondition(po);
+        List<SensorInfo> results = ( List<SensorInfo>)model.getRows();
+        for(SensorInfo sensorInfo :results){
+            List<SensorMonitor> list = sensorMonitorService.getCurrentMonitor(sensorInfo.getSensorNo());
+
+            Map<String,Object> datamap = new HashMap<>();
+            if(list.size() > 0){
+                SensorMonitor sensorMonitor = list.get(0);
+                sensorMonitor.setSensorName(sensorInfo.getSensorName());
+                datamap.put("sensorMonitor",sensorMonitor);
+                datamap.put("sensorInfo",sensorInfo);
+                datalist.add(datamap);
+            }else{
+                SensorMonitor sensorMonitor = new SensorMonitor();
+                sensorMonitor.setSensorName(sensorInfo.getSensorName());
+                sensorMonitor.setSensorNo(sensorInfo.getSensorNo());
+                datamap.put("sensorMonitor",sensorMonitor);
+                datamap.put("sensorInfo",sensorInfo);
+                datalist.add(datamap);
+            }
+        }
+        return datalist;
+    }
+
 
 
 }
