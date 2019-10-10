@@ -51,10 +51,16 @@ public class UserInterfafce {
         Map<Object, Object> item = new HashMap<Object, Object>();
         SysUser userInfo = sessionFilter.getJWTUser(request);
 
-        userInfo.setUserId(userInfo.getUserId());
-        userInfo.setResourceId(resourceId);
+        if (resourceId!=null&&resourceId>0) {
+            item.put("state",0);
+            item.put("errorMsg","resourceId不能为空");
+            return ResponseEntity.ok(item);
+        }
+
         try {
             if (userInfo.getUserId() > 0) {
+                userInfo.setUserId(userInfo.getUserId());
+                userInfo.setResourceId(resourceId);
                 sysUserService.updateById(userInfo);
                 item.put("state",1);
                 return ResponseEntity.ok(item);

@@ -70,7 +70,8 @@ public class AlarmServiceImpl extends BaseServiceImpl<Alarm, Long> implements Al
 //                alarmExt.setMsg(alarmExt.getMsg().replaceAll("\"event_video\":\"","\"event_video\":\""+"http://101.132.144.237:8080/event_video/"));
 //            }
             if(StringUtils.isNotBlank(alarmExt.getVideoUrl())&&!alarmExt.getVideoUrl().equals("null")){
-                alarmExt.setVideoUrl("/event_video/"+alarmExt.getVideoUrl());
+                //alarmExt.setVideoUrl("/event_video/"+alarmExt.getVideoUrl());
+				alarmExt.setVideoUrl("http://101.132.144.237:8080/event_video/"+alarmExt.getVideoUrl());
             }
         }
 
