@@ -37,7 +37,7 @@ public class WarningStatisticsInterface extends BaseInterface {
 
 
     /**
-     * 安全预警--统计页面
+     * 企业版----安全预警--统计页面
      */
     @RequestMapping(value = "/enterprise/warningStatistics/{enterpriseId}", method = RequestMethod.GET)
     @ResponseBody
@@ -121,28 +121,28 @@ public class WarningStatisticsInterface extends BaseInterface {
 
 
 
-//        //3---行为预警
-//        datamap.put("behaviorWarning1",total8);//未戴口罩
-//        datamap.put("behaviorWarning2",total8);//未穿工作服
-//        datamap.put("behaviorWarning3",total8);//吸烟
-//
-//
-//        //4---温湿度预警
-//        datamap.put("temperatureWarning1",total8);//温度
-//        datamap.put("temperatureWarning2",total8);//湿度
-//        datamap.put("temperatureWarning3",total8);//水浸
+        //3---行为预警
+        Map mymapAlerm = new HashMap<String, Object>();
+        mymapAlerm.put("enterpriseId",enterpriseId);
+        mymapAlerm.put("eventType","1");
+        mymapAlerm.put("status","1");//1-未处理
+        mymapAlerm.put("startDate", this.getTwoMonthBefore());
+        Integer behaviorWarning1_un_deal = alarmService.countAlarmByCondition(mymapAlerm);
+        datamap.put("behaviorWarning", behaviorWarning1_un_deal);
 
 
 
 //		69	报警类型	报警类型 10001温度高10002温度低10003湿度高10004湿度低	10005水浸
 //		69	摄像头报警类型	1未戴安全帽2未戴口罩3未穿工作装4抽烟5老鼠出没6陌生人进入
 
-        String warning_items_show[] = {"behaviorWarning1","behaviorWarning2","behaviorWarning3",
+        //4---温湿度预警
+        String warning_items_show[] = {
                 "temperatureWarning1","temperatureWarning2","temperatureWarning3","temperatureWarning4","temperatureWarning5"};//预警项
 //        String warning_items[] = {"未戴口罩","未穿工作装","抽烟",
 //                "温度高","温度低","湿度高","湿度低","水浸"};//预警项
-        String event_ids[] = {"2","3","4","10001","10002","10003","10004","10005"};//item编码
-        String event_types[] = {"1","1","1","2","2","2","2","2"};//预警项  type 1-视频，2-传感器
+        String event_ids[] = {"10001","10002","10003","10004","10005"};//item编码
+        String event_types[] = {"2","2","2","2","2"};//预警项  type 1-视频，2-传感器
+
 
 
         for (int i = 0; i <event_ids.length ; i++) {
@@ -171,7 +171,67 @@ public class WarningStatisticsInterface extends BaseInterface {
 
 
     /**
-     * 行为报警明细
+     * 监管版----工作台--预警统计页面
+     */
+    @RequestMapping(value = "/enterprise/workbenchStatistics", method = RequestMethod.GET)
+    @ResponseBody
+    public Map<String, Object> workbenchStatistics(@RequestParam Map<String, String> params) throws ParseException {
+
+        String warning_items_show[] = {"behaviorWarning1","behaviorWarning2","behaviorWarning3","behaviorWarning4","behaviorWarning5", "behaviorWarning6",
+                "temperatureWarning1","temperatureWarning2","temperatureWarning3","temperatureWarning4","temperatureWarning5"};//预警项
+        String warning_items[] = {"未戴防护帽","未戴口罩","未穿工作装","抽烟","老鼠出没","陌生人进入",
+                "温度高","温度低","湿度高","湿度低","水浸"};//预警项
+        String event_ids[] = {"1","2","3","4","5","6","10001","10002","10003","10004","10005"};//item编码
+        String event_types[] = {"1","1","1","1","1","1","2","2","2","2","2"};//预警项  type 1-视频，2-传感器
+
+        String timeType[] = {"today","sevenDay","thirtyDay","YearDay"};
+        Integer timeInterval[] = {0,7,30,365};
+
+        Map<String, Object> mydatamap = new HashMap<>();
+        for(int j=0;j< timeType.length;j++){
+        Map<String, Integer> datamap = new HashMap<>();
+        for (int i = 0; i <event_ids.length ; i++) {
+            String event_id = event_ids[i];
+            String event_type = event_types[i];
+
+            Map mapAlerm = new HashMap<String, Object>();
+            mapAlerm.put("eventId", event_id);
+            mapAlerm.put("eventType",event_type);
+            mapAlerm.put("status","1");//1-未处理
+            mapAlerm.put("startDate", this.getPastDate(timeInterval[j]));
+            mapAlerm.put("endDate",this.getPastDate(0));
+            Integer un_deal = alarmService.countAlarmByCondition(mapAlerm);
+            datamap.put(warning_items_show[i], un_deal);
+            mydatamap.put(timeType[j],datamap);
+        }
+        }
+
+
+
+        return mydatamap;
+    }
+
+    /**
+     * 获取过去第几天的日期
+     *
+     * @param past
+     * @return
+     */
+    public  String getPastDate(int past) {
+
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_YEAR, calendar.get(Calendar.DAY_OF_YEAR) - past);
+        Date today = calendar.getTime();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        String result = format.format(today);
+        return result;
+    }
+
+
+
+    /**
+     * 企业版----行为报警明细
      */
     @RequestMapping(value = "/enterprise/behaviorWarningDetail/{enterpriseId}", method = RequestMethod.GET)
     @ResponseBody
@@ -190,7 +250,7 @@ public class WarningStatisticsInterface extends BaseInterface {
 
 
     /**
-     * 温湿度---报警明细
+     * 企业版----温湿度---报警明细
      */
     @RequestMapping(value = "/enterprise/temperatureWarningDetail/{enterpriseId}", method = RequestMethod.GET)
     @ResponseBody
