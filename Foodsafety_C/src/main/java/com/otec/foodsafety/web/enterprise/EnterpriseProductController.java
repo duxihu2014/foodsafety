@@ -64,6 +64,7 @@ public class EnterpriseProductController extends VueBaseController<EnterprisePro
 	@Autowired
 	EnterpriseProductChangeService epchangeService;
 
+
 	@RequestMapping(value = "/getChange/{id}", method = RequestMethod.GET)
 	private ObjectRestResponse<EnterpriseProductChange> getChange(@PathVariable Long id) {
 		try {
