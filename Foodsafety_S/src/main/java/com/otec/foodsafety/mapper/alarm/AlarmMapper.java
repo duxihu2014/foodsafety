@@ -13,7 +13,7 @@ import java.util.Map;
 public interface AlarmMapper extends GenericMapper<Alarm,Long>{
 	/**
 	 * 根据条件统计企业产品信息
-	 * 
+	 *
 	 * @param condition
 	 * @return
 	 */
@@ -21,7 +21,7 @@ public interface AlarmMapper extends GenericMapper<Alarm,Long>{
 
 	/**
 	 * [分页]根据条件获得企业产品信息
-	 * 
+	 *
 	 * @param condition
 	 * @return
 	 */
@@ -29,7 +29,7 @@ public interface AlarmMapper extends GenericMapper<Alarm,Long>{
 
 	/**
 	 * 根据条件获得企业产品信息
-	 * 
+	 *
 	 * @param condition
 	 * @return
 	 */

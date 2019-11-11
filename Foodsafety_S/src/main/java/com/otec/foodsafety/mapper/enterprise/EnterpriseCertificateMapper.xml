@@ -24,18 +24,21 @@
 		select * from T_ENTERPRISE_CERTIFICATE t where 1=1		
 	</select>
 	<resultMap type="com.otec.foodsafety.entity.enterprise.EnterpriseCertificate" id="resultPage">
-			<result property="certificateId" column="CERTIFICATE_ID"></result>			
-			<result property="enterpriseId" column="ENTERPRISE_ID"></result>			
-			<result property="certificateType" column="CERTIFICATE_TYPE"></result>			
-			<result property="certificateName" column="CERTIFICATE_NAME"></result>			
-			<result property="certificateNo" column="CERTIFICATE_NO"></result>			
-			<result property="registerScope" column="REGISTER_SCOPE"></result>			
-			<result property="issuingDate" column="ISSUING_DATE"></result>			
-			<result property="issuingUnit" column="ISSUING_UNIT"></result>			
-			<result property="validDate" column="VALID_DATE"></result>			
-			<result property="certificatePhoto" column="CERTIFICATE_PHOTO"></result>			
-			<result property="certificateStatus" column="CERTIFICATE_STATUS"></result>
-		</resultMap>
+        <result property="certificateId" column="CERTIFICATE_ID"></result>
+        <result property="enterpriseId" column="ENTERPRISE_ID"></result>
+        <result property="certificateType" column="CERTIFICATE_TYPE"></result>
+        <result property="certificateName" column="CERTIFICATE_NAME"></result>
+        <result property="certificateNo" column="CERTIFICATE_NO"></result>
+        <result property="registerScope" column="REGISTER_SCOPE"></result>
+        <result property="issuingDate" column="ISSUING_DATE"></result>
+        <result property="issuingUnit" column="ISSUING_UNIT"></result>
+        <result property="validDate" column="VALID_DATE"></result>
+        <result property="certificatePhoto" column="CERTIFICATE_PHOTO"></result>
+        <result property="certificateStatus" column="CERTIFICATE_STATUS"></result>
+    </resultMap>
+	<resultMap type="com.otec.foodsafety.entity.enterprise.EnterpriseCertificateExt" id="enterpriseExt" extends="result_ResultMap_EnterpriseCertificate">
+        <result property="verifyId" column="VERIFY_ID"></result>
+    </resultMap>
     <!--获取企业证照分页总条数-->
 	<select id="getCertificatePageCount" resultType="int" parameterType="map">
 		SELECT
@@ -104,6 +107,62 @@
 		SELECT
 			t1.*,
 			t2.VERIFY_STATUS AS changeStatus,t3.ENTERPRISE_NAME enterpriseName,t3.REGISTER_ADDRESS registerAddress,t4.VERIFY_CONCLUSION verifyConclusion,t2.CHANGE_ID changeId
+        FROM
+		T_ENTERPRISE_CERTIFICATE t1
+		INNER JOIN T_ENTERPRISE_BASE eb ON t1.ENTERPRISE_ID = eb.ENTERPRISE_ID
+		LEFT JOIN
+		( SELECT * FROM T_ENTERPRISE_CERTIFICATE_CHANGE WHERE CHANGE_ID IN
+			( SELECT max( CHANGE_ID ) FROM T_ENTERPRISE_CERTIFICATE_CHANGE GROUP BY CERTIFICATE_ID ) ORDER BY CHANGE_ID ) t2
+		ON
+	  	t1.CERTIFICATE_ID = t2.CERTIFICATE_ID LEFT JOIN  T_ENTERPRISE_BASE t3 on t1.ENTERPRISE_ID=t3.ENTERPRISE_ID
+		left join T_S_AREA a on t3.AREA_ID=a.AREA_ID
+		left join T_ENTERPRISE_SUPERVISION es on t1.ENTERPRISE_ID=es.ENTERPRISE_ID
+		left join T_RESPONSIBILITY_GRID rg on es.GRID_ID=rg.GRID_ID
+        left join T_ENTERPRISE_VERIFY t4 on t2.CHANGE_ID=t4.CHANGE_ID
+		<where>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( enterpriseId )">
+				AND t1.ENTERPRISE_ID = #{enterpriseId}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( certificateType )">
+				AND t1.CERTIFICATE_TYPE = #{certificateType}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( certificateStatus )">
+				AND t1.CERTIFICATE_STATUS = #{certificateStatus}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty(areaId)">
+				and	t3.AREA_ID  = #{areaId}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty(gridId)">
+				and	es.GRID_ID  = #{gridId}
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( validStatus )">
+				<if test="validStatus==1">
+					and t1.VALID_DATE &gt; DATE_SUB(CURDATE(),INTERVAL -1 month)
+				</if>
+				<if test="validStatus==2">
+					and t1.VALID_DATE BETWEEN CURDATE() and DATE_SUB(CURDATE(),INTERVAL -1 month)
+				</if>
+				<if test="validStatus==3">
+					and t1.VALID_DATE  &lt;  CURDATE()
+				</if>
+                <if test="validStatus==4"><!-- 已过期和即将过期的  -->
+                    and t1.VALID_DATE  &lt;= DATE_SUB(CURDATE(),INTERVAL -1 month)
+                </if>
+			</if>
+			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( userId )">
+				AND t1.ENTERPRISE_ID in
+				( SELECT  t1.ENTERPRISE_ID
+				FROM T_ENTERPRISE_BASE t1 LEFT JOIN  T_ENTERPRISE_SUPERVISION t2
+				on t1.ENTERPRISE_ID=t2.ENTERPRISE_ID LEFT JOIN  T_RESPONSIBILITY_GRID t3 ON t3.GRID_ID=t2.GRID_ID
+				where t1.ENTERPRISE_STATUS=3 and t3.MONITORS in ( SELECT PERSONNEL_ID FROM T_PERSONNEL_THREE WHERE  USER_ID=#{userId} and PERSONNEL_STATUS=1) )
+			</if>
+		</where>
+	</select>
+    <!--获取企业证照分页数据-->
+	<select id="getCertificatePageExt"  resultMap="enterpriseExt" parameterType="map">
+		SELECT
+			t1.*,
+			t2.VERIFY_STATUS AS changeStatus,t3.ENTERPRISE_NAME enterpriseName,t3.REGISTER_ADDRESS registerAddress,t4.VERIFY_CONCLUSION verifyConclusion,t2.CHANGE_ID changeId,t4.`VERIFY_ID` VERIFY_ID
         FROM
 		T_ENTERPRISE_CERTIFICATE t1
 		INNER JOIN T_ENTERPRISE_BASE eb ON t1.ENTERPRISE_ID = eb.ENTERPRISE_ID

@@ -465,7 +465,7 @@ export default {
     changeView(row) {
       getChangeByCertificateId({ certificateId: row.certificateId }).then(
         response => {
-          console.log(response);
+          // console.log(response);
         }
       );
     },

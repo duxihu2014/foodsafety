@@ -27,7 +27,7 @@
       methods: {
         init(){
           getWarning({areaId:this.user.areaId}).then(data => {
-            console.log(30,data)
+            // console.log(30,data)
             // debugger
             data.forEach(item => {
               this.dateArr.push(item.validDate);
@@ -66,7 +66,13 @@
             legend: {
               bottom: "bottom",
               left: 'center',
+               type:"scroll",
               icon:"rect",
+              pageIconColor: '#6495ed',
+              pageIconInactiveColor: '#aaa',
+              pageTextStyle:{
+                color:'#ccc'
+              },
               textStyle:{
                 fontSize: 11,
                 color:"#fff",

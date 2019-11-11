@@ -25,7 +25,7 @@
           </el-form-item>
           <el-form-item label="日期" class="filter-item">
              <el-date-picker
-              v-model="listQuery.startDate"
+              v-model="listQuery.selectDate"
               type="daterange"
               align="right"
               unlink-panels
@@ -118,7 +118,6 @@
         <el-button   type="primary" @click="submitProcessing('processingForm')">确 定</el-button>
       </div>
     </el-dialog>
-
   </div>
 </template>
 
@@ -130,6 +129,7 @@ import { parseValueToText, parseTime ,pickerOptions} from "utils/index";
 import { loadGridHeight } from "api/screen";
 import queryConditions from "components/QueryConditions/index";
 
+let NOWDATE='';  //tab 切换后用这个日期查询上一次报警的信息
 export default {
   name: "region",
   components: {
@@ -138,7 +138,7 @@ export default {
   },
   data() {
     return {
-      list: null,
+      list: [],
       total: null,
       listLoading: true,
       selection: [],
@@ -186,8 +186,7 @@ export default {
       processingDialogFormVisible:false,
       pickerOptions:pickerOptions,
       serverImageUrl:process.env.SERVERIMAGEURL, //img基础路径
-      baseVideoURL:process.env.SERVERVIDEOURL  //视频基础路径
- 
+      baseVideoURL:process.env.SERVERVIDEOURL , //视频基础路径
     };
   },
   created() {
@@ -205,6 +204,37 @@ export default {
         return this.staticData["摄像头报警类型"];
       }
     },
+  },
+  watch:{
+    //优化 实时页面 快速点击tab 按钮 切换 数据不显示问题 开始 
+      cemareTotal(n,o){
+        if(this.$route.path=="/alarm/now_index"){
+          if(Number(this.cemareTotal)>0&&this.list.length==0){
+            this.listQuery.alermStartDate=NOWDATE
+            this.getList()
+          }
+        }
+      },
+      sensorTotal(n,o){
+        if(this.$route.path=="/alarm/now_index"){
+          if(Number(this.sensorTotal)>0 && this.list.length==0){
+            this.listQuery.alermStartDate=NOWDATE
+            this.getList()
+          }
+        }
+      },
+      list(n,o){
+        if(this.$route.path=="/alarm/now_index"){
+          if(n.length!=o.length&&Number(this.sensorTotal)>0){
+            if(this.list.length==0&&Number(this.sensorTotal)>0){
+              this.listQuery.alermStartDate=NOWDATE
+                  this.getList()
+              }
+            }
+        }
+      }
+    //优化 实时页面 快速点击tab 按钮 切换 数据不显示问题 结束 
+
   },
   mounted() {
     //首次整个视图都渲染完毕后执行
@@ -239,14 +269,21 @@ export default {
     setEnterpriseId(data) {
       this.listQuery.enterpriseId = data;
     },
-    initParam() {
-      if (this.$route.query.queryTime) {
-        this.listQuery.alermStartDate = parseTime(this.$route.query.queryTime);
+    initParam() {  //初始化实时报警参数
+     if(this.$route.path=="/alarm/now_index"){
+        if (this.$route.query.queryTime) {     //报警跳转传来的时间
+            this.listQuery.alermStartDate = parseTime(this.$route.query.queryTime);
+            NOWDATE = parseTime(this.$route.query.queryTime);
+        }else if(NOWDATE){   //导航切换用 保存的时间
+          this.listQuery.alermStartDate=NOWDATE
+        }else{         //浏览器涮新 用当前时间
+          this.listQuery.alermStartDate=parseTime(new Date())
+        }
       }
     },
-
     //tab转换查询
     handleClick() {
+  
        this.listQuery.enterpriseStatus=[];
       if (this.tabPosition == "first") {
         this.listQuery.eventType = "1";
@@ -255,7 +292,7 @@ export default {
         this.listQuery.eventType = "2";
         this.equType = "2";
       }
-      this.getList();
+        this.getList();
     },
     getCount() {
       getCount(this.listQuery).then(response => {
@@ -282,11 +319,11 @@ export default {
         this.listQuery.alermStartDate=dates_arr[0];
         this.listQuery.alermEndDate=dates_arr[1];
       }
-      alertPage(this.listQuery).then(response => {
-        this.list = response.rows;
-        this.total = response.total;
-        this.listLoading = false;
-      });
+        alertPage(this.listQuery).then(response => {
+            this.list = response.rows;
+            this.total = response.total;
+            this.listLoading = false;
+        });
     },
     handleFilter() {
       this.listQuery.alermStartDate = undefined;
@@ -346,7 +383,7 @@ export default {
         // });
 
         let resultData= response.data;
-        console.log(44444444,resultData)
+        // console.log(44444444,resultData)
         this.alarmEvent.id = resultData.id;
         this.alarmEvent.indexCode = resultData.indexCode;
         this.alarmEvent.alarmSource = resultData.alarmSource;

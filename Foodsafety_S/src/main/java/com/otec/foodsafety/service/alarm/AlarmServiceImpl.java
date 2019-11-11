@@ -70,7 +70,8 @@ public class AlarmServiceImpl extends BaseServiceImpl<Alarm, Long> implements Al
 //                alarmExt.setMsg(alarmExt.getMsg().replaceAll("\"event_video\":\"","\"event_video\":\""+"http://101.132.144.237:8080/event_video/"));
 //            }
             if(StringUtils.isNotBlank(alarmExt.getVideoUrl())&&!alarmExt.getVideoUrl().equals("null")){
-                alarmExt.setVideoUrl("/event_video/"+alarmExt.getVideoUrl());
+                //alarmExt.setVideoUrl("/event_video/"+alarmExt.getVideoUrl());
+				alarmExt.setVideoUrl("http://foodsafety.91catv.com:8080/event_video/"+alarmExt.getVideoUrl());
             }
         }
 
@@ -87,9 +88,9 @@ public class AlarmServiceImpl extends BaseServiceImpl<Alarm, Long> implements Al
 	public AlarmExt getAlarmById(Long productId) {
 		Map<String, Object> cond = new HashMap<String, Object>();
 		cond.put("productId", productId);
-		List<AlarmExt> item = mapper.findAlarmByCondition(cond);		
-		
-		return item==null?null:item.get(0);		
+		List<AlarmExt> item = mapper.findAlarmByCondition(cond);
+
+		return item==null?null:item.get(0);
 	}
 
 	public void sendByAlarm(Alarm alarm){

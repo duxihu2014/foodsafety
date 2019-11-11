@@ -70,6 +70,11 @@
 			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( alermEndDate )">
 				AND  <![CDATA[ALARM_TIME <= DATE_FORMAT(#{alermEndDate},'%Y-%m-%d %H:%i:%s')    ]]>
 			</if>
+
+			<if  test="@org.apache.ibatis.util.Ognl@isNotEmpty( enterpriseName )">
+				AND enterprise_Name like '%${enterpriseName}%'
+			</if>
+
 			<if test="@org.apache.ibatis.util.Ognl@isNotEmpty( extendSql )">
 				${extendSql}
 			</if>
@@ -77,11 +82,11 @@
 	</sql>
 	<resultMap id="Extend_ResultMap"
 		type="com.otec.foodsafety.entity.alarm.AlarmExt"
-		extends="result_ResultMap_Alarm">		
+		extends="result_ResultMap_Alarm">
 		<result property="enterpriseId" column="ENTERPRISE_ID" />
-		<result property="enterpriseName" column="ENTERPRISE_NAME" />		
-		<result property="equName" column="EQU_NAME" />	
-		
+		<result property="enterpriseName" column="ENTERPRISE_NAME" />
+		<result property="equName" column="EQU_NAME" />
+
 	</resultMap>
 
 	<select id="countAlarmByCondition"

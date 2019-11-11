@@ -1,10 +1,10 @@
 module.exports = {
     NODE_ENV: '"development"',
     CLIENT_UI: '/Foodsafety/',
-    BASE_API: '"http://192.168.31.186:19380/Foodsafety_C"',
+    BASE_API: '"http://10.10.3.200:19380/Foodsafety_C"',
     // BASE_API: '"http://106.75.119.205:8089/Foodsafety_C"',
     // BASE_API: '"http://101.132.144.237:8081/Foodsafety_C"',
-    //BASE_API: '"http://106.75.119.205:8089/Foodsafety_C"', //奥润服务器
+    // BASE_API: '"http://106.75.119.205:8089/Foodsafety_C"', //奥润服务器
 
     // SERVERIMAGEURL:'"ht1.151:8282"', 
     SERVERIMAGEURL: '"http://106.75.119.205:80"',

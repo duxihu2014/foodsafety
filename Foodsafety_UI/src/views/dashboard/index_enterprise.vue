@@ -156,7 +156,7 @@
     methods:{
      screen_all(){
             let target = this.$refs.target
-            target.setAttribute('href', window.location.origin + '/#/dashboard_full')
+            target.setAttribute('href', window.location.origin + '#/dashboard_full')
             target.click()
         },
     }

@@ -29,10 +29,6 @@
       },
       methods: {
           init(){
-            // let colors=["#2f41d3","#c45906","#c45906","#c45906"]
-            // let name=["A等级","B等级","C等级","D等级"]
-            // console.log(3444444,this.superviseClassificationOptions)
-            // let supervisionTotalData=[]
             this.superviseClassificationOptions.forEach(item=>{
                let resultData = {};
                resultData.name=item.text+'等级';
@@ -56,7 +52,7 @@
                   if(item.regulatoryLevel==this.supervisionTotal[i].rel){
 
                     this.supervisionTotal[i].value=item.total;
-                    this.supervisionTotal[i].cname=[this.supervisionTotal[i].name+":"+item.total+"("+(item.total/totalCount*100).toFixed(2)+'%)','企业名称:'].concat(item.companeyName)
+                    this.supervisionTotal[i].cname=[this.supervisionTotal[i].name+":"+item.total+"("+(item.total/totalCount*100).toFixed(2)+'%)'].concat(item.companeyName)
                     return ;
                   }
                 }
@@ -125,10 +121,16 @@
               }
             },
             legend: {
-              orient: 'vertical',
+              // orient: 'vertical',
               bottom: "bottom",
               left: 'center',
               icon:"rect",
+              type:"scroll",
+              pageIconColor: '#6495ed',
+              pageIconInactiveColor: '#aaa',
+              pageTextStyle:{
+                color:'#ccc'
+              },
               textStyle:{
                 fontSize: 11,
                 color:"#fff",

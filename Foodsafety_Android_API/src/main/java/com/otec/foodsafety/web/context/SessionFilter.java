@@ -2,16 +2,18 @@ package com.otec.foodsafety.web.context;
 
 import com.otec.foodsafety.entity.jwt.AuthService;
 import com.otec.foodsafety.entity.jwt.TokenErrorResponse;
+import com.otec.foodsafety.entity.system.SysResource;
 import com.otec.foodsafety.entity.system.SysUser;
+import com.otec.foodsafety.service.system.SysResourceService;
 import com.otec.foodsafety.util.JSONUtils;
 import com.otec.foodsafety.util.JwtTokenUtil;
+import com.otec.foodsafety.util.SysInitConfig;
 import org.apache.shiro.web.filter.authz.AuthorizationFilter;
 import org.apache.shiro.web.util.WebUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.ServletRequest;
@@ -31,6 +33,9 @@ public class SessionFilter extends AuthorizationFilter {
     private JwtTokenUtil jwtTokenUtil;
     @Autowired
     private AuthService authService;
+
+    @Autowired
+    SysResourceService sysResourceService;
 
     @Override
     protected boolean isAccessAllowed(ServletRequest request,
@@ -92,6 +97,17 @@ public class SessionFilter extends AuthorizationFilter {
             logger.info("checking authentication " + username);
             if (username != null) {
                 SysUser userDetails = authService.getUser(username);
+                String imageServerUrl = SysInitConfig.getInstance().get(SysInitConfig.CfgProp.IMAGESERVERURL);
+                if(userDetails!=null){
+                    userDetails.setResourcePath("");
+                    if(userDetails.getResourceId()!=null){
+                        SysResource resource= sysResourceService.findById(userDetails.getResourceId());
+                        if(resource!=null){
+                            userDetails.setResourcePath(imageServerUrl+"/"+resource.getResourcePath());
+                        }
+                    }
+                }
+
                 if (jwtTokenUtil.validateToken(authToken, userDetails)) { // 验证通过
                     return userDetails;
                 } else { // 验证不通过

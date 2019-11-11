@@ -1,8 +1,9 @@
 package com.otec.foodsafety.entity.collect;
 
-import java.io.Serializable;
 import org.apache.ibatis.annotation.myibatis.DataBase;
 import org.apache.ibatis.annotation.myibatis.Table;
+
+import java.io.Serializable;
 
 @Table(dataBase = DataBase.MYSQL, tabName = "T_ALARM_TOTAL", pkId = "totalId", seqName = "", notColumn = {""})
 public class AlarmTotal implements Serializable {

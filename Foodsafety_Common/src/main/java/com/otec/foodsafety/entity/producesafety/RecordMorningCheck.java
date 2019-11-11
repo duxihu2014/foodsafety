@@ -1,11 +1,10 @@
 package com.otec.foodsafety.entity.producesafety;
 
-import java.io.Serializable;
-
 import org.apache.ibatis.annotation.myibatis.DataBase;
 import org.apache.ibatis.annotation.myibatis.Table;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Table(pkId = "recordId", usingSeq = true, seqName = "", dataBase=DataBase.MYSQL, tabName = "T_RECORD_MORNING_CHECK")
@@ -22,7 +21,7 @@ public class RecordMorningCheck implements Serializable{
 
 	//进行晨检的时间
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
-	private Date checkTime; 
+	private Date checkTime;
 
 	//进行晨检的内容
 	private String checkContent; 

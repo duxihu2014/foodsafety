@@ -11,7 +11,7 @@
             myChart:undefined,
             treatedData:[],
             untreatedData:[],
-            category:["未戴安全帽","未戴口罩","未穿工作装","抽烟",'老鼠出没','陌生人进入',"温度高","温度低","湿度高","湿度低"],
+            category:["未戴防护帽","未戴口罩","未穿工作装","抽烟",'老鼠出没','陌生人进入',"温度高","温度低","湿度高","湿度低"],
           }
       },
       computed:{
@@ -58,6 +58,7 @@
             legend: {
               top: 20,
               icon:"rect",
+              type:"scroll",
               textStyle: {
                 fontSize: 11,
                 color: '#fff',
@@ -93,6 +94,7 @@
               axisLine: {
                 show: false,
                 lineStyle:{
+                  fontSize:11,
                   color:'#fff',
                 }
               },
